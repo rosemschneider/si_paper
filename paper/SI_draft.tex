@@ -7,6 +7,7 @@
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{booktabs}
 \usepackage{setspace}
+\usepackage{textgreek}
 
 \title{The trouble with quantifiers: Children's difficulty with scalar terms extends beyond the realm of implicatures}
 
@@ -104,7 +105,28 @@ In scalar trials (ten total), the experimenter described the target book with qu
 
 All participants saw image sets in the same order; however, these image sets were counterbalanced for target location and book triad position. Description condition and trial-type were further randomized across participants, and were spaced to avoid immediate repeat trial types. Children did not receive feedback after the test trial.
 
-\subsection{Results and Discussion}
+\subsection{Results}
+
+
+\begin{figure} 
+ \begin{center} 
+  \includegraphics[height=2in]{figures/exp1_performance.pdf} 
+  \caption{\label{fig:exp1_perf} Proportion of correct responses by each age group across all trial types and split by implicature type. Error bars show standard error of the mean. Children performed almost at ceiling in ad-hoc implicature conditions, but struggled in scalar trials, particularly in the ``some'' and ``none'' trials.} 
+ \end{center} 
+\end{figure}
+
+Children's performance on all trial types can be seen in Figure \ref{fig:exp1_performance}. Across all trials, children's performance was coded as correct if they selected the image consistent with either the ad-hoc or scalar description. Children were at ceiling making ad-hoc implicatures, which is consistent with previous research suggesting that children are able to succeed in making such implicatures when they have access to the relevant lexical alternatives \cite{Stiller2014}. Children's performance across ad-hoc trials provides strong evidence that our novel paradigm is an appropriate measure for such items.
+
+In contrast to their success in making ad-hoc implicatures, children struggled in scalar trials. Although they succeeded in ``all'' and ``unambiguous some'' trials, children performed near chance on ``some'' and ``none'' trials. 
+
+%This is lifted directly from Ali's cogsci paper
+We ran a logistic mixed effect model, predicting a correct response as an interaction of age, condition (ad-hoc or scalar) and trial type (implicature or control), with random effects of participant and trial type. We found that performance was slightly lower for scalar trials than ad-hoc trials ($\beta$= --8.02, \textit{p} = .09), and that there was a significant interaction between condition and trial type, such that performance was significantly worse on scalar implicature trials ($\beta$= 16.45, \textit{p} < .02). We also found a significant 3-way interaction between condition, trial type, and age, such that performance on scalar implicature trials decreased with age ($\beta$ = --4.16, \textit{p} < .01). There were no significant effects of adding trial order (trials in the first half vs. second half of the experiment), indicating that performance did not change throughout the course of the experiment. 
+
+Interestingly we found that when children's performance in scalar trials varied consistently. To examine their patterns of responses more closely, we ran Hartigan's dip test and found significant bimodal distributions for both \textit{some} (\textit{D} = .15, \textit{p} < .0001) and \textit{none} (\textit{D} = .20, \textit{p} < .0001). This suggests children did not respond at chance in scalar trials, but either consistently correctly or incorrectly. Additionally, children's success on \textit{some} and \textit{none} trials was highly correlated (\textit{r} = .47, \textit{p} < .001), such that children who performed better on some trials also tended to perform better on none trials.  Performance on \textit{none} and \textit{all} trials (\textit{r} = .11, \textit{p} = .45) and \textit{some} and \textit{all} trials (\textit{r} = .01, \textit{p} = .95) was not correlated. 
+
+
+
+\subsection{Discussion}
 
 
 
