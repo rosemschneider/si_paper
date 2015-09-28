@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  25 SEP 2015 11:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  28 SEP 2015 16:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -405,35 +405,66 @@ LaTeX Warning: Citation `zelazo2006' undefined on input line 182.
 
 LaTeX Warning: Citation `barner2009' undefined on input line 182.
 
-[13] [14]
+[13] [14] <figures/exp3_performance.pdf, id=215, 872.15154pt x 420.2886pt>
+File: figures/exp3_performance.pdf Graphic file (type pdf)
 
-Class apa Warning: \bibliographystyle command ignored on input line 211.
+<use figures/exp3_performance.pdf>
+Package pdftex.def Info: figures/exp3_performance.pdf used on input line 203.
+(pdftex.def)             Requested size: 299.93443pt x 144.54pt.
+ [15]
+<figures/DCCS.pdf, id=219, 434.32162pt x 404.15071pt>
+File: figures/DCCS.pdf Graphic file (type pdf)
+ <use figures/DCCS.pdf>
+Package pdftex.def Info: figures/DCCS.pdf used on input line 214.
+(pdftex.def)             Requested size: 155.32845pt x 144.54pt.
+
+<figures/exp3_GQright.pdf, id=220, 646.22006pt x 344.51039pt>
+File: figures/exp3_GQright.pdf Graphic file (type pdf)
+
+<use figures/exp3_GQright.pdf>
+Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 223.
+(pdftex.def)             Requested size: 271.12462pt x 144.54pt.
+
+<figures/FINAL_GQ.pdf, id=221, 477.12234pt x 375.38301pt>
+File: figures/FINAL_GQ.pdf Graphic file (type pdf)
+
+<use figures/FINAL_GQ.pdf>
+Package pdftex.def Info: figures/FINAL_GQ.pdf used on input line 230.
+(pdftex.def)             Requested size: 183.71086pt x 144.54pt.
+ [16 <./figures/exp3_performance.pdf>] [17 <./figures/DCCS.pdf> <./figures/exp3
+_GQright.pdf> <./figures/FINAL_GQ.pdf>] [18]
+
+Class apa Warning: \bibliographystyle command ignored on input line 251.
 
 No file SI_draft.bbl.
-[15] [16] (./SI_draft.aux)
+[19] [20] (./SI_draft.aux)
 
 LaTeX Warning: There were undefined references.
 
- ) 
+ )
+(\end occurred inside a group at level 1)
+
+### simple group (level 1) entered at line 237 ({)
+### bottom level 
 Here is how much of TeX's memory you used:
- 4360 strings out of 493117
- 62720 string characters out of 6135433
- 122313 words of memory out of 5000000
- 7722 multiletter control sequences out of 15000+600000
+ 4384 strings out of 493117
+ 63267 string characters out of 6135433
+ 122349 words of memory out of 5000000
+ 7742 multiletter control sequences out of 15000+600000
  21007 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,7n,35p,2222b,325s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
-exlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
-xlive/2014/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/20
-14/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/2014/texmf-di
-st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb>
-Output written on SI_draft.pdf (16 pages, 516502 bytes).
+{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc
+}</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
+</usr/local/texlive/2014/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/lo
+cal/texlive/2014/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive
+/2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texm
+f-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fon
+ts/type1/urw/times/utmri8a.pfb>
+Output written on SI_draft.pdf (20 pages, 1233840 bytes).
 PDF statistics:
- 243 PDF objects out of 1000 (max. 8388607)
- 178 compressed objects within 2 object streams
+ 720 PDF objects out of 1000 (max. 8388607)
+ 536 compressed objects within 6 object streams
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 36 words of extra memory for PDF output out of 10000 (max. 10000000)
 
