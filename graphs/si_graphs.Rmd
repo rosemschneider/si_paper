@@ -1,0 +1,224 @@
+---
+title: "SI_paper_graphs"
+output: html_document
+---
+
+title: "SI_quant"
+output: html_document
+---
+Horowitz, Mekler, Schneider, Frank, etc. 
+Analyses for Scalar Implicature, Give-Quantifier, and DCCS
+
+
+Set up Rmd parameters
+```{r}
+library(knitr)
+opts_chunk$set(cache=TRUE, message=FALSE, warning=FALSE)
+```
+
+Preliminaries
+```{r}
+rm(list=ls())
+library(ggplot2)
+library(reshape)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(markdown)
+library(directlabels)
+library(magrittr)
+library(bootstrap)
+library(RCurl)
+
+
+theme_set(theme_bw())
+```
+
+
+EXPERIMENT 1 - Ad-hoc and Scalar Implicatures
+
+```{r}
+#reading in the original wide-form dataframe
+d <- read.csv("../data/implicatures_adhocScalar_data.csv")
+
+#fill in the selection types for easier analyses
+d_exp1=melt.data.frame(d,c("Subj_ID", "age","agegroup", "list"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_condition", "hats_condition", "cookies_condition", "trains_condition", "cats_condition", "purses_condition",  "keys_condition", "shirts_condition", "breads_condition", "horses_condition", "bears_condition", "frogs_condition", "plates_condition", "books_condition", "elephants_condition", "lamps_condition", "bananas_condition", "butterflies_condition", 
+"carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+
+data_exp1 <- d_exp1[1:864,] 
+data_exp1$condition <- d_exp1$value[865:1728]
+data_exp1$type <- d_exp1$value[1729:2592]
+names(data_exp1)[5] <- "item"
+names(data_exp1)[6] <- "correct"
+
+data_exp1$correct <- data_exp1$correct==1
+
+attach(data_exp1)
+data_exp1$trial_type[type == "implicature"] <- "implicature"
+data_exp1$trial_type[type != "implicature"] <- "control"
+detach(data_exp1)
+
+data_exp1 %<>%
+  filter(Subj_ID != "", correct != "NA") %>%
+  mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
+         agesplit = factor(agesplit,
+                           labels=c("4-4.5 years", "4.5-5 years"))) %>%
+  filter(agesplit != "NA")
+
+# #renaming for better-looking graphs
+# data_exp1$type %<>%
+#   str_replace("implicature", "Implicature")%>%
+#   str_replace("control_comparison", "Comparison")%>%
+#   str_replace("control_distractor", "Distractor")%>%
+#   str_replace("control_all", "All")%>%
+#   str_replace("control_unambiguous", "Unambiguous Some")%>%
+#   str_replace("control_none", "None")
+
+# data$selection %<>%
+#   str_replace("all", "All")%>%
+#   str_replace("none", "None")%>%
+#   str_replace("some", "Some")
+
+# #Find the Mean and median ages
+# age <- data %>%
+#   mutate(split_2 = cut(test_age, breaks = c(3, 4, 5)))%>%
+#   group_by(split_2)%>%
+#   summarise(median_age = median(test_age))
+
+# #use this dataframe for stats
+# data_si <- data %>%
+#   mutate(test = "Scalar Implicature")
+```
+
+GRAPHS - EXPERIMENT 1
+```{r}
+agg.data <- aggregate(data_exp1$correct, list(data_exp1$condition, data_exp1$type, data_exp1$trial_type, data_exp1$agesplit), FUN=sum)
+agg.data.len <- aggregate(data_exp1$correct, list(data_exp1$condition, data_exp1$type, data_exp1$trial_type, data_exp1$agesplit), FUN=length)
+agg.data$x <- agg.data$x 
+
+names(agg.data) <- c("implicature_type", "type", "trial_type", "Age", "correct")
+agg.data$total <- agg.data.len$x
+agg.data$prop.corr <- agg.data$correct / agg.data$total
+
+agg.data$type <- factor(agg.data$type, 
+					levels = c("implicature","control_comparison", 
+					"control_distractor",
+					"control_none","control_unambiguous", "control_all"), 
+					labels = c("Implicature","Comparison", 
+					"Distractor",
+					"None","Unambig. Some", "All"))
+
+agg.data$implicature_type <- factor(agg.data$implicature_type, 
+					levels = c("adhoc","scalar"), 
+					labels = c("Ad-hoc","Scalar"))
+
+
+agg.data$total <- agg.data.len$x
+agg.data$prop.corr <- agg.data$correct / agg.data$total
+
+#prop correct and standard error
+agg.data$q <- 1 - agg.data$prop.corr
+agg.data$err <- sqrt((agg.data$prop.corr * agg.data$q) / agg.data$total)
+
+#defining variables
+dodge <- position_dodge(width=0.9) 
+limits <- aes(ymax = prop.corr + err, ymin=prop.corr - err) 
+
+#plot
+quartz()
+ggplot(data = agg.data, 
+       aes(x=type, y=prop.corr, fill=Agesplit)) +
+  geom_bar(stat="identity", position = position_dodge())  + geom_errorbar(limits, position=dodge)+
+  ylab("Proportion correct") + 
+  xlab("Trial Type") +
+  scale_fill_brewer(palette="Set1") + facet_grid(~implicature_type, scale="free_x")
+
+#incorrect results - this needs to be done
+```
+
+EXP 2 - scalar only
+```{r}
+d2 <- read.csv("../data/implicatures_scalarOnly_data.csv")
+
+data_exp2=melt.data.frame(d2,c("Subj_ID","age","agegroup","list"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_selectionType", "hats_selectionType", "cookies_selectionType", "trains_selectionType", "cats_selectionType", "purses_selectionType",  "keys_selectionType", "shirts_selectionType", "breads_selectionType", "horses_selectionType", "bears_selectionType", "frogs_selectionType", "plates_selectionType", "books_selectionType", "elephants_selectionType", "lamps_selectionType", "bananas_selectionType", "butterflies_selectionType", 
+"carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+data <- data_exp2[1:918,] 
+data$selectionType <- data_exp2$value[919:1836]
+data$type <- data_exp2$value[1837:2754]
+names(data)[5] <- "item"
+names(data)[6] <- "correct"
+
+data_exp2 <- data
+
+#data$older <- (data$age>4.5)
+data_exp2$correct <- data_exp2$correct==1
+
+
+attach(data_exp2)
+data_exp2$trial_type[type == "some"] <- "implicature"
+data_exp2$trial_type[type != "some"] <- "control"
+detach(data_exp2)
+
+data_exp2 %<>%
+  filter(Subj_ID != "", correct != "NA") %>%
+  mutate(agesplit = cut(age, breaks=c(3, 3.5, 4, 4.5, 5)),
+         agesplit = factor(agesplit,
+                           labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
+  filter(agesplit != "NA")
+
+# 
+# attach(data)
+# data$value[1:459] <- "firstHalf"
+# data$value[460:918] <- "secondHalf"
+# detach(data)
+# names(data)[10] <- "half"
+```
+
+EXP 2- GRAPHS
+```{r}
+######## data by selectionType and trial type ##########
+agg.data_2 <- aggregate(data_exp2$correct, list( data_exp2$type, data_exp2$trial_type, data_exp2$agesplit), FUN=sum)
+agg.data.len2 <- aggregate(data_exp2$correct, list(data_exp2$type, data_exp2$trial_type, data_exp2$agesplit), FUN=length)
+agg.data_2$x <- agg.data_2$x 
+agg.data.len2$x <- agg.data.len2$x 
+
+names(agg.data_2) <- c( "trial_type", "implicature", "Age", "correct")
+agg.data_2$total <- agg.data.len2$x
+agg.data_2$prop.corr <- agg.data_2$correct / agg.data_2$total
+
+agg.data_2$q <- 1 - agg.data_2$prop.corr
+agg.data_2$err <- sqrt((agg.data_2$prop.corr * agg.data_2$q) / agg.data_2$total)
+
+dodge <- position_dodge(width=0.9) 
+limits <- aes(ymax = prop.corr + err, ymin=prop.corr - err) 
+
+agg.data_2$trial_type <- factor(agg.data_2$trial_type, 
+					levels = c("all","none", 
+					"some"), 
+					labels = c("All","None", 
+					"Some"))
+
+########  plot by age
+quartz()
+ggplot(data = agg.data_2, 
+       aes(x=trial_type, y=prop.corr, fill=Age)) +
+  geom_bar(stat="identity", position = position_dodge())  + geom_errorbar(limits, position=dodge)+
+  ylab("Proportion correct") + 
+  xlab("Trial Type") +
+  scale_fill_brewer(palette="Set1")
+```
+
+EXP 2 - stats
+```{r}
+#testing against chance for "all" trials
+scalarOnly_subs <- aggregate(correct ~ type + agesplit +  Subj_ID, data=data_exp2, mean)
+t.test(subset(scalarOnly_subs, agesplit=="3-3.5 years" & type=="all")$correct, mu=0.5)
+t.test(subset(scalarOnly_subs, agesplit=="3.5-4 years" & type=="all")$correct, mu=0.5)
+t.test(subset(scalarOnly_subs, agesplit=="4-4.5 years" & type=="all")$correct, mu=0.5)
+t.test(subset(scalarOnly_subs, agesplit=="4.5-5 years" & type=="none")$correct, mu=0.5)
+```

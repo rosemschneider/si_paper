@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  30 SEP 2015 10:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  5 OCT 2015 11:17
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -410,12 +410,16 @@ Package pdftex.def Info: figures/implicatures_demo_letters.png used on input li
 ne 65.
 (pdftex.def)             Requested size: 395.7803pt x 144.54pt.
  [6] [7 <./figures/implicatures_demo_letters.png>] [8]
-<figures/exp1_performance.pdf, id=34, 802.29247pt x 360.39493pt>
+<figures/exp1_performance.pdf, id=34, 815.02736pt x 226.67947pt>
 File: figures/exp1_performance.pdf Graphic file (type pdf)
 
 <use figures/exp1_performance.pdf>
 Package pdftex.def Info: figures/exp1_performance.pdf used on input line 90.
-(pdftex.def)             Requested size: 321.76823pt x 144.54pt.
+(pdftex.def)             Requested size: 519.70055pt x 144.54pt.
+
+Overfull \hbox (86.08055pt too wide) in paragraph at lines 90--91
+ [] 
+ []
 
 
 LaTeX Warning: Citation `Stiller2014' undefined on input line 95.
@@ -431,32 +435,36 @@ LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <10.95> not available
 
 LaTeX Warning: Citation `nordmeyer2014' undefined on input line 108.
 
-[10] [11] <figures/exp2_performance.pdf, id=132, 813.7538pt x 291.62692pt>
+[10] [11] <figures/exp2_performance.pdf, id=132, 815.02736pt x 269.34106pt>
 File: figures/exp2_performance.pdf Graphic file (type pdf)
 
 <use figures/exp2_performance.pdf>
 Package pdftex.def Info: figures/exp2_performance.pdf used on input line 132.
-(pdftex.def)             Requested size: 403.32468pt x 144.54pt.
- [12 <./figures/exp2_performance.pdf>]
-[13]
+(pdftex.def)             Requested size: 437.39711pt x 144.54pt.
 
-LaTeX Warning: Citation `zelazo2006' undefined on input line 159.
+Overfull \hbox (3.77711pt too wide) in paragraph at lines 132--133
+ [] 
+ []
+
+[12 <./figures/exp2_performance.pdf>] [13]
+
+LaTeX Warning: Citation `zelazo2006' undefined on input line 164.
 
 
-LaTeX Warning: Citation `barner2009' undefined on input line 159.
+LaTeX Warning: Citation `barner2009' undefined on input line 164.
 
 [14] [15] [16]
-<figures/exp3_performance.pdf, id=221, 872.15154pt x 420.2886pt>
+<figures/exp3_performance.pdf, id=221, 815.02736pt x 273.7982pt>
 File: figures/exp3_performance.pdf Graphic file (type pdf)
 
 <use figures/exp3_performance.pdf>
-Package pdftex.def Info: figures/exp3_performance.pdf used on input line 181.
-(pdftex.def)             Requested size: 299.93443pt x 144.54pt.
+Package pdftex.def Info: figures/exp3_performance.pdf used on input line 186.
+(pdftex.def)             Requested size: 430.25867pt x 144.54pt.
 
 <figures/DCCS.pdf, id=222, 434.32162pt x 404.15071pt>
 File: figures/DCCS.pdf Graphic file (type pdf)
  <use figures/DCCS.pdf>
-Package pdftex.def Info: figures/DCCS.pdf used on input line 192.
+Package pdftex.def Info: figures/DCCS.pdf used on input line 197.
 (pdftex.def)             Requested size: 155.32845pt x 144.54pt.
 
 [17 <./figures/exp3_performance.pdf>]
@@ -464,42 +472,57 @@ Package pdftex.def Info: figures/DCCS.pdf used on input line 192.
 File: figures/exp3_GQright.pdf Graphic file (type pdf)
 
 <use figures/exp3_GQright.pdf>
-Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 201.
+Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 206.
 (pdftex.def)             Requested size: 271.12462pt x 144.54pt.
 
 <figures/FINAL_GQ.pdf, id=299, 477.12234pt x 375.38301pt>
 File: figures/FINAL_GQ.pdf Graphic file (type pdf)
 
 <use figures/FINAL_GQ.pdf>
-Package pdftex.def Info: figures/FINAL_GQ.pdf used on input line 208.
+Package pdftex.def Info: figures/FINAL_GQ.pdf used on input line 213.
 (pdftex.def)             Requested size: 183.71086pt x 144.54pt.
- [18 <./figures/DCCS.pdf>] [19 <./figures/exp3_GQright.pdf>] [20 <./figures/FIN
-AL_GQ.pdf>]
+ [18 <./figures/DCCS.pdf>]
+<figures/exp3_wrong.pdf, id=370, 815.02736pt x 313.91289pt>
+File: figures/exp3_wrong.pdf Graphic file (type pdf)
 
-LaTeX Warning: Citation `skordos2014' undefined on input line 231.
+<use figures/exp3_wrong.pdf>
+Package pdftex.def Info: figures/exp3_wrong.pdf used on input line 222.
+(pdftex.def)             Requested size: 375.27779pt x 144.54pt.
 
-[21] [22]
+<figures/exp3_individualdiffs.pdf, id=371, 801.01903pt x 454.6324pt>
+File: figures/exp3_individualdiffs.pdf Graphic file (type pdf)
 
-Class apa Warning: \bibliographystyle command ignored on input line 265.
+<use figures/exp3_individualdiffs.pdf>
+Package pdftex.def Info: figures/exp3_individualdiffs.pdf used on input line 23
+2.
+(pdftex.def)             Requested size: 254.66905pt x 144.54pt.
+ [19 <./figures/exp3_GQright.pdf>]
+[20 <./figures/FINAL_GQ.pdf>] [21 <./figures/exp3_wrong.pdf>]
+
+LaTeX Warning: Citation `skordos2014' undefined on input line 255.
+
+[22 <./figures/exp3_individualdiffs.pdf>] [23]
+
+Class apa Warning: \bibliographystyle command ignored on input line 287.
 
 No file SI_draft.bbl.
-[23] [24] (./SI_draft.aux)
+[24] [25] (./SI_draft.aux)
 
 LaTeX Warning: There were undefined references.
 
  )
 (\end occurred inside a group at level 1)
 
-### simple group (level 1) entered at line 215 ({)
+### simple group (level 1) entered at line 237 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 4470 strings out of 493117
- 64303 string characters out of 6135433
- 121349 words of memory out of 5000000
- 7811 multiletter control sequences out of 15000+600000
+ 4482 strings out of 493117
+ 64627 string characters out of 6135433
+ 122367 words of memory out of 5000000
+ 7821 multiletter control sequences out of 15000+600000
  39510 words of font info for 97 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,8n,35p,2222b,281s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,8n,35p,2478b,281s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc
 }</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/lo
@@ -507,10 +530,10 @@ cal/texlive/2014/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive
 /2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on SI_draft.pdf (24 pages, 1241923 bytes).
+Output written on SI_draft.pdf (25 pages, 1505773 bytes).
 PDF statistics:
- 732 PDF objects out of 1000 (max. 8388607)
- 544 compressed objects within 6 object streams
+ 902 PDF objects out of 1000 (max. 8388607)
+ 673 compressed objects within 7 object streams
  0 named destinations out of 1000 (max. 500000)
- 36 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
 
