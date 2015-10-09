@@ -1,0 +1,59 @@
+This is BibTeX, Version 0.99d (TeX Live 2014)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: SI_draft.aux
+The style file: apacite.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=20001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: biblibrary.bib
+Warning--I didn't find a database entry for "barner2011"
+apacite.bst [2013/07/21 v6.03 APA bibliography style]
+Warning--No journal in grice1975logic
+You've used 14 entries,
+            6951 wiz_defined-function locations,
+            1353 strings with 12709 characters,
+and the built_in function-call counts, 25559 in all, are:
+= -- 3134
+> -- 212
+< -- 1225
++ -- 1202
+- -- 28
+* -- 1670
+:= -- 4766
+add.period$ -- 57
+call.type$ -- 14
+change.case$ -- 238
+chr.to.int$ -- 0
+cite$ -- 29
+duplicate$ -- 631
+empty$ -- 1020
+format.name$ -- 359
+if$ -- 4848
+int.to.chr$ -- 0
+int.to.str$ -- 42
+missing$ -- 0
+newline$ -- 346
+num.names$ -- 112
+pop$ -- 443
+preamble$ -- 1
+purify$ -- 56
+quote$ -- 0
+skip$ -- 1672
+stack$ -- 0
+substring$ -- 1290
+swap$ -- 405
+text.length$ -- 28
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 1184
+warning$ -- 1
+while$ -- 117
+width$ -- 0
+write$ -- 428
+(There were 2 warnings)
