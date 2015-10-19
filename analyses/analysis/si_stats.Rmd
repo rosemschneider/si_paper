@@ -1,0 +1,720 @@
+title: "SI_stats"
+output: html_document
+---
+Horowitz, Mekler, Schneider, Frank, etc. 
+Analyses for Scalar Implicature, Give-Quantifier, and DCCS
+
+
+Set up Rmd parameters
+```{r}
+library(knitr)
+opts_chunk$set(cache=TRUE, message=FALSE, warning=FALSE)
+```
+
+Preliminaries
+```{r}
+rm(list=ls())
+library(ggplot2)
+library(reshape)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(markdown)
+library(directlabels)
+library(magrittr)
+library(bootstrap)
+library(RCurl)
+library(langcog)
+library(diptest)
+
+
+theme_set(theme_bw())
+```
+
+Experiment 1 - read in data
+```{r}
+d <- read.csv("../data/implicatures_adhocScalar_data.csv")
+
+#fill in the selection types for easier analyses
+d_exp1=melt.data.frame(d,c("Subj_ID", "age","agegroup", "list"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_condition", "hats_condition", "cookies_condition", "trains_condition", "cats_condition", "purses_condition",  "keys_condition", "shirts_condition", "breads_condition", "horses_condition", "bears_condition", "frogs_condition", "plates_condition", "books_condition", "elephants_condition", "lamps_condition", "bananas_condition", "butterflies_condition", 
+"carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+data_exp1 <- d_exp1[1:864,] 
+data_exp1$condition <- d_exp1$value[865:1728]
+data_exp1$type <- d_exp1$value[1729:2592]
+names(data_exp1)[5] <- "item"
+names(data_exp1)[6] <- "correct"
+
+attach(data_exp1)
+data_exp1$trial_type[type == "implicature"] <- "implicature"
+data_exp1$trial_type[type != "implicature"] <- "control"
+detach(data_exp1)
+
+#age groups
+data_exp1 %<>%
+  filter(Subj_ID != "", correct != "NA") %>%
+  mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
+         agesplit = factor(agesplit,
+                           labels=c("4-4.5 years", "4.5-5 years"))) %>%
+  filter(agesplit != "NA")
+
+#renaming for graphs
+data_exp1$type <- factor(data_exp1$type, 
+					levels = c("implicature","control_comparison", 
+					"control_distractor",
+					"control_none","control_unambiguous", "control_all"), 
+					labels = c("Implicature","Comparison", 
+					"Distractor",
+					"None","Unambig. Some", "All"))
+
+data_exp1$condition <- factor(data_exp1$condition, 
+					levels = c("adhoc","scalar"), 
+					labels = c("Ad-hoc","Scalar"))
+
+data_exp1 %<>%
+  dplyr::rename(Age = agesplit)
+```
+
+EXP 1 - T-tests against chance
+```{r}
+#look at only SI trials
+d <- data_exp1 %>%
+  filter(condition == "Scalar")%>%
+  mutate(correct = as.numeric(correct))
+
+d <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d, mean)
+
+##First test against chance
+#All
+t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, mu=0.5)
+
+#Some
+t.test(subset(d, agegroup=="4.0--4.5" & type=="Implicature")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="Implicature")$correct, mu=0.5)
+
+#none
+t.test(subset(d, agegroup=="4.0--4.5" & type=="None")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="None")$correct, mu=0.5)
+```
+
+EXP 1 - Diptest
+```{r}
+data_exp1 %<>%
+  mutate(correct = as.numeric(correct))
+
+ms <- ddply(data_exp1, .(type, condition, Subj_ID), summarise, 
+	mean = mean(correct),
+	agegroup = agegroup[1])
+
+ms %<>%
+  filter(condition == "Scalar")
+
+names(ms) <- c("type", "condition", "Subj_ID", "mean", "Age")
+
+cs <- cast(ms, Subj_ID + Age ~ type + condition, value="mean") %>%
+  rename(control_none_scalar = None_Scalar, implicature_scalar = Implicature_Scalar, control_all_scalar = All_Scalar)
+
+dip.test(cs$implicature_scalar)
+dip.test(cs$control_none_scalar)
+dip.test(cs$control_all_scalar)
+```
+
+EXP 1 - correlations (full)
+```{r}
+
+
+cor.test(cs$control_none_scalar, cs$implicature_scalar)
+cs %>% group_by(Age) %>% 
+	summarise(r = cor.test(control_none_scalar, implicature_scalar)$estimate,
+			  p = cor.test(control_none_scalar, implicature_scalar)$p.value)
+
+cor.test(cs$control_all_scalar, cs$implicature_scalar)
+cs %>% group_by(Age) %>% 
+	summarise(r = cor.test(control_all_scalar, implicature_scalar)$estimate,
+			  p = cor.test(control_all_scalar, implicature_scalar)$p.value)					  	  
+cor.test(cs$control_all_scalar, cs$control_none_scalar)
+cs %>% group_by(Age) %>% 
+	summarise(r = cor.test(control_all_scalar, control_none_scalar)$estimate,
+			  p = cor.test(control_all_scalar, control_none_scalar)$p.value)		
+```
+
+Exp1 - models
+```{r}
+library(lme4)
+gl <- glmer(correct ~ trial_type * condition * age   + (trial_type | Subj_ID), data=data_exp1, family=binomial)
+summary(gl)
+```
+
+Experiment 2
+Read in data
+```{r}
+d2 <- read.csv("../data/implicatures_scalarOnly_data.csv")
+
+data_exp2=melt.data.frame(d2,c("Subj_ID","age","agegroup","list"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_selectionType", "hats_selectionType", "cookies_selectionType", "trains_selectionType", "cats_selectionType", "purses_selectionType",  "keys_selectionType", "shirts_selectionType", "breads_selectionType", "horses_selectionType", "bears_selectionType", "frogs_selectionType", "plates_selectionType", "books_selectionType", "elephants_selectionType", "lamps_selectionType", "bananas_selectionType", "butterflies_selectionType", 
+"carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+data <- data_exp2[1:918,] 
+data$selectionType <- data_exp2$value[919:1836]
+data$type <- data_exp2$value[1837:2754]
+names(data)[5] <- "item"
+names(data)[6] <- "correct"
+
+data_exp2 <- data
+
+attach(data_exp2)
+data_exp2$trial_type[type == "some"] <- "implicature"
+data_exp2$trial_type[type != "some"] <- "control"
+detach(data_exp2)
+
+data_exp2 %<>%
+  filter(Subj_ID != "", correct != "NA") %>%
+  mutate(agesplit = cut(age, breaks=c(3, 3.5, 4, 4.5, 5)),
+         agesplit = factor(agesplit,
+                           labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
+  filter(agesplit != "NA")
+
+#renaming for graphs
+data_exp2$type <- factor(data_exp2$type, 
+					levels = c("all","none", 
+					"some"), 
+					labels = c("All","None", 
+					"Some"))
+data_exp2$selectionType <- factor(data_exp2$selectionType, 
+					levels = c("all","none", 
+					"some"), 
+					labels = c("All","None", 
+					"Some"))
+# data_exp2$trial_type <- factor(data_exp2$trial_tyçpe, 
+#                                levels = c ("control", "implicature"), 
+#                                labels = c("Control", "Implicature")) 
+
+data_exp2 %<>%
+  rename(Age = agesplit)
+```
+
+tests against chance
+```{r}
+##First test against chance
+d <- data_exp2 %>%
+  mutate(correct = as.numeric(as.character(correct)))
+
+d <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d, mean)
+#All
+t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, mu=0.5)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, mu=0.5)
+
+#Some
+t.test(subset(d, agegroup=="3.0--3.5" & type=="Some")$correct, mu=0.5)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="Some")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="Some")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="Some")$correct, mu=0.5)
+
+#none
+t.test(subset(d, agegroup=="3.0--3.5" & type=="None")$correct, mu=0.5)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="None")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="None")$correct, mu=0.5)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="None")$correct, mu=0.5)
+```
+
+```{r}
+d1 <- data_exp1 
+d2 <- data_exp2%>%
+  mutate(correct=as.numeric(correct))
+
+df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
+  spread(type, correct)
+df2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%>%
+  spread(type, correct)
+
+```
+
+Compare performance on scalar trials between Exp1 and Exp2
+```{r}
+
+old1 <- df1 %>%
+  filter(agegroup == "4.0--4.5")
+
+old2 <- df2 %>%
+  filter(agegroup == "4.0--4.5")
+
+#4-4.5s
+t.test(old1$All, old2$All)
+t.test(old1$Implicature, old2$Some)
+t.test(old1$None, old2$None)
+
+#4.5-5s
+old3 <- df1 %>%
+  filter(agegroup == "4.5--5.0")
+
+old4 <- df2 %>%
+  filter(agegroup == "4.5--5.0")
+
+t.test(old3$All, old4$All)
+t.test(old3$Implicature, old4$Some)
+t.test(old3$None, old4$None)
+
+
+#4-4.5s
+old1all <- old1 %>%
+  filter(type == "All")%>%
+  sele
+
+
+```
+
+Experiment 3 
+Set up data
+Scalar Implicature
+```{r}
+#reading in the original wide-form dataframe
+d1 <- read.csv("../data/SI_coding.csv")
+
+#fill in the selection types for easier analyses
+d1 %<>%
+  mutate(carrot_selection = factor(carrot_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")), 
+         hat_selection = factor(hat_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         cookies_selection = factor(cookies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         trains_selection = factor(trains_selection, levels=c(1, 2, 3), labels = c("none", "all", "some")), 
+         cats_selection = factor(cats_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")),
+         purses_selection = factor(purses_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         keys_selection = factor(keys_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         shirts_selection = factor(shirts_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")),
+         breads_selection = factor(breads_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         horses_selection = factor(horses_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         bears_selection= factor(bears_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         frogs_selection = factor(frogs_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         plates_selection = factor(plates_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         books_selection = factor(books_selection, levels=c(1, 2, 3), labels = c("none", "all", "some")), 
+         elephants_selection = factor(elephants_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")),
+         lamps_selection = factor(lamps_selection, levels=c(1, 2, 3), labels = c("none", "all", "some")), 
+         bananas_selection = factor(bananas_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")), 
+         butterflies_selection = factor(butterflies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")))
+
+d2=melt.data.frame(d1,c("sub_ID","test_age", "order", "training"),c("carrot", "hat", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", "carrot_selection", "hat_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection", "carrot_type", "hat_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+
+#making a respectable df  
+onethird <- (1/3)*nrow(d2)
+data <- d2[1:onethird,]
+data$selection <- d2$value[(onethird+1):(onethird*2)]
+data$type <- d2$value[(2*onethird+1):nrow(d2)]
+names(data)[5] <- "item"
+names(data)[6] <- "SI_correct"
+data$correct <- data$SI_correct==1
+
+#filtering out NAs, adding agesplit
+data %<>%
+  filter(sub_ID != "", correct != "NA") %>%
+  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
+         agesplit = factor(agesplit,
+                           labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
+  filter(agesplit != "NA")
+
+#renaming for better-looking graphs
+data$type %<>%
+  str_replace("control_all", "All")%>%
+  str_replace("control_none", "None")%>%
+  str_replace("implicature", "Implicature")
+
+data$selection %<>%
+  str_replace("all", "All")%>%
+  str_replace("none", "None")%>%
+  str_replace("some", "Some")
+
+#Find the Mean and median ages
+age <- data %>%
+  dplyr::select(sub_ID, test_age, agesplit) %>%
+  dplyr::distinct() %>%
+  group_by(agesplit)%>%
+  summarise(n=n(), avg = mean(test_age))
+
+#use this dataframe for stats
+data_si <- data %>%
+  mutate(test = "Scalar Implicature")
+
+#age stats
+age <- data_si %>%
+  group_by(agesplit)%>%
+  summarise(mean = mean(test_age), median = median(test_age), sd = sd(test_age))
+```
+
+GQ
+```{r}
+#read in and establish dataframe
+d1 <- read.csv("../data/GQ_coding.csv")
+d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] <- sapply(d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
+
+#change to long form
+d2=melt.data.frame(d1,c("sub_ID", "test_age","condition", "order", "training"),c("X1_condition", "X2_condition", "X3_condition", "X4_condition", "X5_condition", "X6_condition",  "X7_condition", "X8_condition", "X1_given", "X2_given", "X3_given", "X4_given", "X5_given", "X6_given",  "X7_given", "X8_given", "X1_correct", "X2_correct", "X3_correct", "X4_correct", "X5_correct", "X6_correct",  "X7_correct", "X8_correct"))
+
+#making a respectable df  
+onethird <- (1/3)*nrow(d2)
+data <- d2[1:onethird,]
+data$selection <- d2$value[(onethird+1):(onethird*2)]
+data$type <- d2$value[(2*onethird+1):nrow(d2)]
+names(data)[6] <- "trial"
+names(data)[7] <- "prompt"
+names(data)[8] <- "num_given"
+names(data)[9] <- "GQ_correct"
+
+#filtering data, creating age breaks
+data %<>%
+  filter(sub_ID != "", num_given != "N/A") %>%
+  mutate(split_2 = cut(test_age, breaks=c(3, 4, 5)), 
+         Agesplit = factor(split_2,
+                           labels=c("3-4 years", "4-5 years"))) %>%
+  filter(Agesplit != "NA", num_given != "0 (8 oranges)", num_given != "0 (8 bananas)", num_given != "0 (8 strawberries)")
+
+#this is because num_given is a factor - need to change to a number - need to do this for standard error
+data$num_given <- as.character(data$num_given)
+data$num_given <- as.numeric(data$num_given)
+data$GQ_correct <-as.character(data$GQ_correct)
+data$GQ_correct <- as.numeric(data$GQ_correct)
+
+#renaming things for prettier graphs
+data$prompt %<>%
+  str_replace("all", "All")%>%
+  str_replace("most", "Most")%>%
+  str_replace("some", "Some")%>%
+  str_replace("none", "None")
+
+#creating dataframe for analyses
+data_gq <- data %>%
+  mutate(test = "Give-Quantifier")
+```
+DCCS
+```{r}
+#wide-form
+d1 <- read.csv("../data/DCCS_coding.csv")
+#long form
+d2=melt.data.frame(d1,c("sub_ID","test_age","condition", "order"),c("pre_1", "pre_2", "pre_3", "pre_4", "pre_5", "pre_6",  "post_1", "post_2", "post_3", "post_4", "post_5", "post_6"))
+
+#filtering data, creating age breaks
+data <- d2 %>%
+  filter(sub_ID != "") %>%
+  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
+         agesplit = factor(agesplit,labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years")))
+
+#renaming things
+names(data)[5] <- "trial_type"
+names(data)[6] <- "DCCS_correct"
+
+#df for further analyses
+data_dccs <- data
+data_dccs$test <- "DCCS"
+  
+```
+
+More sensible DCCS graph with collapsed "pre" and "post" switch trials
+```{r}
+tmp1 <- unlist(data$trial_type)%>%
+  str_replace("pre_1", "pre")%>%
+  str_replace("pre_2", "pre")%>%
+  str_replace("pre_3", "pre")%>%
+  str_replace("pre_4", "pre")%>%
+  str_replace("pre_5", "pre")%>%
+  str_replace("pre_6", "pre")%>%
+  str_replace("post_1", "post")%>%
+  str_replace("post_2", "post")%>%
+  str_replace("post_3", "post")%>%
+  str_replace("post_4", "post")%>%
+  str_replace("post_5", "post")%>%
+  str_replace("post_6", "post")
+
+tmp <- as.data.frame(tmp1) %>%
+  dplyr::rename(switch_type = tmp1)
+tmp2 <- bind_cols(data, tmp)
+data <- tmp2
+
+#renaming for prettier graphs
+data$switch_type %<>%
+  str_replace("post", "Post-switch")%>%
+  str_replace("pre", "Pre-switch")
+
+data$switch_type <- as.factor(data$switch_type)
+data_dccs <- data
+```
+
+Test SI against Ali's data
+```{r}
+d1 <- data_exp2 %>%
+  mutate(correct=as.numeric(correct))
+d2 <- data_si%>%
+  mutate(correct=as.numeric(correct))
+
+df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
+  spread(type, correct)
+df2 <- aggregate(correct ~ type + agesplit +  sub_ID, data=d2, mean)%>%
+  spread(type, correct)
+
+df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
+  spread(type, correct)
+df2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%>%
+  spread(type, correct)
+
+old1 <- df1 %>%
+  filter(agegroup == "3.0--3.5")
+
+old2 <- df2 %>%
+  filter(agesplit == "3-3.5 years")
+
+old3 <- df1 %>%
+  filter(agegroup == "3.5--4.0")
+
+old4 <- df2 %>%
+  filter(agesplit == "3.5-4 years")
+
+old5 <- df1 %>%
+  filter(agegroup == "4.0--4.5")
+
+old6 <- df2 %>%
+  filter(agesplit == "4-4.5 years")
+
+old7 <- df1 %>%
+  filter(agegroup == "4.5--5.0")
+
+old8 <- df2 %>%
+  filter(agesplit == "4.5-5 years")
+
+#3-3.5s
+t.test(old1$All, old2$All, var.equal = TRUE)
+t.test(old1$Some, old2$Implicature, var.equal = TRUE)
+t.test(old1$None, old2$None, var.equal = TRUE)
+
+#3.5-4s
+t.test(old3$All, old4$All, var.equal = TRUE)
+t.test(old3$Some, old4$Implicature, var.equal = TRUE)
+t.test(old3$None, old4$None, var.equal = TRUE)
+
+#4-4.5s
+t.test(old5$All, old6$All, var.equal = TRUE)
+t.test(old5$Some, old6$Implicature, var.equal = TRUE)
+t.test(old5$None, old6$None, var.equal = TRUE)
+
+#4.5-5s
+t.test(old7$All, old8$All, var.equal = TRUE)
+t.test(old7$Some, old8$Implicature, var.equal = TRUE)
+t.test(old7$None, old8$None, var.equal = TRUE)
+```
+
+Create wide-form df to do analyses
+```{r}
+#si df
+data_si$SI_correct <- as.character(data_si$SI_correct)
+data_si$SI_correct <- as.numeric(data_si$SI_correct)
+
+#scalar implicature task
+mss.acc <- data_si %>%
+  group_by(sub_ID, type)%>%
+  dplyr::summarise(mean = mean(SI_correct), 
+                   test_age = test_age[1],
+                   agesplit = agesplit[1])%>%
+  spread(type, mean)
+
+#dccs
+mss.acc2 <- data_dccs %>%
+  group_by(sub_ID, switch_type)%>%
+  dplyr::summarise(mean=mean(DCCS_correct))%>%
+  spread(switch_type, mean)
+
+#now gq
+#first mean number
+mss.acc3 <- data_gq %>%
+  group_by(sub_ID, prompt)%>%
+  dplyr::summarise(mean_num = mean(num_given)) %>%
+  spread(prompt, mean_num)
+
+#then correct
+mss.acc4 <- data_gq %>%
+  group_by(sub_ID, prompt)%>%
+  dplyr::summarise(mean_correct = mean(GQ_correct))%>%
+  spread(prompt, mean_correct)
+
+#overall correct for GQ
+mss.acc5 <- data_gq %>%
+  group_by(sub_ID)%>%
+  dplyr::summarise(mean_correct = mean(GQ_correct))%>%
+  dplyr::rename(GQ_overall = mean_correct)
+
+#overall correct for SI
+mss.acc6 <- data_si %>%
+  group_by(sub_ID)%>%
+  dplyr::summarise(SI_overall = mean(SI_correct))
+  
+
+#bind together
+tmp <- right_join(mss.acc, mss.acc2, by = "sub_ID")
+tmp1 <- right_join(tmp, mss.acc3, by = "sub_ID") 
+tmp2 <- right_join(tmp1, mss.acc5, by = "sub_ID")
+tmp3 <- right_join(tmp2, mss.acc6, by="sub_ID")
+d_all <- right_join(tmp3, mss.acc4, by = "sub_ID") %>%
+  dplyr::rename(SI_none = None.x, 
+         SI_all = All.x, 
+         SI_implicature = Implicature, 
+         GQ_all = All.y, 
+         GQ_most = Most.x, 
+         GQ_some = Some.x, 
+         GQ_none = None.y, 
+         GQ_all_correct = All, 
+         GQ_most_correct = Most.y, 
+         GQ_some_correct = Some.y, 
+         GQ_none_correct = None,
+         test_age = test_age)
+```
+
+Correlations
+```{r}
+#Significant correlation between age and DCCS
+cor.test(~d_all$test_age + d_all$`Post-switch`)
+#full correlation between some and none
+cor.test(~d_all$SI_implicature + d_all$SI_none)
+```
+
+Partial correlations for age - SI/GQ and DCCS
+```{r}
+library(ppcor)
+#partial correlation - implicature and dccs
+#NS
+pcor.test(d_all$SI_implicature, d_all$`Post-switch`, d_all$test_age)
+
+#NS
+pcor.test(d_all$SI_none, d_all$`Post-switch`, d_all$test_age)
+
+#NS
+pcor.test(d_all$SI_all, d_all$`Post-switch`, d_all$test_age)
+
+#NS
+pcor.test(d_all$GQ_none_correct, d_all$`Post-switch`, d_all$test_age)
+
+#NS
+pcor.test(d_all$GQ_some_correct, d_all$`Post-switch`, d_all$test_age)
+
+#NS
+pcor.test(d_all$GQ_most_correct, d_all$`Post-switch`, d_all$test_age)
+
+#NS
+pcor.test(d_all$GQ_all_correct, d_all$`Post-switch`, d_all$test_age)
+```
+
+SI and GQ partial correlations
+```{r}
+library(ppcor)
+#significant
+pcor.test(d_all$SI_implicature, d_all$GQ_some_correct, d_all$test_age)
+
+#NS
+pcor.test(d_all$SI_implicature, d_all$GQ_none_correct, d_all$test_age)
+
+pcor.test(d_all$SI_none, d_all$SI_implicature, d_all$test_age)
+
+#significant
+pcor.test(d_all$SI_none, d_all$GQ_none_correct, d_all$test_age)
+
+#significant
+pcor.test(d_all$SI_none, d_all$GQ_some_correct, d_all$test_age)
+```
+
+test against chance
+```{r}
+#aggregate mean
+d <- data_si %>%
+  mutate(correct = as.numeric(as.character(SI_correct)))
+
+df <- aggregate(correct ~ type + agesplit +  sub_ID, data=d, mean)
+
+#3-3.5 - SI
+t.test(subset(df, agesplit=="3-3.5 years" & type=="All")$correct, mu=0.5)
+t.test(subset(df, agesplit=="3-3.5 years" & type=="Implicature")$correct, mu=0.5)
+t.test(subset(df, agesplit=="3-3.5 years" & type=="None")$correct, mu=0.5)
+#Dccs
+t.test(subset(data_dccs, agesplit=="3-3.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+
+#3.5-4
+t.test(subset(df, agesplit=="3.5-4 years" & type=="All")$correct, mu=0.5)
+t.test(subset(df, agesplit=="3.5-4 years" & type=="Implicature")$correct, mu=0.5)
+t.test(subset(df, agesplit=="3.5-4 years" & type=="None")$correct, mu=0.5)
+
+#dccs
+t.test(subset(data_dccs, agesplit=="3.5-4 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+
+#4-4.5
+t.test(subset(df, agesplit=="4-4.5 years" & type=="All")$correct, mu=0.5)
+t.test(subset(df, agesplit=="4-4.5 years" & type=="Implicature")$correct, mu=0.5)
+t.test(subset(df, agesplit=="4-4.5 years" & type=="None")$correct, mu=0.5)
+
+#dccs
+t.test(subset(data_dccs, agesplit=="4-4.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+
+#4.5-5
+t.test(subset(df, agesplit=="4.5-5 years" & type=="All")$correct, mu=0.5)
+t.test(subset(df, agesplit=="4.5-5 years" & type=="Implicature")$correct, mu=0.5)
+t.test(subset(df, agesplit=="4.5-5 years" & type=="None")$correct, mu=0.5)
+
+#dccs
+t.test(subset(data_dccs, agesplit=="4.5-5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+```
+
+tests against chance - DCCS
+```{r}
+d <- data_dccs %>%
+  mutate(correct = as.numeric(as.character(DCCS_correct)))
+
+df <- aggregate(correct ~ switch_type + agesplit +  sub_ID, data=d, mean)
+#Dccs
+t.test(subset(df, agesplit=="3-3.5 years" & switch_type=="Post-switch")$correct, mu=0.5)
+t.test(subset(df, agesplit=="3.5-4 years" & switch_type=="Post-switch")$correct, mu=0.5)
+t.test(subset(df, agesplit=="4-4.5 years" & switch_type=="Post-switch")$correct, mu=0.5)
+t.test(subset(df, agesplit=="4.5-5 years" & switch_type=="Post-switch")$correct, mu=0.5)
+
+
+```
+
+Diptest
+```{r}
+dip.test(d_all$SI_implicature)
+dip.test(d_all$SI_all)
+dip.test(d_all$SI_none)
+```
+
+Models
+```{r}
+
+d_all %<>%
+  mutate(`Post-switch` = as.numeric(`Post-switch`))
+summary(glm(SI_overall ~ `Post-switch`, data=d_all, 
+            family = "binomial"))
+
+summary(glm(SI_implicature ~ `Post-switch` + GQ_some_correct + test_age, data=d_all, 
+            family = "binomial"))
+summary(glm(SI_implicature ~ `Post-switch` + GQ_some_correct + test_age, data=d_all, 
+            family = "binomial"))
+summary(glm(SI_implicature ~  `Post-switch` + GQ_some_correct, data=d_all, 
+            family = "binomial"))
+summary(glm(SI_implicature ~  GQ_some_correct + test_age, data=d_all, 
+            family = "binomial"))
+
+summary(glm(SI_none ~ `Post-switch` + GQ_none_correct + test_age, data=d_all, 
+            family = "binomial"))
+summary(glm(SI_none ~ `Post-switch` + GQ_none_correct, data=d_all, 
+            family = "binomial"))
+summary(glm(SI_none ~ GQ_none_correct + test_age, data=d_all, 
+            family = "binomial"))
+
+summary(glm(SI_implicature ~ `Post-switch` + test_age, data=d_all, 
+            family = "binomial"))
+summary(glm(GQ_none_correct == 0 ~  DCCS_post, data=d_all, 
+            family = "binomial"))
+summary(glm(GQ_none_correct == 0 ~  DCCS_post + test_age, data=d_all, 
+            family = "binomial"))
+
+gl.norand <- glmer(SI_overall ~  `Post-switch` * GQ_overall * test_age 
+			+ (1 | sub_ID), 
+			data=d_all, family=binomial)
+summary(gl.norand)
+```
