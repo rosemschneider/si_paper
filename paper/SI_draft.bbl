@@ -29,6 +29,34 @@ Barner, D.%
 
 \bibitem [\protect \citeauthoryear {%
 Barner%
+, Brooks%
+\BCBL {}\ \BBA {} Bale%
+}{%
+Barner%
+\ \protect \BOthers {.}}{%
+{\protect \APACyear {2011}}%
+}]{%
+barner2011}
+\APACinsertmetastar {%
+barner2011}%
+\begin{APACrefauthors}%
+Barner, D.%
+, Brooks, N.%
+\BCBL {}\ \BBA {} Bale, A.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2011}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Accessing the unsaid: The role of scalar alternatives in
+  childrens pragmatic inference} {Accessing the unsaid: The role of scalar
+  alternatives in childrens pragmatic inference}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cognition}{118}{1}{84--93}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Barner%
 , Chow%
 \BCBL {}\ \BBA {} Yang%
 }{%
