@@ -8,7 +8,7 @@ Analyses for Scalar Implicature, Give-Quantifier, and DCCS
 Set up Rmd parameters
 ```{r}
 library(knitr)
-opts_chunk$set(cache=TRUE, message=FALSE, warning=FALSE)
+opts_chunk$set(cache=TRUE, message=FALSE, warning=FALSE, error=TRUE)
 ```
 
 Preliminaries
@@ -124,8 +124,6 @@ dip.test(cs$control_all_scalar)
 
 EXP 1 - correlations (full)
 ```{r}
-
-
 cor.test(cs$control_none_scalar, cs$implicature_scalar)
 cs %>% group_by(Age) %>% 
 	summarise(r = cor.test(control_none_scalar, implicature_scalar)$estimate,
@@ -145,6 +143,13 @@ Exp1 - models
 ```{r}
 library(lme4)
 gl <- glmer(correct ~ trial_type * condition * age   + (trial_type | Subj_ID), data=data_exp1, family=binomial)
+summary(gl)
+
+gl <- glmer(correct ~ half * trial_type * condition  * age   + (trial_type | Subj_ID), data=data, family=binomial)
+summary(gl)
+
+
+gl <- glmer(correct ~ half   * age   + (trial_type | Subj_ID), data=data, family=binomial)
 summary(gl)
 ```
 
@@ -222,6 +227,7 @@ t.test(subset(d, agegroup=="4.0--4.5" & type=="None")$correct, mu=0.5)
 t.test(subset(d, agegroup=="4.5--5.0" & type=="None")$correct, mu=0.5)
 ```
 
+Create a dataframe to compare performance between Exp 1 scalar trials and experiment 2
 ```{r}
 d1 <- data_exp1 
 d2 <- data_exp2%>%
@@ -237,6 +243,7 @@ df2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%>%
 Compare performance on scalar trials between Exp1 and Exp2
 ```{r}
 
+#Split this df into agegroups
 old1 <- df1 %>%
   filter(agegroup == "4.0--4.5")
 
@@ -259,13 +266,23 @@ t.test(old3$All, old4$All)
 t.test(old3$Implicature, old4$Some)
 t.test(old3$None, old4$None)
 
+```
 
-#4-4.5s
-old1all <- old1 %>%
-  filter(type == "All")%>%
-  sele
+Exp 2 models
+```{r}
+data_exp2$type <- factor(data_exp2$type, levels=c("All","Some","None"))
+data_exp2 %<>%
+  mutate(correct=as.numeric(correct))
+gl.int <- glmer(correct ~  type * age 
+			+ (type | Subj_ID), 
+			data=data_exp2, family=binomial)
+summary(gl.int)
 
-
+#removing random effects
+gl.norand <- glmer(correct ~  type * age 
+			+ (1 | Subj_ID), 
+			data=data_exp2, family=binomial)
+summary(gl.norand)
 ```
 
 Experiment 3 
@@ -409,10 +426,7 @@ names(data)[6] <- "DCCS_correct"
 data_dccs <- data
 data_dccs$test <- "DCCS"
   
-```
-
-More sensible DCCS graph with collapsed "pre" and "post" switch trials
-```{r}
+#rename trials
 tmp1 <- unlist(data$trial_type)%>%
   str_replace("pre_1", "pre")%>%
   str_replace("pre_2", "pre")%>%
@@ -443,21 +457,18 @@ data_dccs <- data
 
 Test SI against Ali's data
 ```{r}
+#first create a df 
 d1 <- data_exp2 %>%
   mutate(correct=as.numeric(correct))
 d2 <- data_si%>%
   mutate(correct=as.numeric(correct))
-
+#aggregate correct repsonses 
 df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
   spread(type, correct)
 df2 <- aggregate(correct ~ type + agesplit +  sub_ID, data=d2, mean)%>%
   spread(type, correct)
 
-df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
-  spread(type, correct)
-df2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%>%
-  spread(type, correct)
-
+#split into age groups - this is pretty clunky, but it works
 old1 <- df1 %>%
   filter(agegroup == "3.0--3.5")
 
@@ -482,6 +493,7 @@ old7 <- df1 %>%
 old8 <- df2 %>%
   filter(agesplit == "4.5-5 years")
 
+#tests across age groups
 #3-3.5s
 t.test(old1$All, old2$All, var.equal = TRUE)
 t.test(old1$Some, old2$Implicature, var.equal = TRUE)
@@ -503,6 +515,7 @@ t.test(old7$Some, old8$Implicature, var.equal = TRUE)
 t.test(old7$None, old8$None, var.equal = TRUE)
 ```
 
+Now our entire Exp 3 dataset
 Create wide-form df to do analyses
 ```{r}
 #si df
@@ -568,7 +581,7 @@ d_all <- right_join(tmp3, mss.acc4, by = "sub_ID") %>%
          test_age = test_age)
 ```
 
-Correlations
+Correlations - full
 ```{r}
 #Significant correlation between age and DCCS
 cor.test(~d_all$test_age + d_all$`Post-switch`)
@@ -580,43 +593,32 @@ Partial correlations for age - SI/GQ and DCCS
 ```{r}
 library(ppcor)
 #partial correlation - implicature and dccs
-#NS
 pcor.test(d_all$SI_implicature, d_all$`Post-switch`, d_all$test_age)
 
-#NS
 pcor.test(d_all$SI_none, d_all$`Post-switch`, d_all$test_age)
 
-#NS
 pcor.test(d_all$SI_all, d_all$`Post-switch`, d_all$test_age)
 
-#NS
 pcor.test(d_all$GQ_none_correct, d_all$`Post-switch`, d_all$test_age)
 
-#NS
 pcor.test(d_all$GQ_some_correct, d_all$`Post-switch`, d_all$test_age)
 
-#NS
 pcor.test(d_all$GQ_most_correct, d_all$`Post-switch`, d_all$test_age)
 
-#NS
 pcor.test(d_all$GQ_all_correct, d_all$`Post-switch`, d_all$test_age)
 ```
 
 SI and GQ partial correlations
 ```{r}
 library(ppcor)
-#significant
 pcor.test(d_all$SI_implicature, d_all$GQ_some_correct, d_all$test_age)
 
-#NS
 pcor.test(d_all$SI_implicature, d_all$GQ_none_correct, d_all$test_age)
 
 pcor.test(d_all$SI_none, d_all$SI_implicature, d_all$test_age)
 
-#significant
 pcor.test(d_all$SI_none, d_all$GQ_none_correct, d_all$test_age)
 
-#significant
 pcor.test(d_all$SI_none, d_all$GQ_some_correct, d_all$test_age)
 ```
 
@@ -675,16 +677,45 @@ t.test(subset(df, agesplit=="4.5-5 years" & switch_type=="Post-switch")$correct,
 
 ```
 
-Diptest
+Diptests
 ```{r}
+#scalar implicature
 dip.test(d_all$SI_implicature)
 dip.test(d_all$SI_all)
 dip.test(d_all$SI_none)
+
+#GQ
+dip.test(d_all$GQ_some_correct)
+dip.test(d_all$GQ_none_correct)
+dip.test(d_all$GQ_all_correct)
+
+#break GQ down by age, see if a specific age group is driving this effect
+young1 <- d_all%>%
+  filter(test_age < 3.5)
+
+dip.test(young1$GQ_some_correct)
+dip.test(young1$GQ_none_correct)
+
+young2 <- d_all%>%
+  filter(test_age >= 3.5 & test_age < 4)
+
+dip.test(young2$GQ_some_correct)
+dip.test(young2$GQ_none_correct)
+
+old1 <- d_all %>%
+  filter(test_age >= 4 & test_age < 4.5)
+
+dip.test(old1$GQ_some_correct)
+dip.test(old1$GQ_none_correct)
+
+old2 <- d_all %>%
+  filter(test_age >= 4.5)
+dip.test(old2$GQ_some_correct)
+dip.test(old2$GQ_none_correct)
 ```
 
-Models
+Logistic regressions
 ```{r}
-
 d_all %<>%
   mutate(`Post-switch` = as.numeric(`Post-switch`))
 summary(glm(SI_overall ~ `Post-switch`, data=d_all, 
@@ -712,9 +743,4 @@ summary(glm(GQ_none_correct == 0 ~  DCCS_post, data=d_all,
             family = "binomial"))
 summary(glm(GQ_none_correct == 0 ~  DCCS_post + test_age, data=d_all, 
             family = "binomial"))
-
-gl.norand <- glmer(SI_overall ~  `Post-switch` * GQ_overall * test_age 
-			+ (1 | sub_ID), 
-			data=d_all, family=binomial)
-summary(gl.norand)
 ```
