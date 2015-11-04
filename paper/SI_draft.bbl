@@ -85,6 +85,58 @@ Barner, D.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Degen%
+}{%
+Degen%
+}{%
+{\protect \APACyear {2015}}%
+}]{%
+degen2015}
+\APACinsertmetastar {%
+degen2015}%
+\begin{APACrefauthors}%
+Degen, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2015}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Investigating the distribution of some (but not all)
+  implicatures using corpora and web-based methods} {Investigating the
+  distribution of some (but not all) implicatures using corpora and web-based
+  methods}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Semantics and Pragmatics}{8}{11}{1-55}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+Degen%
+\ \BBA {} Tanenhaus%
+}{%
+Degen%
+\ \BBA {} Tanenhaus%
+}{%
+{\protect \APACyear {2014}}%
+}]{%
+degen2014}
+\APACinsertmetastar {%
+degen2014}%
+\begin{APACrefauthors}%
+Degen, J.%
+\BCBT {}\ \BBA {} Tanenhaus, M\BPBI K.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Processing Scalar Implicature: A Constraint-Based
+  Approach} {Processing scalar implicature: A constraint-based
+  approach}.{\BBCQ}
+\newblock
+\APACjournalVolNumPages{Cognitive Science}{39}{4}{667-710}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Grice%
 }{%
 Grice%
@@ -99,11 +151,9 @@ Grice, H.%
 \end{APACrefauthors}%
 \unskip\
 \newblock
-\APACrefYearMonthDay{1975}{}{}.
+\APACrefYear{1975}.
 \newblock
-{\BBOQ}\APACrefatitle {Logic and conversation} {Logic and conversation}.{\BBCQ}
-\newblock
-\APACjournalVolNumPages{}{}{}{41--58}.
+\APACrefbtitle {Logic and conversation} {Logic and conversation}.
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%

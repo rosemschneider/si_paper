@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  21 OCT 2015 10:27
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  3 NOV 2015 20:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -454,7 +454,7 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 [1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ]
-[2] [3]
+[2]
 LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 46
 .
  (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/ot1ptmcm.fd
@@ -492,7 +492,8 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 (Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
- [4] [5]
+ [3] [4]
+[5]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: <default>
@@ -526,133 +527,43 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 []|\OT1/ptm/m/n/9 non-necessity--
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 \OT1/ptm/m/n/9 necessity,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 \OT1/ptm/m/n/9 possibility--
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 \OT1/ptm/m/n/9 impossibility,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 []|\OT1/ptm/m/n/9 5;1--5;11,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 \OT1/ptm/m/n/9 7;1--8;0,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 60--60
+Underfull \hbox (badness 10000) in paragraph at lines 64--64
 \OT1/ptm/m/n/9 9;0--9;5,
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 61--61
+Underfull \hbox (badness 1571) in paragraph at lines 65--65
 \OT1/ptm/m/n/9 in-fe-lic-i-tous weak de-scrip-tions for num-bers, and for
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 62--62
-[]|\OT1/ptm/m/n/9 some--all,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 62--62
-\OT1/ptm/m/n/9 ad-hoc,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
-[]\OT1/ptm/m/n/9 Guasti,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
-\OT1/ptm/m/n/9 Chier-chia,
- []
-
-
-Underfull \hbox (badness 4441) in paragraph at lines 63--63
-\OT1/ptm/m/n/9 Crain, Fop-polo,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
-[]|\OT1/ptm/m/n/9 ``Some gi-raffes have long necks''
- []
-
-
-Underfull \hbox (badness 1552) in paragraph at lines 63--63
-\OT1/ptm/m/n/9 (repli-ca-tion of Noveck (2001)), and
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
-\OT1/ptm/m/n/9 scene de-scrip-tions, e.g. ``Some
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 63--63
-[]|\OT1/ptm/m/n/9 Context mat-ters: 7-year-olds re-li-ably com-puter
- []
-
-
-Underfull \hbox (badness 1881) in paragraph at lines 63--63
-\OT1/ptm/m/n/9 their sen-si-tiv-ity to the in-for-ma-tive-ness of speak-ers'
- []
-
-
-Underfull \hbox (badness 1194) in paragraph at lines 63--63
-\OT1/ptm/m/n/9 de-scrip-tions (e.g., call-ing a grape ``fruit'' in-stead of
- []
-
-
-Underfull \hbox (badness 3849) in paragraph at lines 64--64
-[]|\OT1/ptm/m/n/9 Miller, Schmitt,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 64--64
-[]|\OT1/ptm/m/n/9 ``Make some faces HAPPY/Make
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 64--64
-\OT1/ptm/m/n/9 SOME faces happy/Make some
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 64--64
-\OT1/ptm/m/n/9 HAPPY faces'' (Study 1), ``Shoe
- []
-
-
-Underfull \hbox (badness 5475) in paragraph at lines 64--64
-\OT1/ptm/m/n/9 me where Pete made some faces
- []
-
-
-Underfull \hbox (badness 1394) in paragraph at lines 64--64
-\OT1/ptm/m/n/9 HAPPY/Show me where Pete made
- []
-
-
-Underfull \hbox (badness 1852) in paragraph at lines 65--65
-[]|\OT1/ptm/m/n/9 Time scale mat-ters: Across stud-ies, chil-dren were
  []
 
 
@@ -661,17 +572,107 @@ Underfull \hbox (badness 10000) in paragraph at lines 66--66
  []
 
 
-Underfull \hbox (badness 3884) in paragraph at lines 67--67
-[]|\OT1/ptm/m/n/9 Barner, Brooks,
+Underfull \hbox (badness 10000) in paragraph at lines 66--66
+\OT1/ptm/m/n/9 ad-hoc,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 67--67
-[]|\OT1/ptm/m/n/9 some--all,
+[]\OT1/ptm/m/n/9 Guasti,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--67
+\OT1/ptm/m/n/9 Chier-chia,
+ []
+
+
+Underfull \hbox (badness 4441) in paragraph at lines 67--67
+\OT1/ptm/m/n/9 Crain, Fop-polo,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--67
+[]|\OT1/ptm/m/n/9 ``Some gi-raffes have long necks''
+ []
+
+
+Underfull \hbox (badness 1552) in paragraph at lines 67--67
+\OT1/ptm/m/n/9 (repli-ca-tion of Noveck (2001)), and
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--67
+\OT1/ptm/m/n/9 scene de-scrip-tions, e.g. ``Some
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 67--67
+[]|\OT1/ptm/m/n/9 Context mat-ters: 7-year-olds re-li-ably com-puter
+ []
+
+
+Underfull \hbox (badness 1881) in paragraph at lines 67--67
+\OT1/ptm/m/n/9 their sen-si-tiv-ity to the in-for-ma-tive-ness of speak-ers'
+ []
+
+
+Underfull \hbox (badness 1194) in paragraph at lines 67--67
+\OT1/ptm/m/n/9 de-scrip-tions (e.g., call-ing a grape ``fruit'' in-stead of
+ []
+
+
+Underfull \hbox (badness 3849) in paragraph at lines 68--68
+[]|\OT1/ptm/m/n/9 Miller, Schmitt,
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 68--68
+[]|\OT1/ptm/m/n/9 ``Make some faces HAPPY/Make
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
+\OT1/ptm/m/n/9 SOME faces happy/Make some
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--68
+\OT1/ptm/m/n/9 HAPPY faces'' (Study 1), ``Shoe
+ []
+
+
+Underfull \hbox (badness 5475) in paragraph at lines 68--68
+\OT1/ptm/m/n/9 me where Pete made some faces
+ []
+
+
+Underfull \hbox (badness 1394) in paragraph at lines 68--68
+\OT1/ptm/m/n/9 HAPPY/Show me where Pete made
+ []
+
+
+Underfull \hbox (badness 1852) in paragraph at lines 69--69
+[]|\OT1/ptm/m/n/9 Time scale mat-ters: Across stud-ies, chil-dren were
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--70
+[]|\OT1/ptm/m/n/9 some--all,
+ []
+
+
+Underfull \hbox (badness 3884) in paragraph at lines 71--71
+[]|\OT1/ptm/m/n/9 Barner, Brooks,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 71--71
+[]|\OT1/ptm/m/n/9 some--all,
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--72
 \OT1/ptm/m/n/9 Papafragou
  []
 
@@ -680,176 +681,167 @@ Underfull \hbox (badness 10000) in paragraph at lines 68--68
 
 
 
-] [8]
-<figures/implicatures_demo_letters.png, id=33, 997.7275pt x 364.36125pt>
+]
+<figures/implicatures_demo_letters.png, id=30, 997.7275pt x 364.36125pt>
 File: figures/implicatures_demo_letters.png Graphic file (type png)
 
 <use figures/implicatures_demo_letters.png>
 Package pdftex.def Info: figures/implicatures_demo_letters.png used on input li
-ne 99.
+ne 103.
 (pdftex.def)             Requested size: 395.7803pt x 144.54pt.
- [9] [10 <./figures/implicatures_demo_letters.png>] [11]
-<figures/exp1_performance.pdf, id=43, 813.11708pt x 251.51234pt>
+ [8] [9 <./figures/implicatures_demo_letters.png>] [10]
+<figures/exp1_performance.pdf, id=40, 1347.16899pt x 333.28394pt>
 File: figures/exp1_performance.pdf Graphic file (type pdf)
 
 <use figures/exp1_performance.pdf>
-Package pdftex.def Info: figures/exp1_performance.pdf used on input line 140.
-(pdftex.def)             Requested size: 467.30296pt x 144.54pt.
+Package pdftex.def Info: figures/exp1_performance.pdf used on input line 144.
+(pdftex.def)             Requested size: 404.15382pt x 99.98595pt.
+ [11]
+LaTeX Font Info:    Try loading font information for OML+ptm on input line 154.
 
-Overfull \hbox (37.29834pt too wide) in paragraph at lines 140--141
- [] 
- []
 
-[12]
-LaTeX Font Info:    Try loading font information for OML+ptm on input line 150.
-
- (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omlptm.fd
+(/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omlptm.fd
 File: omlptm.fd 
 )
 LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 150.
- [13 <./figures/exp1_performance.pdf>]
-<figures/exp1_imphist.pdf, id=139, 680.67508pt x 284.62286pt>
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 154.
+ [12 <./figures/exp1_performance.pdf>]
+<figures/exp1_imphist.pdf, id=135, 660.25308pt x 329.77574pt>
 File: figures/exp1_imphist.pdf Graphic file (type pdf)
 
 <use figures/exp1_imphist.pdf>
-Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 155.
-(pdftex.def)             Requested size: 224.62346pt x 93.92583pt.
+Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 159.
+(pdftex.def)             Requested size: 217.88419pt x 108.82632pt.
 
-Overfull \hbox (14.62115pt too wide) in paragraph at lines 155--155
+Overfull \hbox (7.88188pt too wide) in paragraph at lines 159--159
  [][] 
  []
 
 File: figures/exp1_imphist.pdf Graphic file (type pdf)
 <use figures/exp1_imphist.pdf>
-Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 155.
-(pdftex.def)             Requested size: 224.62346pt x 93.92583pt.
+Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 159.
+(pdftex.def)             Requested size: 217.88419pt x 108.82632pt.
 
-Overfull \hbox (14.62115pt too wide) in paragraph at lines 155--155
+Overfull \hbox (7.88188pt too wide) in paragraph at lines 159--159
  [][] 
  []
 
-<figures/exp1_nonehist.pdf, id=140, 681.31186pt x 285.2595pt>
+<figures/exp1_nonehist.pdf, id=136, 664.46301pt x 330.47737pt>
 File: figures/exp1_nonehist.pdf Graphic file (type pdf)
 
 <use figures/exp1_nonehist.pdf>
-Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 156.
-(pdftex.def)             Requested size: 224.8336pt x 94.13593pt.
+Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 160.
+(pdftex.def)             Requested size: 219.27347pt x 109.05786pt.
 
-Overfull \hbox (14.8313pt too wide) in paragraph at lines 156--156
+Overfull \hbox (9.27116pt too wide) in paragraph at lines 160--160
  [][] 
  []
 
 File: figures/exp1_nonehist.pdf Graphic file (type pdf)
 <use figures/exp1_nonehist.pdf>
-Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 156.
-(pdftex.def)             Requested size: 224.8336pt x 94.13593pt.
+Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 160.
+(pdftex.def)             Requested size: 219.27347pt x 109.05786pt.
 
-Overfull \hbox (14.8313pt too wide) in paragraph at lines 156--156
+Overfull \hbox (9.27116pt too wide) in paragraph at lines 160--160
  [][] 
  []
 
-<figures/exp1_diffs.pdf, id=141, 815.02736pt x 454.6324pt>
+<figures/exp1_diffs.pdf, id=137, 701.65047pt x 405.55394pt>
 File: figures/exp1_diffs.pdf Graphic file (type pdf)
 
 <use figures/exp1_diffs.pdf>
-Package pdftex.def Info: figures/exp1_diffs.pdf used on input line 163.
-(pdftex.def)             Requested size: 323.90343pt x 180.67499pt.
- [14 <./figures/exp1_imphist.pdf> <./figures/exp1_nonehist.pdf>] [15 <./figures
-/exp1_diffs.pdf>] [16]
-<figures/exp2_performance.pdf, id=359, 814.39058pt x 252.14903pt>
+Package pdftex.def Info: figures/exp1_diffs.pdf used on input line 167.
+(pdftex.def)             Requested size: 315.73979pt x 182.49757pt.
+ [13 <./figures/exp1_imphist.pdf> <./figures/exp1_nonehist.pdf>] [14 <./figures
+/exp1_diffs.pdf>] [15]
+<figures/exp2_performance.pdf, id=348, 1347.16899pt x 335.3889pt>
 File: figures/exp2_performance.pdf Graphic file (type pdf)
 
 <use figures/exp2_performance.pdf>
-Package pdftex.def Info: figures/exp2_performance.pdf used on input line 198.
-(pdftex.def)             Requested size: 466.84189pt x 144.54pt.
-
-Overfull \hbox (36.83727pt too wide) in paragraph at lines 198--199
- [] 
- []
+Package pdftex.def Info: figures/exp2_performance.pdf used on input line 202.
+(pdftex.def)             Requested size: 424.36047pt x 105.64806pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[17] <figures/exp2_wrong.pdf, id=363, 815.02736pt x 315.8231pt>
+[16] [17 <./figures/exp2_performance.pdf>]
+<figures/exp2_wrong.pdf, id=427, 1346.4674pt x 380.99622pt>
 File: figures/exp2_wrong.pdf Graphic file (type pdf)
 
 <use figures/exp2_wrong.pdf>
-Package pdftex.def Info: figures/exp2_wrong.pdf used on input line 212.
-(pdftex.def)             Requested size: 373.01439pt x 144.54pt.
- [18 <./figures/exp2_performance.pdf>] [19 <./figures/exp2_wrong.pdf>] [20] [21
-]
-<figures/exp3_performance.pdf, id=532, 815.02736pt x 252.14903pt>
+Package pdftex.def Info: figures/exp2_wrong.pdf used on input line 216.
+(pdftex.def)             Requested size: 444.33562pt x 125.72913pt.
+
+Overfull \hbox (14.331pt too wide) in paragraph at lines 216--217
+ [] 
+ []
+
+[18 <./figures/exp2_wrong.pdf>] [19] [20]
+<figures/exp3_performance.pdf, id=529, 1347.16899pt x 334.68727pt>
 File: figures/exp3_performance.pdf Graphic file (type pdf)
 
 <use figures/exp3_performance.pdf>
-Package pdftex.def Info: figures/exp3_performance.pdf used on input line 252.
-(pdftex.def)             Requested size: 467.20692pt x 144.54pt.
-
-Overfull \hbox (37.2023pt too wide) in paragraph at lines 252--253
- [] 
- []
-
-[22 <./figures/exp3_performance.pdf>]
-<figures/DCCS.pdf, id=608, 694.04663pt x 255.33282pt>
+Package pdftex.def Info: figures/exp3_performance.pdf used on input line 256.
+(pdftex.def)             Requested size: 424.36047pt x 105.42705pt.
+ [21 <./figures/exp3_performance.pdf>]
+<figures/DCCS.pdf, id=605, 1347.16899pt x 385.90775pt>
 File: figures/DCCS.pdf Graphic file (type pdf)
  <use figures/DCCS.pdf>
-Package pdftex.def Info: figures/DCCS.pdf used on input line 263.
-(pdftex.def)             Requested size: 392.88899pt x 144.54pt.
+Package pdftex.def Info: figures/DCCS.pdf used on input line 267.
+(pdftex.def)             Requested size: 424.36047pt x 121.56157pt.
 
-[23 <./figures/DCCS.pdf>]
-<figures/exp3_GQright.pdf, id=671, 815.02736pt x 252.78581pt>
+[22 <./figures/DCCS.pdf>]
+<figures/exp3_GQright.pdf, id=668, 1347.16899pt x 378.89124pt>
 File: figures/exp3_GQright.pdf Graphic file (type pdf)
 
 <use figures/exp3_GQright.pdf>
-Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 272.
-(pdftex.def)             Requested size: 466.02547pt x 144.54pt.
-
-Overfull \hbox (36.02084pt too wide) in paragraph at lines 272--273
- [] 
- []
-
-[24 <./figures/exp3_GQright.pdf>]
-<figures/exp3_GQspread.pdf, id=751, 813.7538pt x 356.57446pt>
+Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 276.
+(pdftex.def)             Requested size: 424.36047pt x 119.35136pt.
+ [23 <./figures/exp3_GQright.pdf>]
+<figures/exp3_GQspread.pdf, id=748, 1276.3023pt x 446.24968pt>
 File: figures/exp3_GQspread.pdf Graphic file (type pdf)
 
 <use figures/exp3_GQspread.pdf>
-Package pdftex.def Info: figures/exp3_GQspread.pdf used on input line 281.
-(pdftex.def)             Requested size: 430.00462pt x 188.41771pt.
+Package pdftex.def Info: figures/exp3_GQspread.pdf used on input line 285.
+(pdftex.def)             Requested size: 446.7125pt x 156.18971pt.
 
-<figures/exp3_wrong.pdf, id=752, 815.02736pt x 324.73741pt>
+Overfull \hbox (16.70787pt too wide) in paragraph at lines 285--286
+ [] 
+ []
+
+<figures/exp3_wrong.pdf, id=749, 1347.16899pt x 384.5045pt>
 File: figures/exp3_wrong.pdf Graphic file (type pdf)
 
 <use figures/exp3_wrong.pdf>
-Package pdftex.def Info: figures/exp3_wrong.pdf used on input line 289.
-(pdftex.def)             Requested size: 362.76688pt x 144.54pt.
- [25] [26 <./figures/exp3_GQspread.pdf> <./figures/exp3_wrong.pdf>] [27] [28] [
-29] [30]
+Package pdftex.def Info: figures/exp3_wrong.pdf used on input line 293.
+(pdftex.def)             Requested size: 424.36047pt x 121.11955pt.
+ [24 <./figures/exp3_GQspread.pdf>] [25 <./figures/exp3_wrong.pdf>] [26] [27] [
+28] [29]
 
-Class apa Warning: \bibliographystyle command ignored on input line 350.
+Class apa Warning: \bibliographystyle command ignored on input line 354.
 
-(./SI_draft.bbl [31]
+(./SI_draft.bbl [30]
 Missing character: There is no Â in font ptmr7t!
 Missing character: There is no ’ in font ptmr7t!
- [32
+ [31
 
-]) [33] [34] (./SI_draft.aux)
+]) [32] [33] (./SI_draft.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  )
 (\end occurred inside a group at level 1)
 
-### simple group (level 1) entered at line 298 ({)
+### simple group (level 1) entered at line 302 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 6191 strings out of 493117
- 92259 string characters out of 6135433
- 168904 words of memory out of 5000000
- 9496 multiletter control sequences out of 15000+600000
+ 6199 strings out of 493117
+ 92367 string characters out of 6135433
+ 168764 words of memory out of 5000000
+ 9504 multiletter control sequences out of 15000+600000
  41753 words of font info for 99 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,12n,38p,2182b,420s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,12n,38p,1896b,420s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc
 }</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/lo
@@ -857,10 +849,10 @@ cal/texlive/2014/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive
 /2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texm
 f-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/fon
 ts/type1/urw/times/utmri8a.pfb>
-Output written on SI_draft.pdf (34 pages, 1661862 bytes).
+Output written on SI_draft.pdf (33 pages, 1701128 bytes).
 PDF statistics:
- 1080 PDF objects out of 1200 (max. 8388607)
- 805 compressed objects within 9 object streams
+ 1101 PDF objects out of 1200 (max. 8388607)
+ 821 compressed objects within 9 object streams
  0 named destinations out of 1000 (max. 500000)
  61 words of extra memory for PDF output out of 10000 (max. 10000000)
 
