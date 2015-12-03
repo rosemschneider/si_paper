@@ -103,13 +103,21 @@ data_exp1$trial_type[type == &quot;implicature&quot;] &lt;- &quot;implicature&qu
 data_exp1$trial_type[type != &quot;implicature&quot;] &lt;- &quot;control&quot;
 detach(data_exp1)
 
-#age groups
+#rename agegroups for prettier graphs
+data_exp1$agegroup %&lt;&gt;%
+  str_replace(&quot;4.0--4.5&quot;, &quot;4-4.5 years&quot;)%&gt;%
+  str_replace(&quot;4.5--5.0&quot;, &quot;4.5-5 years&quot;)
+
 data_exp1 %&lt;&gt;%
-  filter(Subj_ID != &quot;&quot;, correct != &quot;NA&quot;) %&gt;%
-  mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
-         agesplit = factor(agesplit,
-                           labels=c(&quot;4-4.5 years&quot;, &quot;4.5-5 years&quot;))) %&gt;%
-  filter(agesplit != &quot;NA&quot;)
+  rename(Age = agegroup)
+
+#age groups
+# data_exp1 %&lt;&gt;%
+#   filter(Subj_ID != &quot;&quot;, correct != &quot;NA&quot;) %&gt;%
+#   mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
+#          agesplit = factor(agesplit,
+#                            labels=c(&quot;4-4.5 years&quot;, &quot;4.5-5 years&quot;))) %&gt;%
+#   filter(agesplit != &quot;NA&quot;)
 
 #renaming for graphs
 data_exp1$type &lt;- factor(data_exp1$type, 
@@ -124,23 +132,23 @@ data_exp1$condition &lt;- factor(data_exp1$condition,
                     levels = c(&quot;adhoc&quot;,&quot;scalar&quot;), 
                     labels = c(&quot;Ad-hoc&quot;,&quot;Scalar&quot;))
 
-data_exp1 %&lt;&gt;%
-  dplyr::rename(Age = agesplit)</code></pre>
+# data_exp1 %&lt;&gt;%
+#   dplyr::rename(Age = agesplit)</code></pre>
 <p>EXP 1 - T-tests against chance</p>
 <pre class="r"><code>#look at only SI trials
 d &lt;- data_exp1 %&gt;%
   filter(condition == &quot;Scalar&quot;)%&gt;%
   mutate(correct = as.numeric(correct))
 
-d &lt;- aggregate(correct ~ type + agegroup +  Subj_ID, data=d, mean)
+d &lt;- aggregate(correct ~ type + Age +  Subj_ID, data=d, mean)
 
 ##First test against chance
 #All
-t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(d, Age==&quot;4-4.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.0--4.5&quot; &amp; type == &quot;All&quot;)$correct
+## data:  subset(d, Age == &quot;4-4.5 years&quot; &amp; type == &quot;All&quot;)$correct
 ## t = 12.1106, df = 22, p-value = 3.333e-11
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -148,14 +156,14 @@ t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;All&quot;)$cor
 ## sample estimates:
 ## mean of x 
 ## 0.9347826</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.5--5.0&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## Error in t.test.default(subset(d, agegroup == &quot;4.5--5.0&quot; &amp; type == &quot;All&quot;)$correct, : data are essentially constant</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4.5-5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+<pre><code>## Error in t.test.default(subset(d, Age == &quot;4.5-5 years&quot; &amp; type == &quot;All&quot;)$correct, : data are essentially constant</code></pre>
 <pre class="r"><code>#Some
-t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(d, Age==&quot;4-4.5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.0--4.5&quot; &amp; type == &quot;Implicature&quot;)$correct
+## data:  subset(d, Age == &quot;4-4.5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
 ## t = 0.3595, df = 22, p-value = 0.7226
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -163,11 +171,11 @@ t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;Implicature&qu
 ## sample estimates:
 ## mean of x 
 ## 0.5326087</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.5--5.0&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4.5-5 years&quot;  &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.5--5.0&quot; &amp; type == &quot;Implicature&quot;)$correct
+## data:  subset(d, Age == &quot;4.5-5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
 ## t = -1.9806, df = 24, p-value = 0.05921
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -176,11 +184,11 @@ t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;Implicature&qu
 ## mean of x 
 ##      0.34</code></pre>
 <pre class="r"><code>#none
-t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(d, Age==&quot;4-4.5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.0--4.5&quot; &amp; type == &quot;None&quot;)$correct
+## data:  subset(d, Age == &quot;4-4.5 years&quot; &amp; type == &quot;None&quot;)$correct
 ## t = -0.8904, df = 22, p-value = 0.3829
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -188,11 +196,11 @@ t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;None&quot;)$co
 ## sample estimates:
 ## mean of x 
 ## 0.4130435</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.5--5.0&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4.5-5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.5--5.0&quot; &amp; type == &quot;None&quot;)$correct
+## data:  subset(d, Age == &quot;4.5-5 years&quot; &amp; type == &quot;None&quot;)$correct
 ## t = 1.5718, df = 24, p-value = 0.1291
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -206,7 +214,7 @@ t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;None&quot;)$co
 
 ms &lt;- ddply(data_exp1, .(type, condition, Subj_ID), summarise, 
     mean = mean(correct),
-    agegroup = agegroup[1])
+    Age = Age[1])
 
 ms %&lt;&gt;%
   filter(condition == &quot;Scalar&quot;)
@@ -481,12 +489,22 @@ data_exp2$trial_type[type == &quot;some&quot;] &lt;- &quot;implicature&quot;
 data_exp2$trial_type[type != &quot;some&quot;] &lt;- &quot;control&quot;
 detach(data_exp2)
 
+#rename agegroups
+data_exp2$agegroup %&lt;&gt;%
+  str_replace(&quot;3.0--3.5&quot;, &quot;3-3.5 years&quot;)%&gt;%
+  str_replace(&quot;3.5--4.0&quot;, &quot;3.5-4 years&quot;)%&gt;%
+  str_replace(&quot;4.0--4.5&quot;, &quot;4-4.5 years&quot;)%&gt;%
+  str_replace(&quot;4.5--5.0&quot;, &quot;4.5-5 years&quot;)
+
 data_exp2 %&lt;&gt;%
-  filter(Subj_ID != &quot;&quot;, correct != &quot;NA&quot;) %&gt;%
-  mutate(agesplit = cut(age, breaks=c(3, 3.5, 4, 4.5, 5)),
-         agesplit = factor(agesplit,
-                           labels=c(&quot;3-3.5 years&quot;, &quot;3.5-4 years&quot;, &quot;4-4.5 years&quot;, &quot;4.5-5 years&quot;))) %&gt;%
-  filter(agesplit != &quot;NA&quot;)
+  rename(Age = agegroup)
+
+# data_exp2 %&lt;&gt;%
+#   filter(Subj_ID != &quot;&quot;, correct != &quot;NA&quot;) %&gt;%
+#   mutate(agesplit = cut(age, breaks=c(3, 3.5, 4, 4.5, 5)),
+#          agesplit = factor(agesplit,
+#                            labels=c(&quot;3-3.5 years&quot;, &quot;3.5-4 years&quot;, &quot;4-4.5 years&quot;, &quot;4.5-5 years&quot;))) %&gt;%
+#   filter(agesplit != &quot;NA&quot;)
 
 #renaming for graphs
 data_exp2$type &lt;- factor(data_exp2$type, 
@@ -503,20 +521,20 @@ data_exp2$selectionType &lt;- factor(data_exp2$selectionType,
 #                                levels = c (&quot;control&quot;, &quot;implicature&quot;), 
 #                                labels = c(&quot;Control&quot;, &quot;Implicature&quot;)) 
 
-data_exp2 %&lt;&gt;%
-  rename(Age = agesplit)</code></pre>
+# data_exp2 %&lt;&gt;%
+#   rename(Age = agesplit)</code></pre>
 <p>tests against chance</p>
 <pre class="r"><code>##First test against chance
 d &lt;- data_exp2 %&gt;%
   mutate(correct = as.numeric(as.character(correct)))
 
-d &lt;- aggregate(correct ~ type + agegroup +  Subj_ID, data=d, mean)
+d &lt;- aggregate(correct ~ type + Age +  Subj_ID, data=d, mean)
 #All
-t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(d, Age==&quot;3-3.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;3.0--3.5&quot; &amp; type == &quot;All&quot;)$correct
+## data:  subset(d, Age == &quot;3-3.5 years&quot; &amp; type == &quot;All&quot;)$correct
 ## t = 2.2637, df = 11, p-value = 0.0448
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -524,11 +542,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;All&quot;)$cor
 ## sample estimates:
 ## mean of x 
 ## 0.7083333</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;3.5--4.0&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;3.5-4 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;3.5--4.0&quot; &amp; type == &quot;All&quot;)$correct
+## data:  subset(d, Age == &quot;3.5-4 years&quot; &amp; type == &quot;All&quot;)$correct
 ## t = 4.2, df = 12, p-value = 0.001232
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -536,11 +554,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;All&quot;)$cor
 ## sample estimates:
 ## mean of x 
 ## 0.7692308</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4-4.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.0--4.5&quot; &amp; type == &quot;All&quot;)$correct
+## data:  subset(d, Age == &quot;4-4.5 years&quot; &amp; type == &quot;All&quot;)$correct
 ## t = 29.4392, df = 13, p-value = 2.767e-13
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -548,14 +566,14 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;All&quot;)$cor
 ## sample estimates:
 ## mean of x 
 ## 0.9761905</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.5--5.0&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## Error in t.test.default(subset(d, agegroup == &quot;4.5--5.0&quot; &amp; type == &quot;All&quot;)$correct, : data are essentially constant</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4.5-5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+<pre><code>## Error in t.test.default(subset(d, Age == &quot;4.5-5 years&quot; &amp; type == &quot;All&quot;)$correct, : data are essentially constant</code></pre>
 <pre class="r"><code>#Some
-t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(d, Age==&quot;3-3.5 years&quot;  &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;3.0--3.5&quot; &amp; type == &quot;Some&quot;)$correct
+## data:  subset(d, Age == &quot;3-3.5 years&quot; &amp; type == &quot;Some&quot;)$correct
 ## t = -1.6583, df = 11, p-value = 0.1255
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -563,11 +581,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;Some&quot;)$co
 ## sample estimates:
 ## mean of x 
 ## 0.3333333</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;3.5--4.0&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;3.5-4 years&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;3.5--4.0&quot; &amp; type == &quot;Some&quot;)$correct
+## data:  subset(d, Age == &quot;3.5-4 years&quot; &amp; type == &quot;Some&quot;)$correct
 ## t = -1.2372, df = 12, p-value = 0.2397
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -575,11 +593,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;Some&quot;)$co
 ## sample estimates:
 ## mean of x 
 ## 0.3717949</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4-4.5 years&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.0--4.5&quot; &amp; type == &quot;Some&quot;)$correct
+## data:  subset(d, Age == &quot;4-4.5 years&quot; &amp; type == &quot;Some&quot;)$correct
 ## t = 0.3611, df = 13, p-value = 0.7238
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -587,11 +605,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;Some&quot;)$co
 ## sample estimates:
 ## mean of x 
 ## 0.5391156</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.5--5.0&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4.5-5 years&quot; &amp; type==&quot;Some&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.5--5.0&quot; &amp; type == &quot;Some&quot;)$correct
+## data:  subset(d, Age == &quot;4.5-5 years&quot; &amp; type == &quot;Some&quot;)$correct
 ## t = 1.8486, df = 11, p-value = 0.09155
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -600,11 +618,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;Some&quot;)$co
 ## mean of x 
 ## 0.7222222</code></pre>
 <pre class="r"><code>#none
-t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(d, Age==&quot;3-3.5 years&quot;  &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;3.0--3.5&quot; &amp; type == &quot;None&quot;)$correct
+## data:  subset(d, Age == &quot;3-3.5 years&quot; &amp; type == &quot;None&quot;)$correct
 ## t = -2.5138, df = 11, p-value = 0.02879
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -612,11 +630,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;None&quot;)$co
 ## sample estimates:
 ## mean of x 
 ##      0.25</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;3.5--4.0&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;3.5-4 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;3.5--4.0&quot; &amp; type == &quot;None&quot;)$correct
+## data:  subset(d, Age == &quot;3.5-4 years&quot; &amp; type == &quot;None&quot;)$correct
 ## t = -0.4174, df = 12, p-value = 0.6838
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -624,11 +642,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;None&quot;)$co
 ## sample estimates:
 ## mean of x 
 ## 0.4487179</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.0--4.5&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d, Age==&quot;4-4.5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.0--4.5&quot; &amp; type == &quot;None&quot;)$correct
+## data:  subset(d, Age == &quot;4-4.5 years&quot; &amp; type == &quot;None&quot;)$correct
 ## t = 1.4682, df = 13, p-value = 0.1658
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -636,11 +654,11 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;None&quot;)$co
 ## sample estimates:
 ## mean of x 
 ## 0.6785714</code></pre>
-<pre class="r"><code>t.test(subset(d, agegroup==&quot;4.5--5.0&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(d,Age==&quot;4.5-5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(d, agegroup == &quot;4.5--5.0&quot; &amp; type == &quot;None&quot;)$correct
+## data:  subset(d, Age == &quot;4.5-5 years&quot; &amp; type == &quot;None&quot;)$correct
 ## t = 3.0861, df = 11, p-value = 0.01036
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
@@ -653,17 +671,17 @@ t.test(subset(d, agegroup==&quot;3.0--3.5&quot; &amp; type==&quot;None&quot;)$co
 d2 &lt;- data_exp2%&gt;%
   mutate(correct=as.numeric(correct))
 
-df1 &lt;- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%&gt;%
+df1 &lt;- aggregate(correct ~ type + Age +  Subj_ID, data=d1, mean)%&gt;%
   spread(type, correct)
-df2 &lt;- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%&gt;%
+df2 &lt;- aggregate(correct ~ type + Age +  Subj_ID, data=d2, mean)%&gt;%
   spread(type, correct)</code></pre>
 <p>Compare performance on scalar trials between Exp1 and Exp2</p>
 <pre class="r"><code>#Split this df into agegroups
 old1 &lt;- df1 %&gt;%
-  filter(agegroup == &quot;4.0--4.5&quot;)
+  filter(Age == &quot;4-4.5 years&quot;)
 
 old2 &lt;- df2 %&gt;%
-  filter(agegroup == &quot;4.0--4.5&quot;)
+  filter(Age == &quot;4-4.5 years&quot;)
 
 #4-4.5s
 t.test(old1$All, old2$All)</code></pre>
@@ -704,10 +722,10 @@ t.test(old1$All, old2$All)</code></pre>
 ## 0.4130435 0.6785714</code></pre>
 <pre class="r"><code>#4.5-5s
 old3 &lt;- df1 %&gt;%
-  filter(agegroup == &quot;4.5--5.0&quot;)
+  filter(Age == &quot;4.5-5 years&quot;)
 
 old4 &lt;- df2 %&gt;%
-  filter(agegroup == &quot;4.5--5.0&quot;)
+  filter(Age == &quot;4.5-5 years&quot;)
 
 t.test(old3$All, old4$All)</code></pre>
 <pre><code>## Error in t.test.default(old3$All, old4$All): data are essentially constant</code></pre>
@@ -847,7 +865,7 @@ d1 %&lt;&gt;%
          bananas_selection = factor(bananas_selection, levels=c(1, 2, 3), labels = c(&quot;some&quot;, &quot;all&quot;, &quot;none&quot;)), 
          butterflies_selection = factor(butterflies_selection, levels=c(1, 2, 3), labels = c(&quot;none&quot;, &quot;some&quot;, &quot;all&quot;)))
 
-d2=melt.data.frame(d1,c(&quot;sub_ID&quot;,&quot;test_age&quot;, &quot;order&quot;, &quot;training&quot;),c(&quot;carrot&quot;, &quot;hat&quot;, &quot;cookies&quot;, &quot;trains&quot;, &quot;cats&quot;, &quot;purses&quot;,  &quot;keys&quot;, &quot;shirts&quot;, &quot;breads&quot;, &quot;horses&quot;, &quot;bears&quot;, &quot;frogs&quot;, &quot;plates&quot;, &quot;books&quot;, &quot;elephants&quot;, &quot;lamps&quot;, &quot;bananas&quot;, &quot;butterflies&quot;, &quot;carrot_selection&quot;, &quot;hat_selection&quot;, &quot;cookies_selection&quot;, &quot;trains_selection&quot;, &quot;cats_selection&quot;, &quot;purses_selection&quot;,  &quot;keys_selection&quot;, &quot;shirts_selection&quot;, &quot;breads_selection&quot;, &quot;horses_selection&quot;, &quot;bears_selection&quot;, &quot;frogs_selection&quot;, &quot;plates_selection&quot;, &quot;books_selection&quot;, &quot;elephants_selection&quot;, &quot;lamps_selection&quot;, &quot;bananas_selection&quot;, &quot;butterflies_selection&quot;, &quot;carrot_type&quot;, &quot;hat_type&quot;, &quot;cookies_type&quot;, &quot;trains_type&quot;, &quot;cats_type&quot;, &quot;purses_type&quot;,  &quot;keys_type&quot;, &quot;shirts_type&quot;, &quot;breads_type&quot;, &quot;horses_type&quot;, &quot;bears_type&quot;, &quot;frogs_type&quot;, &quot;plates_type&quot;, &quot;books_type&quot;, &quot;elephants_type&quot;, &quot;lamps_type&quot;, &quot;bananas_type&quot;, &quot;butterflies_type&quot;))
+d2=melt.data.frame(d1,c(&quot;sub_ID&quot;,&quot;test_age&quot;, &quot;agegroup&quot;,&quot;training&quot;),c(&quot;carrot&quot;, &quot;hat&quot;, &quot;cookies&quot;, &quot;trains&quot;, &quot;cats&quot;, &quot;purses&quot;,  &quot;keys&quot;, &quot;shirts&quot;, &quot;breads&quot;, &quot;horses&quot;, &quot;bears&quot;, &quot;frogs&quot;, &quot;plates&quot;, &quot;books&quot;, &quot;elephants&quot;, &quot;lamps&quot;, &quot;bananas&quot;, &quot;butterflies&quot;, &quot;carrot_selection&quot;, &quot;hat_selection&quot;, &quot;cookies_selection&quot;, &quot;trains_selection&quot;, &quot;cats_selection&quot;, &quot;purses_selection&quot;,  &quot;keys_selection&quot;, &quot;shirts_selection&quot;, &quot;breads_selection&quot;, &quot;horses_selection&quot;, &quot;bears_selection&quot;, &quot;frogs_selection&quot;, &quot;plates_selection&quot;, &quot;books_selection&quot;, &quot;elephants_selection&quot;, &quot;lamps_selection&quot;, &quot;bananas_selection&quot;, &quot;butterflies_selection&quot;, &quot;carrot_type&quot;, &quot;hat_type&quot;, &quot;cookies_type&quot;, &quot;trains_type&quot;, &quot;cats_type&quot;, &quot;purses_type&quot;,  &quot;keys_type&quot;, &quot;shirts_type&quot;, &quot;breads_type&quot;, &quot;horses_type&quot;, &quot;bears_type&quot;, &quot;frogs_type&quot;, &quot;plates_type&quot;, &quot;books_type&quot;, &quot;elephants_type&quot;, &quot;lamps_type&quot;, &quot;bananas_type&quot;, &quot;butterflies_type&quot;))
 
 
 #making a respectable df  
@@ -861,11 +879,10 @@ data$correct &lt;- data$SI_correct==1
 
 #filtering out NAs, adding agesplit
 data %&lt;&gt;%
-  filter(sub_ID != &quot;&quot;, correct != &quot;NA&quot;) %&gt;%
-  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
-         agesplit = factor(agesplit,
-                           labels=c(&quot;3-3.5 years&quot;, &quot;3.5-4 years&quot;, &quot;4-4.5 years&quot;, &quot;4.5-5 years&quot;))) %&gt;%
-  filter(agesplit != &quot;NA&quot;)
+  filter(sub_ID != &quot;&quot;, correct != &quot;NA&quot;) 
+
+data %&lt;&gt;%
+  rename(Age = agegroup)
 
 #renaming for better-looking graphs
 data$type %&lt;&gt;%
@@ -880,9 +897,9 @@ data$selection %&lt;&gt;%
 
 #Find the Mean and median ages
 age &lt;- data %&gt;%
-  dplyr::select(sub_ID, test_age, agesplit) %&gt;%
+  dplyr::select(sub_ID, test_age, Age) %&gt;%
   dplyr::distinct() %&gt;%
-  group_by(agesplit)%&gt;%
+  group_by(Age)%&gt;%
   summarise(n=n(), avg = mean(test_age))
 
 #use this dataframe for stats
@@ -891,7 +908,7 @@ data_si &lt;- data %&gt;%
 
 #age stats
 age &lt;- data_si %&gt;%
-  group_by(agesplit)%&gt;%
+  group_by(Age)%&gt;%
   summarise(mean = mean(test_age), median = median(test_age), sd = sd(test_age))</code></pre>
 <p>GQ</p>
 <pre class="r"><code>#read in and establish dataframe
@@ -899,7 +916,7 @@ d1 &lt;- read.csv(&quot;../data/GQ_coding.csv&quot;)
 d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] &lt;- sapply(d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
 
 #change to long form
-d2=melt.data.frame(d1,c(&quot;sub_ID&quot;, &quot;test_age&quot;,&quot;condition&quot;, &quot;order&quot;, &quot;training&quot;),c(&quot;X1_condition&quot;, &quot;X2_condition&quot;, &quot;X3_condition&quot;, &quot;X4_condition&quot;, &quot;X5_condition&quot;, &quot;X6_condition&quot;,  &quot;X7_condition&quot;, &quot;X8_condition&quot;, &quot;X1_given&quot;, &quot;X2_given&quot;, &quot;X3_given&quot;, &quot;X4_given&quot;, &quot;X5_given&quot;, &quot;X6_given&quot;,  &quot;X7_given&quot;, &quot;X8_given&quot;, &quot;X1_correct&quot;, &quot;X2_correct&quot;, &quot;X3_correct&quot;, &quot;X4_correct&quot;, &quot;X5_correct&quot;, &quot;X6_correct&quot;,  &quot;X7_correct&quot;, &quot;X8_correct&quot;))
+d2=melt.data.frame(d1,c(&quot;sub_ID&quot;, &quot;test_age&quot;,&quot;agegroup&quot;, &quot;condition&quot;, &quot;training&quot;),c(&quot;X1_condition&quot;, &quot;X2_condition&quot;, &quot;X3_condition&quot;, &quot;X4_condition&quot;, &quot;X5_condition&quot;, &quot;X6_condition&quot;,  &quot;X7_condition&quot;, &quot;X8_condition&quot;, &quot;X1_given&quot;, &quot;X2_given&quot;, &quot;X3_given&quot;, &quot;X4_given&quot;, &quot;X5_given&quot;, &quot;X6_given&quot;,  &quot;X7_given&quot;, &quot;X8_given&quot;, &quot;X1_correct&quot;, &quot;X2_correct&quot;, &quot;X3_correct&quot;, &quot;X4_correct&quot;, &quot;X5_correct&quot;, &quot;X6_correct&quot;,  &quot;X7_correct&quot;, &quot;X8_correct&quot;))
 
 #making a respectable df  
 onethird &lt;- (1/3)*nrow(d2)
@@ -913,11 +930,8 @@ names(data)[9] &lt;- &quot;GQ_correct&quot;
 
 #filtering data, creating age breaks
 data %&lt;&gt;%
-  filter(sub_ID != &quot;&quot;, num_given != &quot;N/A&quot;) %&gt;%
-  mutate(split_2 = cut(test_age, breaks=c(3, 4, 5)), 
-         Agesplit = factor(split_2,
-                           labels=c(&quot;3-4 years&quot;, &quot;4-5 years&quot;))) %&gt;%
-  filter(Agesplit != &quot;NA&quot;, num_given != &quot;0 (8 oranges)&quot;, num_given != &quot;0 (8 bananas)&quot;, num_given != &quot;0 (8 strawberries)&quot;)
+  filter(sub_ID != &quot;&quot;, num_given != &quot;N/A&quot;)%&gt;%
+  rename(Age = agegroup)
 
 #this is because num_given is a factor - need to change to a number - need to do this for standard error
 data$num_given &lt;- as.character(data$num_given)
@@ -939,13 +953,14 @@ data_gq &lt;- data %&gt;%
 <pre class="r"><code>#wide-form
 d1 &lt;- read.csv(&quot;../data/DCCS_coding.csv&quot;)
 #long form
-d2=melt.data.frame(d1,c(&quot;sub_ID&quot;,&quot;test_age&quot;,&quot;condition&quot;, &quot;order&quot;),c(&quot;pre_1&quot;, &quot;pre_2&quot;, &quot;pre_3&quot;, &quot;pre_4&quot;, &quot;pre_5&quot;, &quot;pre_6&quot;,  &quot;post_1&quot;, &quot;post_2&quot;, &quot;post_3&quot;, &quot;post_4&quot;, &quot;post_5&quot;, &quot;post_6&quot;))
+d2=melt.data.frame(d1,c(&quot;sub_ID&quot;,&quot;test_age&quot;, &quot;agegroup&quot;, &quot;condition&quot;),c(&quot;pre_1&quot;, &quot;pre_2&quot;, &quot;pre_3&quot;, &quot;pre_4&quot;, &quot;pre_5&quot;, &quot;pre_6&quot;,  &quot;post_1&quot;, &quot;post_2&quot;, &quot;post_3&quot;, &quot;post_4&quot;, &quot;post_5&quot;, &quot;post_6&quot;))
 
 #filtering data, creating age breaks
 data &lt;- d2 %&gt;%
-  filter(sub_ID != &quot;&quot;) %&gt;%
-  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
-         agesplit = factor(agesplit,labels=c(&quot;3-3.5 years&quot;, &quot;3.5-4 years&quot;, &quot;4-4.5 years&quot;, &quot;4.5-5 years&quot;)))
+  filter(sub_ID != &quot;&quot;) 
+
+data %&lt;&gt;%
+  rename(Age = agegroup)
 
 #renaming things
 names(data)[5] &lt;- &quot;trial_type&quot;
@@ -989,35 +1004,35 @@ d1 &lt;- data_exp2 %&gt;%
 d2 &lt;- data_si%&gt;%
   mutate(correct=as.numeric(correct))
 #aggregate correct repsonses 
-df1 &lt;- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%&gt;%
+df1 &lt;- aggregate(correct ~ type + Age+  Subj_ID, data=d1, mean)%&gt;%
   spread(type, correct)
-df2 &lt;- aggregate(correct ~ type + agesplit +  sub_ID, data=d2, mean)%&gt;%
+df2 &lt;- aggregate(correct ~ type + Age +  sub_ID, data=d2, mean)%&gt;%
   spread(type, correct)
 
 #split into age groups - this is pretty clunky, but it works
 old1 &lt;- df1 %&gt;%
-  filter(agegroup == &quot;3.0--3.5&quot;)
+  filter(Age == &quot;3-3.5 years&quot;)
 
 old2 &lt;- df2 %&gt;%
-  filter(agesplit == &quot;3-3.5 years&quot;)
+  filter(Age == &quot;3-3.5 years&quot;)
 
 old3 &lt;- df1 %&gt;%
-  filter(agegroup == &quot;3.5--4.0&quot;)
+  filter(Age == &quot;3.5-4 years&quot;)
 
 old4 &lt;- df2 %&gt;%
-  filter(agesplit == &quot;3.5-4 years&quot;)
+  filter(Age == &quot;3.5-4 years&quot;)
 
 old5 &lt;- df1 %&gt;%
-  filter(agegroup == &quot;4.0--4.5&quot;)
+  filter(Age == &quot;4-4.5 years&quot;)
 
 old6 &lt;- df2 %&gt;%
-  filter(agesplit == &quot;4-4.5 years&quot;)
+  filter(Age == &quot;4-4.5 years&quot;)
 
 old7 &lt;- df1 %&gt;%
-  filter(agegroup == &quot;4.5--5.0&quot;)
+  filter(Age == &quot;4.5-5 years&quot;)
 
 old8 &lt;- df2 %&gt;%
-  filter(agesplit == &quot;4.5-5 years&quot;)
+  filter(Age == &quot;4.5-5 years&quot;)
 
 #tests across age groups
 #3-3.5s
@@ -1026,111 +1041,111 @@ t.test(old1$All, old2$All, var.equal = TRUE)</code></pre>
 ##  Two Sample t-test
 ## 
 ## data:  old1$All and old2$All
-## t = 0.1998, df = 31, p-value = 0.843
+## t = 0.5135, df = 28, p-value = 0.6116
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2375279  0.2891152
+##  -0.2075921  0.3464810
 ## sample estimates:
 ## mean of x mean of y 
-## 0.7083333 0.6825397</code></pre>
+## 0.7083333 0.6388889</code></pre>
 <pre class="r"><code>t.test(old1$Some, old2$Implicature, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old1$Some and old2$Implicature
-## t = -0.3975, df = 31, p-value = 0.6937
+## t = -0.081, df = 28, p-value = 0.9361
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2919278  0.1966897
+##  -0.2435497  0.2250312
 ## sample estimates:
 ## mean of x mean of y 
-## 0.3333333 0.3809524</code></pre>
+## 0.3333333 0.3425926</code></pre>
 <pre class="r"><code>t.test(old1$None, old2$None, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old1$None and old2$None
-## t = -0.2096, df = 31, p-value = 0.8353
+## t = 0.8609, df = 28, p-value = 0.3966
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2980577  0.2425021
+##  -0.1277080  0.3128932
 ## sample estimates:
 ## mean of x mean of y 
-## 0.2500000 0.2777778</code></pre>
+## 0.2500000 0.1574074</code></pre>
 <pre class="r"><code>#3.5-4s
 t.test(old3$All, old4$All, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old3$All and old4$All
-## t = -0.7839, df = 26, p-value = 0.4402
+## t = -1.0394, df = 29, p-value = 0.3072
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2724379  0.1220105
+##  -0.27267006  0.08890938
 ## sample estimates:
 ## mean of x mean of y 
-## 0.7692308 0.8444444</code></pre>
+## 0.7692308 0.8611111</code></pre>
 <pre class="r"><code>t.test(old3$Some, old4$Implicature, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old3$Some and old4$Implicature
-## t = 1.2893, df = 26, p-value = 0.2086
+## t = 0.7149, df = 29, p-value = 0.4804
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.09548476  0.41685228
+##  -0.1749660  0.3630002
 ## sample estimates:
 ## mean of x mean of y 
-## 0.3717949 0.2111111</code></pre>
+## 0.3717949 0.2777778</code></pre>
 <pre class="r"><code>t.test(old3$None, old4$None, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old3$None and old4$None
-## t = 1.1908, df = 26, p-value = 0.2445
+## t = 0.3748, df = 29, p-value = 0.7105
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.1322138  0.4963164
+##  -0.2666184  0.3862765
 ## sample estimates:
 ## mean of x mean of y 
-## 0.4487179 0.2666667</code></pre>
+## 0.4487179 0.3888889</code></pre>
 <pre class="r"><code>#4-4.5s
 t.test(old5$All, old6$All, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old5$All and old6$All
-## t = 2.0616, df = 31, p-value = 0.04772
+## t = 2.1596, df = 30, p-value = 0.03893
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  0.001624651 0.301633494
+##  0.008764239 0.313987084
 ## sample estimates:
 ## mean of x mean of y 
-## 0.9761905 0.8245614</code></pre>
+## 0.9761905 0.8148148</code></pre>
 <pre class="r"><code>t.test(old5$Some, old6$Implicature, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old5$Some and old6$Implicature
-## t = 0.8701, df = 31, p-value = 0.3909
+## t = 1.1205, df = 30, p-value = 0.2714
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.1586728  0.3947988
+##  -0.1235866  0.4240401
 ## sample estimates:
 ## mean of x mean of y 
-## 0.5391156 0.4210526</code></pre>
+## 0.5391156 0.3888889</code></pre>
 <pre class="r"><code>t.test(old5$None, old6$None, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old5$None and old6$None
-## t = 1.4243, df = 31, p-value = 0.1643
+## t = 1.2564, df = 30, p-value = 0.2187
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.09986392  0.56226994
+##  -0.1290795  0.5417779
 ## sample estimates:
 ## mean of x mean of y 
-## 0.6785714 0.4473684</code></pre>
+## 0.6785714 0.4722222</code></pre>
 <pre class="r"><code>#4.5-5s
 t.test(old7$All, old8$All, var.equal = TRUE)</code></pre>
 <pre><code>## Error in t.test.default(old7$All, old8$All, var.equal = TRUE): data are essentially constant</code></pre>
@@ -1139,25 +1154,25 @@ t.test(old7$All, old8$All, var.equal = TRUE)</code></pre>
 ##  Two Sample t-test
 ## 
 ## data:  old7$Some and old8$Implicature
-## t = 0.6708, df = 27, p-value = 0.5081
+## t = 0.5426, df = 28, p-value = 0.5917
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2153163  0.4244666
+##  -0.2312454  0.3979121
 ## sample estimates:
 ## mean of x mean of y 
-## 0.7222222 0.6176471</code></pre>
+## 0.7222222 0.6388889</code></pre>
 <pre class="r"><code>t.test(old7$None, old8$None, var.equal = TRUE)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
 ## data:  old7$None and old8$None
-## t = 0.1195, df = 27, p-value = 0.9058
+## t = 0.4375, df = 28, p-value = 0.6651
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -0.2510225  0.2820683
+##  -0.2216217  0.3419921
 ## sample estimates:
 ## mean of x mean of y 
-## 0.8194444 0.8039216</code></pre>
+## 0.8194444 0.7592593</code></pre>
 <p>Now our entire Exp 3 dataset Create wide-form df to do analyses</p>
 <pre class="r"><code>#si df
 data_si$SI_correct &lt;- as.character(data_si$SI_correct)
@@ -1168,7 +1183,7 @@ mss.acc &lt;- data_si %&gt;%
   group_by(sub_ID, type)%&gt;%
   dplyr::summarise(mean = mean(SI_correct), 
                    test_age = test_age[1],
-                   agesplit = agesplit[1])%&gt;%
+                   Age = Age[1])%&gt;%
   spread(type, mean)
 
 #dccs
@@ -1293,252 +1308,203 @@ pcor.test(d_all$SI_implicature, d_all$GQ_some_correct, d_all$test_age)</code></p
 d &lt;- data_si %&gt;%
   mutate(correct = as.numeric(as.character(SI_correct)))
 
-df &lt;- aggregate(correct ~ type + agesplit +  sub_ID, data=d, mean)
+df &lt;- aggregate(correct ~ type + Age +  sub_ID, data=d, mean)
+
+d.dccs &lt;- data_dccs %&gt;%
+  mutate(correct=as.numeric(as.character(DCCS_correct)))
+
+df.dccs &lt;- aggregate(correct ~ switch_type + Age +  sub_ID, data=d.dccs, mean) 
 
 #3-3.5 - SI
-t.test(subset(df, agesplit==&quot;3-3.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(df, Age==&quot;3-3.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;3-3.5 years&quot; &amp; type == &quot;All&quot;)$correct
-## t = 2.2245, df = 20, p-value = 0.03779
+## data:  subset(df, Age == &quot;3-3.5 years&quot; &amp; type == &quot;All&quot;)$correct
+## t = 1.5157, df = 17, p-value = 0.148
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.5113707 0.8537086
+##  0.4455570 0.8322207
 ## sample estimates:
 ## mean of x 
-## 0.6825397</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;3-3.5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
+## 0.6388889</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;3-3.5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;3-3.5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
-## t = -1.6984, df = 20, p-value = 0.1049
+## data:  subset(df, Age == &quot;3-3.5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
+## t = -2.4113, df = 17, p-value = 0.02749
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.2347402 0.5271645
+##  0.2048638 0.4803214
 ## sample estimates:
 ## mean of x 
-## 0.3809524</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;3-3.5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+## 0.3425926</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;3-3.5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;3-3.5 years&quot; &amp; type == &quot;None&quot;)$correct
-## t = -2.6968, df = 20, p-value = 0.01387
+## data:  subset(df, Age == &quot;3-3.5 years&quot; &amp; type == &quot;None&quot;)$correct
+## t = -5.9158, df = 17, p-value = 1.693e-05
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.1058898 0.4496658
+##  0.03522544 0.27958937
+## sample estimates:
+## mean of x 
+## 0.1574074</code></pre>
+<pre class="r"><code>#Dccs
+t.test(subset(df.dccs, Age==&quot;3-3.5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  subset(df.dccs, Age == &quot;3-3.5 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
+## t = -0.4142, df = 17, p-value = 0.6839
+## alternative hypothesis: true mean is not equal to 0.5
+## 95 percent confidence interval:
+##  0.2178953 0.6895121
+## sample estimates:
+## mean of x 
+## 0.4537037</code></pre>
+<pre class="r"><code>#3.5-4
+t.test(subset(df, Age==&quot;3.5-4 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  subset(df, Age == &quot;3.5-4 years&quot; &amp; type == &quot;All&quot;)$correct
+## t = 6.1083, df = 17, p-value = 1.159e-05
+## alternative hypothesis: true mean is not equal to 0.5
+## 95 percent confidence interval:
+##  0.7363834 0.9858388
+## sample estimates:
+## mean of x 
+## 0.8611111</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;3.5-4 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  subset(df, Age == &quot;3.5-4 years&quot; &amp; type == &quot;Implicature&quot;)$correct
+## t = -2.6754, df = 17, p-value = 0.01597
+## alternative hypothesis: true mean is not equal to 0.5
+## 95 percent confidence interval:
+##  0.1025353 0.4530202
 ## sample estimates:
 ## mean of x 
 ## 0.2777778</code></pre>
-<pre class="r"><code>#Dccs
-t.test(subset(data_dccs, agesplit==&quot;3-3.5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$DCCS_correct, mu=0.5)</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;3.5-4 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(data_dccs, agesplit == &quot;3-3.5 years&quot; &amp; switch_type ==     &quot;Post-switch&quot;)$DCCS_correct
-## t = 0.7113, df = 125, p-value = 0.4782
+## data:  subset(df, Age == &quot;3.5-4 years&quot; &amp; type == &quot;None&quot;)$correct
+## t = -1.0828, df = 17, p-value = 0.294
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.4434155 0.6200766
+##  0.1723871 0.6053907
 ## sample estimates:
 ## mean of x 
-##  0.531746</code></pre>
-<pre class="r"><code>#3.5-4
-t.test(subset(df, agesplit==&quot;3.5-4 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;3.5-4 years&quot; &amp; type == &quot;All&quot;)$correct
-## t = 4.928, df = 14, p-value = 0.0002224
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.6945338 0.9943551
-## sample estimates:
-## mean of x 
-## 0.8444444</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;3.5-4 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;3.5-4 years&quot; &amp; type == &quot;Implicature&quot;)$correct
-## t = -3.926, df = 14, p-value = 0.001522
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.05329121 0.36893101
-## sample estimates:
-## mean of x 
-## 0.2111111</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;3.5-4 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;3.5-4 years&quot; &amp; type == &quot;None&quot;)$correct
-## t = -2.4675, df = 14, p-value = 0.02711
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.06385331 0.46948002
-## sample estimates:
-## mean of x 
-## 0.2666667</code></pre>
+## 0.3888889</code></pre>
 <pre class="r"><code>#dccs
-t.test(subset(data_dccs, agesplit==&quot;3.5-4 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$DCCS_correct, mu=0.5)</code></pre>
+t.test(subset(df.dccs, Age==&quot;3.5-4 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(data_dccs, agesplit == &quot;3.5-4 years&quot; &amp; switch_type ==     &quot;Post-switch&quot;)$DCCS_correct
-## t = 2.1502, df = 89, p-value = 0.03425
+## data:  subset(df.dccs, Age == &quot;3.5-4 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
+## t = 1.693, df = 17, p-value = 0.1087
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.5084346 0.7137876
+##  0.4566936 0.8951583
 ## sample estimates:
 ## mean of x 
-## 0.6111111</code></pre>
+## 0.6759259</code></pre>
 <pre class="r"><code>#4-4.5
-t.test(subset(df, agesplit==&quot;4-4.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(df, Age==&quot;4-4.5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;4-4.5 years&quot; &amp; type == &quot;All&quot;)$correct
-## t = 5.256, df = 18, p-value = 5.353e-05
+## data:  subset(df, Age == &quot;4-4.5 years&quot; &amp; type == &quot;All&quot;)$correct
+## t = 4.8836, df = 17, p-value = 0.0001399
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.6948282 0.9542946
+##  0.6788082 0.9508214
 ## sample estimates:
 ## mean of x 
-## 0.8245614</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;4-4.5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
+## 0.8148148</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;4-4.5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;4-4.5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
-## t = -0.9299, df = 18, p-value = 0.3647
+## data:  subset(df, Age == &quot;4-4.5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
+## t = -1.3377, df = 17, p-value = 0.1986
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.2426926 0.5994127
+##  0.2136464 0.5641313
 ## sample estimates:
 ## mean of x 
-## 0.4210526</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;4-4.5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+## 0.3888889</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;4-4.5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;4-4.5 years&quot; &amp; type == &quot;None&quot;)$correct
-## t = -0.4934, df = 18, p-value = 0.6277
+## data:  subset(df, Age == &quot;4-4.5 years&quot; &amp; type == &quot;None&quot;)$correct
+## t = -0.2533, df = 17, p-value = 0.8031
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.2232524 0.6714844
+##  0.2408344 0.7036100
 ## sample estimates:
 ## mean of x 
-## 0.4473684</code></pre>
+## 0.4722222</code></pre>
 <pre class="r"><code>#dccs
-t.test(subset(data_dccs, agesplit==&quot;4-4.5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$DCCS_correct, mu=0.5)</code></pre>
+t.test(subset(df.dccs, Age==&quot;4-4.5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(data_dccs, agesplit == &quot;4-4.5 years&quot; &amp; switch_type ==     &quot;Post-switch&quot;)$DCCS_correct
-## t = 7.2115, df = 113, p-value = 6.724e-11
+## data:  subset(df.dccs, Age == &quot;4-4.5 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
+## t = 2.7867, df = 17, p-value = 0.01265
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.7035857 0.8578178
+##  0.5652252 0.9718119
 ## sample estimates:
 ## mean of x 
-## 0.7807018</code></pre>
+## 0.7685185</code></pre>
 <pre class="r"><code>#4.5-5
-t.test(subset(df, agesplit==&quot;4.5-5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## Error in t.test.default(subset(df, agesplit == &quot;4.5-5 years&quot; &amp; type == : data are essentially constant</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;4.5-5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
+t.test(subset(df, Age==&quot;4.5-5 years&quot; &amp; type==&quot;All&quot;)$correct, mu=0.5)</code></pre>
+<pre><code>## Error in t.test.default(subset(df, Age == &quot;4.5-5 years&quot; &amp; type == &quot;All&quot;)$correct, : data are essentially constant</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;4.5-5 years&quot; &amp; type==&quot;Implicature&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;4.5-5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
-## t = 1.1788, df = 16, p-value = 0.2557
+## data:  subset(df, Age == &quot;4.5-5 years&quot; &amp; type == &quot;Implicature&quot;)$correct
+## t = 1.4399, df = 17, p-value = 0.1681
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.4060798 0.8292144
+##  0.4353748 0.8424030
 ## sample estimates:
 ## mean of x 
-## 0.6176471</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;4.5-5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
+## 0.6388889</code></pre>
+<pre class="r"><code>t.test(subset(df, Age==&quot;4.5-5 years&quot; &amp; type==&quot;None&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(df, agesplit == &quot;4.5-5 years&quot; &amp; type == &quot;None&quot;)$correct
-## t = 3.7456, df = 16, p-value = 0.001764
+## data:  subset(df, Age == &quot;4.5-5 years&quot; &amp; type == &quot;None&quot;)$correct
+## t = 2.9267, df = 17, p-value = 0.009414
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.6319084 0.9759347
+##  0.5723628 0.9461557
 ## sample estimates:
 ## mean of x 
-## 0.8039216</code></pre>
+## 0.7592593</code></pre>
 <pre class="r"><code>#dccs
-t.test(subset(data_dccs, agesplit==&quot;4.5-5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$DCCS_correct, mu=0.5)</code></pre>
+t.test(subset(df.dccs, Age==&quot;4.5-5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
-## data:  subset(data_dccs, agesplit == &quot;4.5-5 years&quot; &amp; switch_type ==     &quot;Post-switch&quot;)$DCCS_correct
-## t = 7.6931, df = 101, p-value = 9.84e-12
+## data:  subset(df.dccs, Age == &quot;4.5-5 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
+## t = 3.61, df = 17, p-value = 0.002162
 ## alternative hypothesis: true mean is not equal to 0.5
 ## 95 percent confidence interval:
-##  0.7255527 0.8822905
+##  0.6308237 0.9988060
 ## sample estimates:
 ## mean of x 
-## 0.8039216</code></pre>
-<p>tests against chance - DCCS</p>
-<pre class="r"><code>d &lt;- data_dccs %&gt;%
-  mutate(correct = as.numeric(as.character(DCCS_correct)))
-
-df &lt;- aggregate(correct ~ switch_type + agesplit +  sub_ID, data=d, mean)
-#Dccs
-t.test(subset(df, agesplit==&quot;3-3.5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;3-3.5 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
-## t = 0.3037, df = 20, p-value = 0.7645
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.3136811 0.7498110
-## sample estimates:
-## mean of x 
-##  0.531746</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;3.5-4 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;3.5-4 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
-## t = 0.9413, df = 14, p-value = 0.3625
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.3579447 0.8642775
-## sample estimates:
-## mean of x 
-## 0.6111111</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;4-4.5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;4-4.5 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
-## t = 3.0526, df = 18, p-value = 0.006853
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.5875129 0.9738906
-## sample estimates:
-## mean of x 
-## 0.7807018</code></pre>
-<pre class="r"><code>t.test(subset(df, agesplit==&quot;4.5-5 years&quot; &amp; switch_type==&quot;Post-switch&quot;)$correct, mu=0.5)</code></pre>
-<pre><code>## 
-##  One Sample t-test
-## 
-## data:  subset(df, agesplit == &quot;4.5-5 years&quot; &amp; switch_type == &quot;Post-switch&quot;)$correct
-## t = 3.3117, df = 16, p-value = 0.004409
-## alternative hypothesis: true mean is not equal to 0.5
-## 95 percent confidence interval:
-##  0.6093720 0.9984712
-## sample estimates:
-## mean of x 
-## 0.8039216</code></pre>
+## 0.8148148</code></pre>
 <p>Diptests</p>
 <pre class="r"><code>#scalar implicature
 dip.test(d_all$SI_implicature)</code></pre>
@@ -1586,313 +1552,100 @@ dip.test(d_all$GQ_some_correct)</code></pre>
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>#break GQ down by age, see if a specific age group is driving this effect
 young1 &lt;- d_all%&gt;%
-  filter(test_age &lt; 3.5)
+  filter(Age == &quot;3-3.5 years&quot;)
 
 dip.test(young1$GQ_some_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  young1$GQ_some_correct
-## D = 0.1429, p-value = 0.0003686
+## D = 0.1389, p-value = 0.002183
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>dip.test(young1$GQ_none_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  young1$GQ_none_correct
-## D = 0.2143, p-value &lt; 2.2e-16
+## D = 0.1667, p-value = 2.957e-05
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>young2 &lt;- d_all%&gt;%
-  filter(test_age &gt;= 3.5 &amp; test_age &lt; 4)
+  filter(Age == &quot;3.5-4 years&quot;)
 
 dip.test(young2$GQ_some_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  young2$GQ_some_correct
-## D = 0.1, p-value = 0.1968
+## D = 0.1111, p-value = 0.04604
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>dip.test(young2$GQ_none_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  young2$GQ_none_correct
-## D = 0.2, p-value &lt; 2.2e-16
+## D = 0.1944, p-value &lt; 2.2e-16
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>old1 &lt;- d_all %&gt;%
-  filter(test_age &gt;= 4 &amp; test_age &lt; 4.5)
+  filter(Age == &quot;4-4.5 years&quot;)
 
 dip.test(old1$GQ_some_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  old1$GQ_some_correct
-## D = 0.1316, p-value = 0.003997
+## D = 0.1111, p-value = 0.04604
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>dip.test(old1$GQ_none_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  old1$GQ_none_correct
-## D = 0.1053, p-value = 0.06328
+## D = 0.1111, p-value = 0.04604
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>old2 &lt;- d_all %&gt;%
-  filter(test_age &gt;= 4.5)
+  filter(Age == &quot;4.5-5 years&quot;)
 dip.test(old2$GQ_some_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  old2$GQ_some_correct
-## D = 0.0588, p-value = 0.9282
+## D = 0.0556, p-value = 0.9505
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <pre class="r"><code>dip.test(old2$GQ_none_correct)</code></pre>
 <pre><code>## 
 ##  Hartigans' dip test for unimodality / multimodality
 ## 
 ## data:  old2$GQ_none_correct
-## D = 0.0294, p-value = 1
+## D = 0.0278, p-value = 1
 ## alternative hypothesis: non-unimodal, i.e., at least bimodal</code></pre>
 <p>Logistic regressions</p>
-<pre class="r"><code>d_all %&lt;&gt;%
-  mutate(`Post-switch` = as.numeric(`Post-switch`))
-summary(glm(SI_overall ~ `Post-switch`, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_overall ~ `Post-switch`, family = &quot;binomial&quot;, 
-##     data = d_all)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.0459  -0.4253  -0.1249   0.4828   1.2080  
-## 
-## Coefficients:
-##               Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)    -0.1771     0.4374  -0.405    0.686
-## `Post-switch`   0.6322     0.5467   1.156    0.248
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 23.908  on 71  degrees of freedom
-## Residual deviance: 22.560  on 70  degrees of freedom
-## AIC: 102.68
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
-<pre class="r"><code>summary(glm(SI_implicature ~ `Post-switch` + GQ_some_correct + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_implicature ~ `Post-switch` + GQ_some_correct + 
-##     test_age, family = &quot;binomial&quot;, data = d_all)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.36077  -0.79534  -0.09883   0.69864   1.45843  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)      -2.2438     1.8663  -1.202    0.229
-## `Post-switch`     0.4080     0.6076   0.671    0.502
-## GQ_some_correct   0.9525     0.6034   1.579    0.114
-## test_age          0.2668     0.5040   0.529    0.597
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 51.955  on 71  degrees of freedom
-## Residual deviance: 46.194  on 68  degrees of freedom
-## AIC: 94.021
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>summary(glm(SI_implicature ~ `Post-switch` + GQ_some_correct + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_implicature ~ `Post-switch` + GQ_some_correct + 
-##     test_age, family = &quot;binomial&quot;, data = d_all)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.36077  -0.79534  -0.09883   0.69864   1.45843  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)
-## (Intercept)      -2.2438     1.8663  -1.202    0.229
-## `Post-switch`     0.4080     0.6076   0.671    0.502
-## GQ_some_correct   0.9525     0.6034   1.579    0.114
-## test_age          0.2668     0.5040   0.529    0.597
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 51.955  on 71  degrees of freedom
-## Residual deviance: 46.194  on 68  degrees of freedom
-## AIC: 94.021
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>summary(glm(SI_implicature ~  `Post-switch` + GQ_some_correct, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_implicature ~ `Post-switch` + GQ_some_correct, 
-##     family = &quot;binomial&quot;, data = d_all)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.2859  -0.8177  -0.1256   0.6595   1.5431  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)      -1.3037     0.5495  -2.373   0.0177 *
-## `Post-switch`     0.4757     0.5931   0.802   0.4225  
-## GQ_some_correct   1.0795     0.5551   1.945   0.0518 .
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 51.955  on 71  degrees of freedom
-## Residual deviance: 46.475  on 69  degrees of freedom
-## AIC: 93.093
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code>summary(glm(SI_implicature ~  GQ_some_correct + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_implicature ~ GQ_some_correct + test_age, family = &quot;binomial&quot;, 
-##     data = d_all)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.34154  -0.78107  -0.04702   0.65812   1.50815  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)      -2.2692     1.8598  -1.220   0.2224  
-## GQ_some_correct   0.9903     0.5978   1.656   0.0976 .
-## test_age          0.3388     0.4911   0.690   0.4902  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 51.955  on 71  degrees of freedom
-## Residual deviance: 46.648  on 69  degrees of freedom
-## AIC: 93.303
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
-<pre class="r"><code>summary(glm(SI_none ~ `Post-switch` + GQ_none_correct + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_none ~ `Post-switch` + GQ_none_correct + test_age, 
-##     family = &quot;binomial&quot;, data = d_all)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.7752  -0.4705  -0.1190   0.6917   1.7383  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)      -6.5439     2.2985  -2.847  0.00441 **
-## `Post-switch`    -0.6404     0.7654  -0.837  0.40279   
-## GQ_none_correct   3.0368     0.9468   3.208  0.00134 **
-## test_age          1.1231     0.5911   1.900  0.05745 . 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 74.138  on 71  degrees of freedom
-## Residual deviance: 45.571  on 68  degrees of freedom
-## AIC: 73.007
-## 
-## Number of Fisher Scoring iterations: 5</code></pre>
-<pre class="r"><code>summary(glm(SI_none ~ `Post-switch` + GQ_none_correct, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_none ~ `Post-switch` + GQ_none_correct, family = &quot;binomial&quot;, 
-##     data = d_all)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.5486  -0.3767  -0.1464   0.9647   1.5327  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)      -2.6103     0.8888  -2.937 0.003315 ** 
-## `Post-switch`    -0.3171     0.7075  -0.448 0.653968    
-## GQ_none_correct   3.4507     0.9486   3.638 0.000275 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 74.138  on 71  degrees of freedom
-## Residual deviance: 49.419  on 69  degrees of freedom
-## AIC: 75.922
-## 
-## Number of Fisher Scoring iterations: 5</code></pre>
-<pre class="r"><code>summary(glm(SI_none ~ GQ_none_correct + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_none ~ GQ_none_correct + test_age, family = &quot;binomial&quot;, 
-##     data = d_all)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.79761  -0.48717  -0.09781   0.73231   1.81231  
-## 
-## Coefficients:
-##                 Estimate Std. Error z value Pr(&gt;|z|)   
-## (Intercept)      -6.4010     2.2657  -2.825  0.00473 **
-## GQ_none_correct   2.8739     0.9049   3.176  0.00149 **
-## test_age          1.0064     0.5650   1.781  0.07489 . 
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 74.138  on 71  degrees of freedom
-## Residual deviance: 46.302  on 69  degrees of freedom
-## AIC: 71.653
-## 
-## Number of Fisher Scoring iterations: 5</code></pre>
-<pre class="r"><code>summary(glm(SI_implicature ~ `Post-switch` + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = SI_implicature ~ `Post-switch` + test_age, family = &quot;binomial&quot;, 
-##     data = d_all)
-## 
-## Deviance Residuals: 
-##      Min        1Q    Median        3Q       Max  
-## -1.32420  -0.82281  -0.00489   0.60850   1.39645  
-## 
-## Coefficients:
-##               Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept)    -3.0453     1.8012  -1.691   0.0909 .
-## `Post-switch`   0.5037     0.5945   0.847   0.3969  
-## test_age        0.5890     0.4598   1.281   0.2002  
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 51.955  on 71  degrees of freedom
-## Residual deviance: 48.738  on 69  degrees of freedom
-## AIC: 93.391
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
-<pre class="r"><code>summary(glm(GQ_none_correct == 0 ~  DCCS_post, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## Error in summary(glm(GQ_none_correct == 0 ~ DCCS_post, data = d_all, family = &quot;binomial&quot;)): error in evaluating the argument 'object' in selecting a method for function 'summary': Error in eval(expr, envir, enclos) : object 'DCCS_post' not found
-## Calls: glm ... eval -&gt; &lt;Anonymous&gt; -&gt; model.frame.default -&gt; eval -&gt; eval</code></pre>
-<pre class="r"><code>summary(glm(GQ_none_correct == 0 ~  DCCS_post + test_age, data=d_all, 
-            family = &quot;binomial&quot;))</code></pre>
-<pre><code>## Error in summary(glm(GQ_none_correct == 0 ~ DCCS_post + test_age, data = d_all, : error in evaluating the argument 'object' in selecting a method for function 'summary': Error in eval(expr, envir, enclos) : object 'DCCS_post' not found
-## Calls: glm ... eval -&gt; &lt;Anonymous&gt; -&gt; model.frame.default -&gt; eval -&gt; eval</code></pre>
+<pre class="r"><code># d_all %&lt;&gt;%
+#   mutate(`Post-switch` = as.numeric(`Post-switch`))
+# summary(glm(SI_overall ~ `Post-switch`, data=d_all, 
+#             family = &quot;binomial&quot;))
+# 
+# summary(glm(SI_implicature ~ `Post-switch` + GQ_some_correct + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(SI_implicature ~ `Post-switch` + GQ_some_correct + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(SI_implicature ~  `Post-switch` + GQ_some_correct, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(SI_implicature ~  GQ_some_correct + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))
+# 
+# summary(glm(SI_none ~ `Post-switch` + GQ_none_correct + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(SI_none ~ `Post-switch` + GQ_none_correct, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(SI_none ~ GQ_none_correct + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))
+# 
+# summary(glm(SI_implicature ~ `Post-switch` + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(GQ_none_correct == 0 ~  DCCS_post, data=d_all, 
+#             family = &quot;binomial&quot;))
+# summary(glm(GQ_none_correct == 0 ~  DCCS_post + test_age, data=d_all, 
+#             family = &quot;binomial&quot;))</code></pre>
 
 
 </div>

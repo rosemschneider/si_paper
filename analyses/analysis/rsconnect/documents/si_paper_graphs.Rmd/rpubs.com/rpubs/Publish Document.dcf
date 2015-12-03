@@ -1,0 +1,7 @@
+name: Publish Document
+account: rpubs
+server: rpubs.com
+bundleId:
+        https://api.rpubs.com/api/v1/document/124839/a2072bea00d648b2aa7b21b6a40a6e9d
+url: http://rpubs.com/rosemschneider/124839/edit
+when: 1447195386.54893

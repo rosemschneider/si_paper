@@ -3,6 +3,5 @@ account: rpubs
 server: rpubs.com
 bundleId:
         https://api.rpubs.com/api/v1/document/119296/9160844b088a43f7aef86563dea00b3e
-url:
-        http://rpubs.com/publish/claim/119296/54fe5ae7eb5541a88a519c46c13b7315
-when: 1445447592.32621
+url: http://rpubs.com/rosemschneider/119296
+when: 1447263872.84413

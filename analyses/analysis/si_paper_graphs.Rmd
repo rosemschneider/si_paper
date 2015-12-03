@@ -49,28 +49,26 @@ data_exp1$type <- d_exp1$value[1729:2592]
 names(data_exp1)[5] <- "item"
 names(data_exp1)[6] <- "correct"
 
-data_exp1$correct <- data_exp1$correct==1
-
 attach(data_exp1)
 data_exp1$trial_type[type == "implicature"] <- "implicature"
 data_exp1$trial_type[type != "implicature"] <- "control"
 detach(data_exp1)
 
+#rename agegroups for prettier graphs
+data_exp1$agegroup %<>%
+  str_replace("4.0--4.5", "4-4.5 years")%>%
+  str_replace("4.5--5.0", "4.5-5 years")
+
 data_exp1 %<>%
-  dplyr::filter(Subj_ID != "", correct != "NA") %>%
-  mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
-         agesplit = factor(agesplit,
-                           labels=c("4-4.5 years", "4.5-5 years"))) %>%
-  dplyr::filter(agesplit != "NA")
+  rename(Age = agegroup)
 
-data %<>%
-  dplyr::filter(condition == "scalar") %>%
-  mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
-         agesplit = factor(agesplit,
-                           labels=c("4-4.5 years", "4.5-5 years")))
-
-check <- data_exp1 %>%
-  dplyr::filter(condition == "Scalar")
+#age groups
+# data_exp1 %<>%
+#   filter(Subj_ID != "", correct != "NA") %>%
+#   mutate(agesplit = cut(age, breaks=c(4, 4.5, 5)),
+#          agesplit = factor(agesplit,
+#                            labels=c("4-4.5 years", "4.5-5 years"))) %>%
+#   filter(agesplit != "NA")
 
 #renaming for graphs
 data_exp1$type <- factor(data_exp1$type, 
@@ -85,8 +83,13 @@ data_exp1$condition <- factor(data_exp1$condition,
 					levels = c("adhoc","scalar"), 
 					labels = c("Ad-hoc","Scalar"))
 
-data_exp1 %<>%
-  rename(Age = agesplit)
+# data_exp1 %<>%
+#   dplyr::rename(Age = agesplit)
+
+#age data
+age <- data_exp1 %>%
+  group_by(Age)%>%
+  summarise(mean = mean(age), sd = sd(age), median = median(age))
 ```
 
 Experiment 2: Scalar items only
@@ -105,21 +108,27 @@ names(data)[6] <- "correct"
 
 data_exp2 <- data
 
-#data$older <- (data$age>4.5)
-data_exp2$correct <- data_exp2$correct==1
-
-
 attach(data_exp2)
 data_exp2$trial_type[type == "some"] <- "implicature"
 data_exp2$trial_type[type != "some"] <- "control"
 detach(data_exp2)
 
+#rename agegroups
+data_exp2$agegroup %<>%
+  str_replace("3.0--3.5", "3-3.5 years")%>%
+  str_replace("3.5--4.0", "3.5-4 years")%>%
+  str_replace("4.0--4.5", "4-4.5 years")%>%
+  str_replace("4.5--5.0", "4.5-5 years")
+
 data_exp2 %<>%
-  dplyr::filter(Subj_ID != "", correct != "NA") %>%
-  mutate(agesplit = cut(age, breaks=c(3, 3.5, 4, 4.5, 5)),
-         agesplit = factor(agesplit,
-                           labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
-  dplyr::filter(agesplit != "NA")
+  rename(Age = agegroup)
+
+# data_exp2 %<>%
+#   filter(Subj_ID != "", correct != "NA") %>%
+#   mutate(agesplit = cut(age, breaks=c(3, 3.5, 4, 4.5, 5)),
+#          agesplit = factor(agesplit,
+#                            labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
+#   filter(agesplit != "NA")
 
 #renaming for graphs
 data_exp2$type <- factor(data_exp2$type, 
@@ -132,12 +141,16 @@ data_exp2$selectionType <- factor(data_exp2$selectionType,
 					"some"), 
 					labels = c("All","None", 
 					"Some"))
-data_exp2$trial_type <- factor(data_exp2$trial_type, 
-                               levels = c ("control", "implicature"), 
-                               labels = c("Control", "Implicature")) 
+# data_exp2$trial_type <- factor(data_exp2$trial_tyçpe, 
+#                                levels = c ("control", "implicature"), 
+#                                labels = c("Control", "Implicature")) 
 
-data_exp2 %<>%
-  rename(Age = agesplit)
+# data_exp2 %<>%
+#   rename(Age = agesplit)
+
+age <- data_exp2 %>%
+  group_by(Age)%>%
+data_exp2$trial_type <- factor(data_exp2$trial_type, levels=c("All", "Some", "None"))
 ```
 
 Exp 2 age details 
@@ -151,10 +164,10 @@ Experiment 3: SI, GQ, DCCS
 Scalar Implicature first
 ```{r}
 #reading in the original wide-form dataframe
-d3 <- read.csv("../data/SI_coding.csv")
+d1 <- read.csv("../data/SI_coding.csv")
 
 #fill in the selection types for easier analyses
-d3 %<>%
+d1 %<>%
   mutate(carrot_selection = factor(carrot_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")), 
          hat_selection = factor(hat_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
          cookies_selection = factor(cookies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
@@ -174,28 +187,27 @@ d3 %<>%
          bananas_selection = factor(bananas_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")), 
          butterflies_selection = factor(butterflies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")))
 
-data_SIexp3=melt.data.frame(d3,c("sub_ID","test_age", "order", "training"),c("carrot", "hat", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", "carrot_selection", "hat_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection", "carrot_type", "hat_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+d2=melt.data.frame(d1,c("sub_ID","test_age", "agegroup","training"),c("carrot", "hat", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", "carrot_selection", "hat_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection", "carrot_type", "hat_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
 
 #making a respectable df  
-onethird <- (1/3)*nrow(data_SIexp3)
-data <- data_SIexp3[1:onethird,]
-data$selection <- data_SIexp3$value[(onethird+1):(onethird*2)]
-data$type <- data_SIexp3$value[(2*onethird+1):nrow(data_SIexp3)]
+onethird <- (1/3)*nrow(d2)
+data <- d2[1:onethird,]
+data$selection <- d2$value[(onethird+1):(onethird*2)]
+data$type <- d2$value[(2*onethird+1):nrow(d2)]
 names(data)[5] <- "item"
 names(data)[6] <- "SI_correct"
 data$correct <- data$SI_correct==1
 
-data_SIexp3 <- data
-
 #filtering out NAs, adding agesplit
-data_SIexp3 %<>%
-  filter(sub_ID != "", correct != "NA") %>%
-  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
-         agesplit = factor(agesplit,
-                           labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
-  filter(agesplit != "NA")
+data %<>%
+  filter(sub_ID != "", correct != "NA") 
 
-data_SIexp3$type %<>%
+data %<>%
+  rename(Age = agegroup)
+
+#renaming for better-looking graphs
+data$type %<>%
   str_replace("control_all", "All")%>%
   str_replace("control_none", "None")%>%
   str_replace("implicature", "Implicature")
@@ -205,75 +217,90 @@ data$selection %<>%
   str_replace("none", "None")%>%
   str_replace("some", "Some")
 
-data_SIexp3 %<>%
-  rename(Age = agesplit)
+#Find the Mean and median ages
+age <- data %>%
+  dplyr::select(sub_ID, test_age, Age) %>%
+  dplyr::distinct() %>%
+  group_by(Age)%>%
+  summarise(n=n(), avg = mean(test_age))
+
+#use this dataframe for stats
+data_SIexp3 <- data %>%
+  mutate(test = "Scalar Implicature")
+
+#age stats
+age <- data_SIexp3 %>%
+  group_by(Age)%>%
+  summarise(mean = mean(test_age), median = median(test_age), sd = sd(test_age))
+
 ```
 
 GIVE-QUANTIFIER
 ```{r}
 #read in and establish dataframe
-g <- read.csv("../data/GQ_coding.csv")
-g[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] <- sapply(g[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
+d1 <- read.csv("../data/GQ_coding.csv")
+d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] <- sapply(d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
 
 #change to long form
-gq=melt.data.frame(g,c("sub_ID", "test_age","condition", "order", "training"),c("X1_condition", "X2_condition", "X3_condition", "X4_condition", "X5_condition", "X6_condition",  "X7_condition", "X8_condition", "X1_given", "X2_given", "X3_given", "X4_given", "X5_given", "X6_given",  "X7_given", "X8_given", "X1_correct", "X2_correct", "X3_correct", "X4_correct", "X5_correct", "X6_correct",  "X7_correct", "X8_correct"))
+d2=melt.data.frame(d1,c("sub_ID", "test_age","agegroup", "condition", "training"),c("X1_condition", "X2_condition", "X3_condition", "X4_condition", "X5_condition", "X6_condition",  "X7_condition", "X8_condition", "X1_given", "X2_given", "X3_given", "X4_given", "X5_given", "X6_given",  "X7_given", "X8_given", "X1_correct", "X2_correct", "X3_correct", "X4_correct", "X5_correct", "X6_correct",  "X7_correct", "X8_correct"))
 
 #making a respectable df  
-onethird <- (1/3)*nrow(gq)
-data <- gq[1:onethird,]
-data$selection <- gq$value[(onethird+1):(onethird*2)]
-data$type <- gq$value[(2*onethird+1):nrow(gq)]
+onethird <- (1/3)*nrow(d2)
+data <- d2[1:onethird,]
+data$selection <- d2$value[(onethird+1):(onethird*2)]
+data$type <- d2$value[(2*onethird+1):nrow(d2)]
 names(data)[6] <- "trial"
 names(data)[7] <- "prompt"
 names(data)[8] <- "num_given"
 names(data)[9] <- "GQ_correct"
 
-gq <- data
-
 #filtering data, creating age breaks
-gq %<>%
-  filter(sub_ID != "", num_given != "N/A") %>%
-  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
-         agesplit = factor(agesplit,
-                           labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"))) %>%
-  filter(agesplit != "NA", num_given != "0 (8 oranges)", num_given != "0 (8 bananas)", num_given != "0 (8 strawberries)")
+data %<>%
+  filter(sub_ID != "", num_given != "N/A")%>%
+  rename(Age = agegroup)
 
 #this is because num_given is a factor - need to change to a number - need to do this for standard error
-gq$num_given <- as.character(gq$num_given)
-gq$num_given <- as.numeric(gq$num_given)
-gq$GQ_correct <-as.character(gq$GQ_correct)
-gq$GQ_correct <- as.numeric(gq$GQ_correct)
+data$num_given <- as.character(data$num_given)
+data$num_given <- as.numeric(data$num_given)
+data$GQ_correct <-as.character(data$GQ_correct)
+data$GQ_correct <- as.numeric(data$GQ_correct)
 
 #renaming things for prettier graphs
-gq$prompt %<>%
+data$prompt %<>%
   str_replace("all", "All")%>%
   str_replace("most", "Most")%>%
   str_replace("some", "Some")%>%
   str_replace("none", "None")
 
 #creating dataframe for analyses
-data_gq <- gq %>%
+data_gq <- data %>%
   mutate(test = "Give-Quantifier")
 ```
 
 DCCS
 ```{r}
 #wide-form
-dc <- read.csv("../data/DCCS_coding.csv")
+d1 <- read.csv("../data/DCCS_coding.csv")
 #long form
-dccs=melt.data.frame(dc,c("sub_ID","test_age","condition", "order"),c("pre_1", "pre_2", "pre_3", "pre_4", "pre_5", "pre_6",  "post_1", "post_2", "post_3", "post_4", "post_5", "post_6"))
+d2=melt.data.frame(d1,c("sub_ID","test_age", "agegroup", "condition"),c("pre_1", "pre_2", "pre_3", "pre_4", "pre_5", "pre_6",  "post_1", "post_2", "post_3", "post_4", "post_5", "post_6"))
 
 #filtering data, creating age breaks
-dccs %<>%
-  filter(sub_ID != "") %>%
-  mutate(agesplit = cut(test_age, breaks=c(3, 3.5, 4, 4.5, 5)), 
-         agesplit = factor(agesplit,labels=c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years")))
+data <- d2 %>%
+  filter(sub_ID != "") 
+
+data %<>%
+  rename(Age = agegroup)
 
 #renaming things
-names(dccs)[5] <- "trial_type"
-names(dccs)[6] <- "DCCS_correct"
+names(data)[5] <- "trial_type"
+names(data)[6] <- "DCCS_correct"
 
-tmp1 <- unlist(dccs$trial_type)%>%
+#df for further analyses
+data_dccs <- data
+data_dccs$test <- "DCCS"
+  
+#rename trials
+tmp1 <- unlist(data$trial_type)%>%
   str_replace("pre_1", "pre")%>%
   str_replace("pre_2", "pre")%>%
   str_replace("pre_3", "pre")%>%
@@ -289,16 +316,16 @@ tmp1 <- unlist(dccs$trial_type)%>%
 
 tmp <- as.data.frame(tmp1) %>%
   dplyr::rename(switch_type = tmp1)
-tmp2 <- bind_cols(dccs, tmp)
-dccs <- tmp2
+tmp2 <- bind_cols(data, tmp)
+data <- tmp2
 
 #renaming for prettier graphs
-dccs$switch_type %<>%
+data$switch_type %<>%
   str_replace("post", "Post-switch")%>%
   str_replace("pre", "Pre-switch")
 
-dccs$trial_type <- factor(dccs$trial_type, levels=c("Pre-switch","Post-switch"))
-
+data$switch_type <- as.factor(data$switch_type)
+dccs <- data
 ```
 
 GRAPHS
@@ -353,7 +380,8 @@ ggplot(data = agg.1,
                  position=position_dodge(1)) +
   ylab("Proportion correct") + 
   xlab("Trial Type") +
-  theme_bw(base_size=20) +
+  theme_bw(base_size = 17) + theme(axis.title.x = element_text(size=18),
+           axis.title.y  = element_text(size=18)) +
   scale_fill_manual(values = c("#4EB3D3", "#0868AC")) + facet_grid(~condition, scale="free_x") + geom_hline(yintercept = .5, linetype = "dashed")
 ```
 
@@ -362,18 +390,20 @@ Histogram of bimodal responses
 imp_hist <- data_exp1 %>%
   filter(condition == "Scalar" & type == "Implicature")%>%
   group_by(Subj_ID)%>%
+  mutate(correct=as.numeric(correct))%>%
   summarise(mean = mean(correct))
 
 quartz()
 hist(imp_hist$mean, main = paste('"Some" trials'), xlab = 'Performance on "some" trials', cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
 
 #ggplot
-quartz()
-ggplot(d, aes(x = correct), width = 50, fill = type) + geom_histogram(stat = "bin", position = "dodge") + ylab("Frequency") + xlab('Proportion of trials correct') + theme_bw(base_size=18) + facet_grid(~type)
+# quartz()
+# ggplot(d, aes(x = correct), width = 50, fill = type) + geom_histogram(stat = "bin", position = "dodge") + ylab("Frequency") + xlab('Proportion of trials correct') + theme_bw(base_size=18) + facet_grid(~type)
 
 none_hist <- data_exp1 %>%
   filter(condition == "Scalar" & type == "None") %>%
   group_by(Subj_ID)%>%
+  mutate(correct = as.numeric(correct))%>%
   summarise(mean = mean(correct))
 
 quartz()
@@ -382,6 +412,9 @@ hist(none_hist$mean, main = paste('"None" trials'), xlab = 'Performance on "none
 
 Individual differences
 ```{r}
+data_exp1 %<>%
+  mutate(correct = as.numeric(correct))
+
 ms <- ddply(data_exp1, .(type, condition, Subj_ID), summarise, 
 	mean = mean(correct),
 	Age = Age[1])
@@ -395,7 +428,8 @@ ggplot(cs, aes(x=None_Scalar, y=Implicature_Scalar, colour=Age)) +
   geom_point(stat = "identity", position = position_jitter(.02), shape=16) +
   geom_smooth(method="lm", col="black", lty=1) + 
   geom_smooth(aes(col=Age, group=Age), 
-				se=FALSE, method="lm",lty=3) + scale_colour_manual(values = c("#4EB3D3", "#0868AC")) + theme_bw(base_size=20) +
+				se=FALSE, method="lm",lty=3) + scale_colour_manual(values = c("#4EB3D3", "#0868AC")) + theme_bw(base_size=20) + theme(axis.title.y = element_text(size = 18), 
+				                      axis.title.x = element_text(size = 18)) +
   labs(x = 'Proportion of "none" trials correct', y = 'Proportion of "some" trials correct')
 
 ```
@@ -409,7 +443,7 @@ agg.2<- data_exp2 %>%
   group_by(type, trial_type, Age)%>%
   multi_boot_standard("correct", na.rm=T)
 
-
+agg.2$type <- factor(agg.2$type, levels=c("All","Some", "None"))
 
 # agg.data <- aggregate(data_exp2$correct, list(data_exp2$type, data_exp2$trial_type, data_exp2$Age), FUN=sum)
 # agg.data.len <- aggregate(data_exp2$correct, list(data_exp2$type, data_exp2$trial_type, data_exp2$Age), FUN=length)
@@ -438,7 +472,8 @@ ggplot(data = agg.2,
                  position=position_dodge(1)) +
   ylab("Proportion correct") + 
   xlab("Trial Type") +
-  theme_bw(base_size=20) +
+  theme_bw(base_size=17) + theme(axis.title.x = element_text(size=18), 
+                                 axis.title.y = element_text(size=18)) +
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
 
 # mss.acc <- data_exp2 %>%
@@ -459,20 +494,22 @@ ggplot(data = agg.2,
 
 ##analysis of what kinds of items kids chose when they picked the wrong thing
 exp2_wrong <- data_exp2 %>%
-  filter(correct != "TRUE") %>%
+  filter(correct != 1) %>%
   group_by(Age, type, selectionType)%>%
   dplyr::summarise(n=n())%>%
   mutate(n.total = sum(n), prop = n/n.total)
 
-wrong <- exp2_wrong[c(1:8, 10:15),] 
+wrong <- exp2_wrong[c(1:12, 14:20),] 
     
 #now graph
 quartz()
 ggplot(data = wrong, 
-       aes(x=selectionType, y=prop, fill=Age)) +
+       aes(x=selectionType, y=n, fill=Age)) +
   geom_bar(stat="identity", position = position_dodge())  +
-  ylab("Proportion of children choosing") + 
-  xlab("Selection Type") + facet_wrap(~type) + theme_bw(base_size=20) +
+  ylab("Count of children choosing") + 
+  xlab("Selection Type") + facet_wrap(~type) + theme_bw(base_size=17) + 
+  theme(axis.title.x = element_text(size=18),
+        axis.title.y = element_text(size=18))+
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
 ```
 
@@ -500,6 +537,13 @@ agg.3 <- data_SIexp3 %>%
   group_by(type, Age)%>%
   multi_boot_standard("correct", na.rm=T)
 
+agg.3$type %<>%
+  str_replace("Implicature", "Some")
+
+agg.3$type <- factor(agg.3$type, levels=c("All", "Some", "None"))
+
+
+
 #plot
 quartz()
 ggplot(data = agg.3, 
@@ -512,7 +556,8 @@ ggplot(data = agg.3,
                  position=position_dodge(1)) +
   ylab("Proportion correct") + 
   xlab("Trial Type") +
-  theme_bw(base_size=20) +
+  theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
+                                 axis.title.y = element_text(size = 18)) +
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
 
 #What kinds of items are children giving in incorrect trials? 
@@ -536,8 +581,9 @@ quartz()
 ggplot(data = si_wrong, 
        aes(x=selection, y=n, fill=Age)) +
   geom_bar(stat="identity", position = position_dodge())  +
-  ylab("Proportion of children choosing") + 
-  xlab("Selection Type") + facet_wrap(~type) + theme_bw(base_size=20) +
+  ylab("Count of children choosing") + 
+  xlab("Selection Type") + facet_wrap(~type) + theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18), 
+                                                                              axis.title.y = element_text(size = 18))+
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
   
 ```
@@ -546,9 +592,8 @@ DCCS
 ```{r}
 agg.DCCS <- dccs %>%
   mutate(DCCS_correct = as.integer(DCCS_correct)) %>%
-  group_by(switch_type, agesplit)%>%
-  multi_boot_standard("DCCS_correct", na.rm=T)%>%
-  rename(Age=agesplit)
+  group_by(switch_type, Age)%>%
+  multi_boot_standard("DCCS_correct", na.rm=T)
 
 agg.DCCS$switch_type <- factor(agg.DCCS$switch_type, levels=c("Pre-switch","Post-switch"))
 agg.DCCS %<>%
@@ -566,17 +611,20 @@ ggplot(data = agg.DCCS,
                  position=position_dodge(1)) +
   ylab("Proportion correct") + 
   xlab("Trial Type") +
-  theme_bw(base_size=20) +
+  theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
+                                 axis.title.y = element_text(size = 18)) +
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
 ```
 
 GQ
 ```{r}
 agg.gq <- data_gq %>%
+  filter(prompt != "Most") %>%
   mutate(GQ_correct = as.integer(GQ_correct)) %>%
-  group_by(prompt, agesplit)%>%
-  multi_boot_standard("GQ_correct", na.rm=T)%>%
-  rename(Age=agesplit)
+  group_by(prompt, Age)%>%
+  multi_boot_standard("GQ_correct", na.rm=T)
+
+agg.gq$prompt <- factor(agg.gq$prompt, levels=c("All","Some", "None"))
 
 quartz()
 ggplot(data = agg.gq, 
@@ -589,17 +637,17 @@ ggplot(data = agg.gq,
                  position=position_dodge(1)) +
   ylab("Proportion correct") + 
   xlab("Quantifier Prompt") +
-  theme_bw(base_size=20) +
+  theme_bw(base_size=17) + theme(axis.title.x = element_text(size=18),
+                                 axis.title.y = element_text(size=18)) +
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
 
 
 hist_data <- data_gq %>%
   filter(prompt != "Most")%>%
-  group_by(agesplit, prompt, num_given)%>%
+  group_by(Age, prompt, num_given)%>%
   dplyr::summarise(n = n()) %>%
-  group_by(agesplit, prompt) %>%
-  mutate(n.total = sum(n), prop = n/n.total)%>%
-  rename(Age=agesplit)
+  group_by(Age, prompt) %>%
+  mutate(n.total = sum(n), prop = n/n.total)
 
 
 quartz()
@@ -608,7 +656,8 @@ ggplot(data = hist_data,
   geom_bar(stat="identity", position = position_dodge(1)) +
   ylab("Proportion of children giving number") + 
   xlab("Number of items") +
-  theme_bw(base_size=20) +
+  theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
+                                 axis.title.y = element_text(size=18)) +
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + facet_grid(prompt~Age) + theme(legend.position="none") 
 
 ```
