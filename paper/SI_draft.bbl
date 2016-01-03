@@ -166,6 +166,31 @@ Degen, J.%
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
+Franke%
+}{%
+Franke%
+}{%
+{\protect \APACyear {2014}}%
+}]{%
+franke2014}
+\APACinsertmetastar {%
+franke2014}%
+\begin{APACrefauthors}%
+Franke, M.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2014}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {Typical use of quantifiers: A probabilistic speaker
+  model} {Typical use of quantifiers: A probabilistic speaker model}.{\BBCQ}
+\newblock
+\BIn{} \APACrefbtitle {Proceedings of the 36th Annual Conference of the
+  Cognitive Science Society} {Proceedings of the 36th annual conference of the
+  cognitive science society}\ (\BPG~487-492).
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
 Grice%
 }{%
 Grice%

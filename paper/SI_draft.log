@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  3 DEC 2015 11:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.5.25)  3 JAN 2016 14:53
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -320,31 +320,31 @@ Package floatrow Info: Modified rotfloat package code loaded on input line 473.
 (./SI_draft.aux)
 \openout1 = `SI_draft.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 43.
-LaTeX Font Info:    Try loading font information for OMS+pzccm on input line 43
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OMS/pzccm/m/n on input line 45.
+LaTeX Font Info:    Try loading font information for OMS+pzccm on input line 45
 .
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omspzccm.fd
 File: omspzccm.fd 2000/01/03 Fontinst v1.801 font definitions for OMS/pzccm.
 )
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 43.
-LaTeX Font Info:    ... okay on input line 43.
-LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 43.
-LaTeX Font Info:    Try loading font information for LGR+cmr on input line 43.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 45.
+LaTeX Font Info:    ... okay on input line 45.
+LaTeX Font Info:    Checking defaults for LGR/cmr/m/n on input line 45.
+LaTeX Font Info:    Try loading font information for LGR+cmr on input line 45.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/cbfonts-fd/lgrcmr.fd
 File: lgrcmr.fd 2013/09/01 v1.0 Greek European Computer Regular
 )
-LaTeX Font Info:    ... okay on input line 43.
+LaTeX Font Info:    ... okay on input line 45.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/apa/english.apa
 File: english.apa 2006/01/01
@@ -450,50 +450,50 @@ e
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
 [1{/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 ]
 [2]
-LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 49
+LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 55
 .
  (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/ot1ptmcm.fd
 File: ot1ptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ptmcm.
 )
-LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 49
+LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 55
 .
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omlptmcm.fd
 File: omlptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ptmcm.
 )
-LaTeX Font Info:    Try loading font information for OMX+psycm on input line 49
+LaTeX Font Info:    Try loading font information for OMX+psycm on input line 55
 .
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omxpsycm.fd
 File: omxpsycm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/psycm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
-LaTeX Font Info:    Try loading font information for U+msa on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
+LaTeX Font Info:    Try loading font information for U+msa on input line 55.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 49.
+LaTeX Font Info:    Try loading font information for U+msb on input line 55.
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 49.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 55.
  [3] [4]
-[5]
+[5] [6]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: <default>
@@ -527,314 +527,320 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 []|\OT1/ptm/m/n/9 non-necessity--
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 \OT1/ptm/m/n/9 necessity,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 \OT1/ptm/m/n/9 possibility--
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 \OT1/ptm/m/n/9 impossibility,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 []|\OT1/ptm/m/n/9 5;1--5;11,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 \OT1/ptm/m/n/9 7;1--8;0,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 66--66
+Underfull \hbox (badness 10000) in paragraph at lines 80--80
 \OT1/ptm/m/n/9 9;0--9;5,
  []
 
 
-Underfull \hbox (badness 1571) in paragraph at lines 67--67
+Underfull \hbox (badness 1571) in paragraph at lines 81--81
 \OT1/ptm/m/n/9 in-fe-lic-i-tous weak de-scrip-tions for num-bers, and for
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--68
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
 []|\OT1/ptm/m/n/9 some--all,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 68--68
+Underfull \hbox (badness 10000) in paragraph at lines 82--82
 \OT1/ptm/m/n/9 ad-hoc,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--69
+Underfull \hbox (badness 10000) in paragraph at lines 83--83
 []\OT1/ptm/m/n/9 Guasti,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--69
+Underfull \hbox (badness 10000) in paragraph at lines 83--83
 \OT1/ptm/m/n/9 Chier-chia,
  []
 
 
-Underfull \hbox (badness 4441) in paragraph at lines 69--69
+Underfull \hbox (badness 4441) in paragraph at lines 83--83
 \OT1/ptm/m/n/9 Crain, Fop-polo,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--69
+Underfull \hbox (badness 10000) in paragraph at lines 83--83
 []|\OT1/ptm/m/n/9 ``Some gi-raffes have long necks''
  []
 
 
-Underfull \hbox (badness 1552) in paragraph at lines 69--69
+Underfull \hbox (badness 1552) in paragraph at lines 83--83
 \OT1/ptm/m/n/9 (repli-ca-tion of Noveck (2001)), and
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--69
+Underfull \hbox (badness 10000) in paragraph at lines 83--83
 \OT1/ptm/m/n/9 scene de-scrip-tions, e.g. ``Some
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 69--69
+Underfull \hbox (badness 10000) in paragraph at lines 83--83
 []|\OT1/ptm/m/n/9 Context mat-ters: 7-year-olds re-li-ably com-puter
  []
 
 
-Underfull \hbox (badness 1881) in paragraph at lines 69--69
+Underfull \hbox (badness 1881) in paragraph at lines 83--83
 \OT1/ptm/m/n/9 their sen-si-tiv-ity to the in-for-ma-tive-ness of speak-ers'
  []
 
 
-Underfull \hbox (badness 1194) in paragraph at lines 69--69
+Underfull \hbox (badness 1194) in paragraph at lines 83--83
 \OT1/ptm/m/n/9 de-scrip-tions (e.g., call-ing a grape ``fruit'' in-stead of
  []
 
 
-Underfull \hbox (badness 3849) in paragraph at lines 70--70
+Underfull \hbox (badness 3849) in paragraph at lines 84--84
 []|\OT1/ptm/m/n/9 Miller, Schmitt,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 70--70
+Underfull \hbox (badness 10000) in paragraph at lines 84--84
 []|\OT1/ptm/m/n/9 ``Make some faces HAPPY/Make
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 70--70
+Underfull \hbox (badness 10000) in paragraph at lines 84--84
 \OT1/ptm/m/n/9 SOME faces happy/Make some
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 70--70
+Underfull \hbox (badness 10000) in paragraph at lines 84--84
 \OT1/ptm/m/n/9 HAPPY faces'' (Study 1), ``Shoe
  []
 
 
-Underfull \hbox (badness 5475) in paragraph at lines 70--70
+Underfull \hbox (badness 5475) in paragraph at lines 84--84
 \OT1/ptm/m/n/9 me where Pete made some faces
  []
 
 
-Underfull \hbox (badness 1394) in paragraph at lines 70--70
+Underfull \hbox (badness 1394) in paragraph at lines 84--84
 \OT1/ptm/m/n/9 HAPPY/Show me where Pete made
  []
 
 
-Underfull \hbox (badness 1852) in paragraph at lines 71--71
+Underfull \hbox (badness 1852) in paragraph at lines 85--85
 []|\OT1/ptm/m/n/9 Time scale mat-ters: Across stud-ies, chil-dren were
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 72--72
+Underfull \hbox (badness 10000) in paragraph at lines 86--86
 []|\OT1/ptm/m/n/9 some--all,
  []
 
 
-Underfull \hbox (badness 3884) in paragraph at lines 73--73
+Underfull \hbox (badness 3884) in paragraph at lines 87--87
 []|\OT1/ptm/m/n/9 Barner, Brooks,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 73--73
+Underfull \hbox (badness 10000) in paragraph at lines 87--87
 []|\OT1/ptm/m/n/9 some--all,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 74--74
+Underfull \hbox (badness 10000) in paragraph at lines 88--88
 \OT1/ptm/m/n/9 Papafragou
  []
 
-[6]
-Underfull \hbox (badness 10000) in paragraph at lines 88--88
+[7] [8
+
+
+
+
+]
+Underfull \hbox (badness 10000) in paragraph at lines 106--106
 [][]\OT1/ptm/m/n/9 All stim-uli, data, and anal-y-ses are avail-able in a pub-l
 ic repos-i-tory at
  []
 
-[7
-
-
-
-
-] [8]
-<figures/implicatures_demo_letters.png, id=33, 997.7275pt x 364.36125pt>
+[9] <figures/implicatures_demo_letters.png, id=36, 997.7275pt x 364.36125pt>
 File: figures/implicatures_demo_letters.png Graphic file (type png)
 
 <use figures/implicatures_demo_letters.png>
 Package pdftex.def Info: figures/implicatures_demo_letters.png used on input li
-ne 101.
+ne 119.
 (pdftex.def)             Requested size: 395.7803pt x 144.54pt.
- [9 <./figures/implicatures_demo_letters.png>] [10] <figures/exp1_performance.p
-df, id=40, 815.02736pt x 222.859pt>
+ [10] [11 <./figures/implicatures_demo_letters.png>] [12]
+<figures/exp1_performance.pdf, id=46, 815.02736pt x 222.859pt>
 File: figures/exp1_performance.pdf Graphic file (type pdf)
 
 <use figures/exp1_performance.pdf>
-Package pdftex.def Info: figures/exp1_performance.pdf used on input line 142.
+Package pdftex.def Info: figures/exp1_performance.pdf used on input line 158.
 (pdftex.def)             Requested size: 407.51268pt x 111.42921pt.
- [11]
-LaTeX Font Info:    Try loading font information for OML+ptm on input line 152.
+ [13 <./figures/exp1_performance.pdf>]
+LaTeX Font Info:    Try loading font information for OML+ptm on input line 168.
 
 
 (/usr/local/texlive/2014/texmf-dist/tex/latex/psnfss/omlptm.fd
 File: omlptm.fd 
 )
 LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <10.95> not available
-(Font)              Font shape `OML/cmm/m/it' tried instead on input line 152.
- [12 <./figures/exp1_performance.pdf>]
-<figures/exp1_imphist.pdf, id=135, 660.25308pt x 329.77574pt>
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 168.
+
+<figures/exp1_imphist.pdf, id=138, 660.25308pt x 329.77574pt>
 File: figures/exp1_imphist.pdf Graphic file (type pdf)
 
 <use figures/exp1_imphist.pdf>
-Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 157.
+Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 173.
 (pdftex.def)             Requested size: 217.88419pt x 108.82632pt.
 
-Overfull \hbox (7.88188pt too wide) in paragraph at lines 157--157
+Overfull \hbox (7.88188pt too wide) in paragraph at lines 173--173
  [][] 
  []
 
 File: figures/exp1_imphist.pdf Graphic file (type pdf)
 <use figures/exp1_imphist.pdf>
-Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 157.
+Package pdftex.def Info: figures/exp1_imphist.pdf used on input line 173.
 (pdftex.def)             Requested size: 217.88419pt x 108.82632pt.
 
-Overfull \hbox (7.88188pt too wide) in paragraph at lines 157--157
+Overfull \hbox (7.88188pt too wide) in paragraph at lines 173--173
  [][] 
  []
 
-<figures/exp1_nonehist.pdf, id=136, 664.46301pt x 330.47737pt>
+<figures/exp1_nonehist.pdf, id=139, 664.46301pt x 330.47737pt>
 File: figures/exp1_nonehist.pdf Graphic file (type pdf)
 
 <use figures/exp1_nonehist.pdf>
-Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 158.
+Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 174.
 (pdftex.def)             Requested size: 219.27347pt x 109.05786pt.
 
-Overfull \hbox (9.27116pt too wide) in paragraph at lines 158--158
+Overfull \hbox (9.27116pt too wide) in paragraph at lines 174--174
  [][] 
  []
 
 File: figures/exp1_nonehist.pdf Graphic file (type pdf)
 <use figures/exp1_nonehist.pdf>
-Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 158.
+Package pdftex.def Info: figures/exp1_nonehist.pdf used on input line 174.
 (pdftex.def)             Requested size: 219.27347pt x 109.05786pt.
 
-Overfull \hbox (9.27116pt too wide) in paragraph at lines 158--158
+Overfull \hbox (9.27116pt too wide) in paragraph at lines 174--174
  [][] 
  []
 
-<figures/exp1_diffs.pdf, id=137, 614.45422pt x 346.3866pt>
+<figures/exp1_diffs.pdf, id=140, 614.45422pt x 346.3866pt>
 File: figures/exp1_diffs.pdf Graphic file (type pdf)
 
 <use figures/exp1_diffs.pdf>
-Package pdftex.def Info: figures/exp1_diffs.pdf used on input line 165.
+Package pdftex.def Info: figures/exp1_diffs.pdf used on input line 181.
 (pdftex.def)             Requested size: 337.95087pt x 190.51321pt.
- [13 <./figures/exp1_imphist.pdf> <./figures/exp1_nonehist.pdf>] [14 <./figures
-/exp1_diffs.pdf>] [15] [16]
-<figures/exp2_performance.pdf, id=351, 813.7538pt x 299.90453pt>
+ [14 <./figures/exp1_imphist.pdf> <./figures/exp1_nonehist.pdf>] [15 <./figures
+/exp1_diffs.pdf>] [16] [17]
+<figures/exp2_performance.pdf, id=354, 813.7538pt x 299.90453pt>
 File: figures/exp2_performance.pdf Graphic file (type pdf)
 
 <use figures/exp2_performance.pdf>
-Package pdftex.def Info: figures/exp2_performance.pdf used on input line 202.
+Package pdftex.def Info: figures/exp2_performance.pdf used on input line 232.
 (pdftex.def)             Requested size: 406.8759pt x 149.95189pt.
+ [18]
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 210.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 240.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7.4> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 210.
- [17 <./figures/exp2_performance.pdf>]
-<figures/exp2_wrong.pdf, id=427, 815.02736pt x 318.37003pt>
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 240.
+LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <10> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 240.
+
+<figures/exp2_wrong.pdf, id=358, 815.02736pt x 318.37003pt>
 File: figures/exp2_wrong.pdf Graphic file (type pdf)
 
 <use figures/exp2_wrong.pdf>
-Package pdftex.def Info: figures/exp2_wrong.pdf used on input line 214.
+Package pdftex.def Info: figures/exp2_wrong.pdf used on input line 244.
 (pdftex.def)             Requested size: 407.51268pt x 159.18462pt.
- [18 <./figures/exp2_wrong.pdf>] [19] [20] [21]
-<figures/exp3_performance.pdf, id=549, 814.39058pt x 241.96126pt>
+ [19 <./figures/exp2_performance.pdf>] [20 <./figures/exp2_wrong.pdf>] [21] [22
+]
+<figures/exp3_performance.pdf, id=553, 814.39058pt x 241.96126pt>
 File: figures/exp3_performance.pdf Graphic file (type pdf)
 
 <use figures/exp3_performance.pdf>
-Package pdftex.def Info: figures/exp3_performance.pdf used on input line 250.
+Package pdftex.def Info: figures/exp3_performance.pdf used on input line 282.
 (pdftex.def)             Requested size: 407.19429pt x 120.98033pt.
- [22 <./figures/exp3_performance.pdf>]
-<figures/DCCS.pdf, id=625, 813.7538pt x 315.8231pt>
+ [23 <./figures/exp3_performance.pdf>]
+<figures/DCCS.pdf, id=628, 813.7538pt x 315.8231pt>
 File: figures/DCCS.pdf Graphic file (type pdf)
  <use figures/DCCS.pdf>
-Package pdftex.def Info: figures/DCCS.pdf used on input line 261.
+Package pdftex.def Info: figures/DCCS.pdf used on input line 293.
 (pdftex.def)             Requested size: 406.8759pt x 157.91116pt.
 
-[23 <./figures/DCCS.pdf>]
-<figures/exp3_GQright.pdf, id=689, 815.02736pt x 317.73334pt>
+<figures/exp3_GQright.pdf, id=629, 815.02736pt x 317.73334pt>
 File: figures/exp3_GQright.pdf Graphic file (type pdf)
 
 <use figures/exp3_GQright.pdf>
-Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 270.
+Package pdftex.def Info: figures/exp3_GQright.pdf used on input line 302.
 (pdftex.def)             Requested size: 407.51268pt x 158.86627pt.
- [24 <./figures/exp3_GQright.pdf>]
-<figures/exp3_GQspread.pdf, id=768, 757.08395pt x 401.78294pt>
+ [24] [25 <./figures/DCCS.pdf> <./figures/exp3_GQright.pdf>] <figures/exp3_GQsp
+read.pdf, id=772, 757.08395pt x 401.78294pt>
 File: figures/exp3_GQspread.pdf Graphic file (type pdf)
 
 <use figures/exp3_GQspread.pdf>
-Package pdftex.def Info: figures/exp3_GQspread.pdf used on input line 279.
+Package pdftex.def Info: figures/exp3_GQspread.pdf used on input line 313.
 (pdftex.def)             Requested size: 378.54105pt x 200.89098pt.
- [25 <./figures/exp3_GQspread.pdf>]
-<figures/exp3_wrong.pdf, id=962, 813.11708pt x 268.0676pt>
+
+<figures/exp3_wrong.pdf, id=773, 813.11708pt x 268.0676pt>
 File: figures/exp3_wrong.pdf Graphic file (type pdf)
 
 <use figures/exp3_wrong.pdf>
-Package pdftex.def Info: figures/exp3_wrong.pdf used on input line 287.
+Package pdftex.def Info: figures/exp3_wrong.pdf used on input line 321.
 (pdftex.def)             Requested size: 406.55754pt x 134.03346pt.
- [26 <./figures/exp3_wrong.pdf>] [27] [28] [29]
-[30]
+ [26] [27 <./figures/exp3_GQspread.pdf> <./figures/exp3_wrong.pdf>] [28] [29] [
+30] [31]
 
-Class apa Warning: \bibliographystyle command ignored on input line 344.
+Class apa Warning: \bibliographystyle command ignored on input line 385.
 
-(./SI_draft.bbl [31]
+(./SI_draft.bbl [32]
 Missing character: There is no Â in font ptmr7t!
 Missing character: There is no ’ in font ptmr7t!
- [32
+ [33
 
-]) [33] [34] (./SI_draft.aux) )
+]) [34] [35] (./SI_draft.aux)
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ )
 (\end occurred inside a group at level 1)
 
-### simple group (level 1) entered at line 294 ({)
+### simple group (level 1) entered at line 307 ({)
 ### bottom level 
 Here is how much of TeX's memory you used:
- 6238 strings out of 493117
- 92937 string characters out of 6135433
- 169042 words of memory out of 5000000
- 9539 multiletter control sequences out of 15000+600000
- 52143 words of font info for 124 fonts, out of 8000000 for 9000
+ 6247 strings out of 493117
+ 93048 string characters out of 6135433
+ 168938 words of memory out of 5000000
+ 9546 multiletter control sequences out of 15000+600000
+ 55032 words of font info for 127 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 38i,12n,38p,1886b,420s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,12n,38p,1832b,420s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/base/8r.enc
 }</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
 </usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb><
@@ -843,10 +849,10 @@ al/texlive/2014/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/
 2014/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2014/texmf
 -dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2014/texmf-dist/font
 s/type1/urw/times/utmri8a.pfb>
-Output written on SI_draft.pdf (34 pages, 1726988 bytes).
+Output written on SI_draft.pdf (35 pages, 1730649 bytes).
 PDF statistics:
- 1120 PDF objects out of 1200 (max. 8388607)
- 835 compressed objects within 9 object streams
+ 1123 PDF objects out of 1200 (max. 8388607)
+ 837 compressed objects within 9 object streams
  0 named destinations out of 1000 (max. 500000)
  61 words of extra memory for PDF output out of 10000 (max. 10000000)
 
