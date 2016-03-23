@@ -226,23 +226,44 @@ d <- data_exp2 %>%
   mutate(correct = as.numeric(as.character(correct)))
 
 d <- aggregate(correct ~ type + Age +  Subj_ID, data=d, mean)
-#All
-t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, mu=0.5)
-t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, mu=0.5)
-t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, mu=0.5)
-t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, mu=0.5)
+# #All
+# t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, mu=0.5)
+# t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, mu=0.5)
+# t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, mu=0.5)
+# t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, mu=0.5)
+# 
+# #Some
+# t.test(subset(d, Age=="3-3.5 years"  & type=="Some")$correct, mu=0.5)
+# t.test(subset(d, Age=="3.5-4 years" & type=="Some")$correct, mu=0.5)
+# t.test(subset(d, Age=="4-4.5 years" & type=="Some")$correct, mu=0.5)
+# t.test(subset(d, Age=="4.5-5 years" & type=="Some")$correct, mu=0.5)
+# 
+# #none
+# t.test(subset(d, Age=="3-3.5 years"  & type=="None")$correct, mu=0.5)
+# t.test(subset(d, Age=="3.5-4 years" & type=="None")$correct, mu=0.5)
+# t.test(subset(d, Age=="4-4.5 years" & type=="None")$correct, mu=0.5)
+# t.test(subset(d,Age=="4.5-5 years" & type=="None")$correct, mu=0.5)
 
-#Some
-t.test(subset(d, Age=="3-3.5 years"  & type=="Some")$correct, mu=0.5)
-t.test(subset(d, Age=="3.5-4 years" & type=="Some")$correct, mu=0.5)
-t.test(subset(d, Age=="4-4.5 years" & type=="Some")$correct, mu=0.5)
-t.test(subset(d, Age=="4.5-5 years" & type=="Some")$correct, mu=0.5)
+#tests between quantifiers
+#all and some
+t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, 
+       subset(d, Age=="3-3.5 years" & type=="Some")$correct)
+t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, 
+       subset(d, Age=="3.5-4 years" & type=="Some")$correct)
+t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, 
+       subset(d, Age=="4-4.5 years" & type=="Some")$correct)
+t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, 
+       subset(d, Age=="4.5-5 years" & type=="Some")$correct)
 
-#none
-t.test(subset(d, Age=="3-3.5 years"  & type=="None")$correct, mu=0.5)
-t.test(subset(d, Age=="3.5-4 years" & type=="None")$correct, mu=0.5)
-t.test(subset(d, Age=="4-4.5 years" & type=="None")$correct, mu=0.5)
-t.test(subset(d,Age=="4.5-5 years" & type=="None")$correct, mu=0.5)
+#all and none
+t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, 
+       subset(d, Age=="3-3.5 years" & type=="None")$correct)
+t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, 
+       subset(d, Age=="3.5-4 years" & type=="None")$correct)
+t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, 
+       subset(d, Age=="4-4.5 years" & type=="None")$correct)
+t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, 
+       subset(d, Age=="4.5-5 years" & type=="None")$correct)
 ```
 
 Create a dataframe to compare performance between Exp 1 scalar trials and experiment 2

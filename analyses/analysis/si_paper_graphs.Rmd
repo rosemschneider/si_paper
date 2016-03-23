@@ -82,6 +82,10 @@ data_exp1$type <- factor(data_exp1$type,
 data_exp1$condition <- factor(data_exp1$condition, 
 					levels = c("adhoc","scalar"), 
 					labels = c("Ad-hoc","Scalar"))
+data_exp1 %<>%
+  filter(correct != "na")
+
+data_exp1$numcorr <- as.integer(data_exp1$correct)
 
 # data_exp1 %<>%
 #   dplyr::rename(Age = agesplit)
@@ -148,9 +152,9 @@ data_exp2$selectionType <- factor(data_exp2$selectionType,
 # data_exp2 %<>%
 #   rename(Age = agesplit)
 
-age <- data_exp2 %>%
-  group_by(Age)%>%
-data_exp2$trial_type <- factor(data_exp2$trial_type, levels=c("All", "Some", "None"))
+# age <- data_exp2 %>%
+#   group_by(Age)%>%
+# data_exp2$trial_type <- factor(data_exp2$trial_type, levels=c("All", "Some", "None"))
 ```
 
 Exp 2 age details 
@@ -382,32 +386,51 @@ ggplot(data = agg.1,
   xlab("Trial Type") +
   theme_bw(base_size = 17) + theme(axis.title.x = element_text(size=18),
            axis.title.y  = element_text(size=18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#0868AC")) + facet_grid(~condition, scale="free_x") + geom_hline(yintercept = .5, linetype = "dashed")
+  scale_fill_manual(values = c("#4EB3D3", "#0868AC")) + facet_grid(~condition, scale="free_x") 
+# + geom_hline(yintercept = .5, linetype = "dashed")
 ```
 
 Histogram of bimodal responses
 ```{r}
-imp_hist <- data_exp1 %>%
-  filter(condition == "Scalar" & type == "Implicature")%>%
-  group_by(Subj_ID)%>%
-  mutate(correct=as.numeric(correct))%>%
-  summarise(mean = mean(correct))
+# imp_hist <- data_exp1 %>%
+#   filter(condition == "Scalar" & type == "Implicature")%>%
+#   group_by(Subj_ID)%>%
+#   mutate(correct=as.numeric(correct))%>%
+#   summarise(mean = mean(correct))
+# 
+# quartz()
+# hist(imp_hist$mean, main = paste('"Some" trials'), xlab = 'Performance on "some" trials', cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+
+exp1_hist <- data_exp1 %>%
+  filter(condition == "Scalar" & type != "All" & type != "Unambig. Some", na.rm = TRUE)%>%
+  group_by(Subj_ID, type)%>%
+  multi_boot_standard("numcorr", na.rm = TRUE)
 
 quartz()
-hist(imp_hist$mean, main = paste('"Some" trials'), xlab = 'Performance on "some" trials', cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+ggplot(exp1_hist, aes(x = mean, fill=type, )) + 
+  geom_histogram(colour = "black", stat = "bin",breaks = c(0,.2,.4,.6,.8,1), binwidth = .2) + 
+  theme_bw(base_size = 18) + 
+  xlab("Mean performance") + 
+  ylab("Frequency") + 
+  facet_wrap(~type) + 
+  theme(legend.position="none") + 
+  theme(axis.title.x = element_text(size = 16), axis.title.y = element_text(size = 16)) +
+  scale_fill_manual(values = c("#4EB3D3", "#0868AC")) + 
+  scale_x_continuous(breaks = c(0,.2,.4,.6,.8,1))
+  
 
 #ggplot
 # quartz()
 # ggplot(d, aes(x = correct), width = 50, fill = type) + geom_histogram(stat = "bin", position = "dodge") + ylab("Frequency") + xlab('Proportion of trials correct') + theme_bw(base_size=18) + facet_grid(~type)
 
-none_hist <- data_exp1 %>%
-  filter(condition == "Scalar" & type == "None") %>%
-  group_by(Subj_ID)%>%
-  mutate(correct = as.numeric(correct))%>%
-  summarise(mean = mean(correct))
-
-quartz()
-hist(none_hist$mean, main = paste('"None" trials'), xlab = 'Performance on "none" trials', cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
+# none_hist <- data_exp1 %>%
+#   filter(condition == "Scalar" & type == "None") %>%
+#   group_by(Subj_ID)%>%
+#   mutate(correct = as.numeric(correct))%>%
+#   summarise(mean = mean(correct))
+# 
+# quartz()
+# hist(none_hist$mean, main = paste('"None" trials'), xlab = 'Performance on "none" trials', cex.lab=1.5, cex.axis=1.5, cex.main=1.5, cex.sub=1.5)
 ```
 
 Individual differences
@@ -425,7 +448,7 @@ cs <- cast(ms, Subj_ID + Age ~ type + condition, value="mean")
 #individual differences plot
 quartz()
 ggplot(cs, aes(x=None_Scalar, y=Implicature_Scalar, colour=Age)) + 
-  geom_point(stat = "identity", position = position_jitter(.02), shape=16) +
+  geom_point(shape = 16, size = 3, stat = "identity", position = position_jitter(.02)) +
   geom_smooth(method="lm", col="black", lty=1) + 
   geom_smooth(aes(col=Age, group=Age), 
 				se=FALSE, method="lm",lty=3) + scale_colour_manual(values = c("#4EB3D3", "#0868AC")) + theme_bw(base_size=20) + theme(axis.title.y = element_text(size = 18), 
@@ -474,7 +497,7 @@ ggplot(data = agg.2,
   xlab("Trial Type") +
   theme_bw(base_size=17) + theme(axis.title.x = element_text(size=18), 
                                  axis.title.y = element_text(size=18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
+  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
 
 # mss.acc <- data_exp2 %>%
 #   group_by(Subj_ID, type)%>%
@@ -558,7 +581,7 @@ ggplot(data = agg.3,
   xlab("Trial Type") +
   theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
                                  axis.title.y = element_text(size = 18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
+  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
 
 #What kinds of items are children giving in incorrect trials? 
 si_wrong <- data_SIexp3 %>%
