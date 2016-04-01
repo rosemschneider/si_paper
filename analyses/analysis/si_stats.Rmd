@@ -661,15 +661,36 @@ pcor.test(d_all$SI_none, d_all$GQ_some_correct, d_all$test_age)
 test against chance
 ```{r}
 #aggregate mean
-d <- data_si %>%
+df <- data_si %>%
   mutate(correct = as.numeric(as.character(SI_correct)))
 
-df <- aggregate(correct ~ type + Age +  sub_ID, data=d, mean)
+d <- aggregate(correct ~ type + Age +  sub_ID, data=df, mean)
 
 d.dccs <- data_dccs %>%
   mutate(correct=as.numeric(as.character(DCCS_correct)))
 
 df.dccs <- aggregate(correct ~ switch_type + Age +  sub_ID, data=d.dccs, mean) 
+
+#tests against All
+#all and some
+t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, 
+       subset(d, Age=="3-3.5 years" & type=="Implicature")$correct)
+t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, 
+       subset(d, Age=="3.5-4 years" & type=="Implicature")$correct)
+t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, 
+       subset(d, Age=="4-4.5 years" & type=="Implicature")$correct)
+t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, 
+       subset(d, Age=="4.5-5 years" & type=="Implicature")$correct)
+
+#all and none
+t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, 
+       subset(d, Age=="3-3.5 years" & type=="None")$correct)
+t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, 
+       subset(d, Age=="3.5-4 years" & type=="None")$correct)
+t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, 
+       subset(d, Age=="4-4.5 years" & type=="None")$correct)
+t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, 
+       subset(d, Age=="4.5-5 years" & type=="None")$correct)
 
 #3-3.5 - SI
 t.test(subset(df, Age=="3-3.5 years" & type=="All")$correct, mu=0.5)

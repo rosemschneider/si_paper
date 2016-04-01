@@ -335,59 +335,49 @@ dccs <- data
 GRAPHS
 
 Performance on experiment 1
-```{r}
+```{r, fig.width=6,fig.height=4}
 agg.1<- data_exp1 %>%
   mutate(correct = as.integer(correct)) %>%
   group_by(condition, type, trial_type, Age)%>%
   multi_boot_standard("correct", na.rm=T)
 
-# agg.data <- aggregate(data_exp1$correct, list(data_exp1$condition, data_exp1$type, data_exp1$trial_type, data_exp1$Age), FUN=sum)
-# agg.data.len <- aggregate(data_exp1$correct, list(data_exp1$condition, data_exp1$type, data_exp1$trial_type, data_exp1$Age), FUN=length)
-# agg.data$x <- agg.data$x 
-# names(agg.data) <- c("implicature_type", "type", "trial_type", "Age", "correct")
-# agg.data$total <- agg.data.len$x
-# agg.data$prop.corr <- agg.data$correct / agg.data$total
-
-# 
-# #find the total number of kids in each age group and n total
-# num_kids <- d_exp1 %>%
-#   dplyr::select(Subj_ID, agegroup) %>%
-#   dplyr::distinct() %>%
-#   dplyr::group_by(agegroup)%>%
-#   dplyr::summarize(n=n())%>%
-#   dplyr::mutate(total.n = sum(n))
-# 
-# agg.data$sd <- sd(agg.data$prop.corr, na.rm = FALSE)
-# 
-# #prop correct and standard error
-# agg.data$q <- 1 - agg.data$prop.corr
-# agg.data$err <- sqrt((agg.data$prop.corr * agg.data$q) / agg.data$total)
-# agg.data$CIerr <- qnorm(0.975)*agg.data$error/sqrt(n)
-
-
-# #limits for graphing
-# dodge <- position_dodge(width=0.9) 
-# limits <- aes(ymax = ci_upper, ymin=ci_lower) 
-
-#save df for later
-# agg.exp1 <- agg.data
-
-#graph
-quartz()
-ggplot(data = agg.1, 
-       aes(x=type, y=mean, fill=Age)) +
+pdf(file="./exp1_performance.pdf", width=6, height=4)
+p <- ggplot(data = agg.1, 
+       aes(x=type, y=mean, fill=type, alpha=Age)) + 
   geom_bar(stat="identity", position = position_dodge(1)) +
   geom_linerange(aes(ymin = ci_lower,
                       ymax = ci_upper),
-                  size = .8,
-                  show_guide = FALSE,
+                  size = .3,
+                  show.legend = FALSE,
                  position=position_dodge(1)) +
-  ylab("Proportion correct") + 
-  xlab("Trial Type") +
-  theme_bw(base_size = 17) + theme(axis.title.x = element_text(size=18),
-           axis.title.y  = element_text(size=18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#0868AC")) + facet_grid(~condition, scale="free_x") 
-# + geom_hline(yintercept = .5, linetype = "dashed")
+  theme_bw(base_size = 8) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(0.8, 1)) + 
+  ylab("Mean correct") + 
+  xlab("Trial type") +
+  langcog::scale_fill_solarized() + 
+facet_grid(~condition, scale = "free_x") + guides(fill = FALSE)
+print(p)
+aux <- dev.off()
+
+#graph
+# quartz()
+# ggplot(data = agg.1, 
+#        aes(x=type, y=mean, fill=type)) +
+#   geom_bar(stat="identity", position = position_dodge(1)) +
+#   geom_linerange(aes(ymin = ci_lower,
+#                       ymax = ci_upper),
+#                   size = .8,
+#                   show_guide = FALSE,
+#                  position=position_dodge(1)) +
+#   ylab("Proportion correct") + 
+#   xlab("Trial Type") +
+# #   theme_bw(base_size = 17) + theme(axis.title.x = element_text(size=18),
+# #            axis.title.y  = element_text(size=18)) +
+#   # scale_fill_manual(values = c("#4EB3D3", "#0868AC")) 
+#   facet_grid(~condition, scale="free_x") 
+# # + geom_hline(yintercept = .5, linetype = "dashed")
 ```
 
 Histogram of bimodal responses
@@ -405,6 +395,20 @@ exp1_hist <- data_exp1 %>%
   filter(condition == "Scalar" & type != "All" & type != "Unambig. Some", na.rm = TRUE)%>%
   group_by(Subj_ID, type)%>%
   multi_boot_standard("numcorr", na.rm = TRUE)
+
+pdf(file="./exp1_hist.pdf", width=6, height=4)
+q <- ggplot(exp1_hist, aes(x = mean, fill=type)) + 
+  geom_histogram(colour = "black", stat = "bin",breaks = c(0,.2,.4,.6,.8,1), binwidth = .2) + 
+  theme_bw(base_size = 18) + 
+  xlab("Mean performance") + 
+  ylab("Frequency") + 
+  facet_wrap(~type) + 
+  theme(legend.position="none") + 
+  theme(axis.title.x = element_text(size = 16), axis.title.y = element_text(size = 16)) +
+  langcog::scale_color_solarized() + 
+  scale_x_continuous(breaks = c(0,.2,.4,.6,.8,1))
+print(q)
+aux <- dev.off()
 
 quartz()
 ggplot(exp1_hist, aes(x = mean, fill=type, )) + 
