@@ -487,6 +487,26 @@ agg.2$type <- factor(agg.2$type, levels=c("All","Some", "None"))
 # #save df for later
 # agg.exp2 <- agg.data
 
+pdf(file="./exp2_performance.pdf", width=6, height=4)
+p <- ggplot(data = agg.2, 
+       aes(x=type, y=mean, fill=type, alpha=Age)) + 
+  geom_bar(position = "dodge", stat ="identity" ) +
+  geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  theme_bw(base_size = 8) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + 
+  ylab("Mean correct") + 
+  xlab("Trial type") +
+  langcog::scale_fill_solarized() + guides(fill = FALSE)
+print(p)
+aux <- dev.off()
+
+
 #graph
 quartz()
 ggplot(data = agg.2, 
