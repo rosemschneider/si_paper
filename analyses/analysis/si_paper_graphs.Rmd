@@ -340,23 +340,31 @@ agg.1<- data_exp1 %>%
   mutate(correct = as.integer(correct)) %>%
   group_by(condition, type, trial_type, Age)%>%
   multi_boot_standard("correct", na.rm=T)
+  
+agg.1$Age %<>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
 
-pdf(file="./exp1_performance.pdf", width=6, height=4)
+agg.1 %<>% 
+  rename(`Age (years)`= Age)
+
+
+pdf(file="./exp1_performance.pdf", width=6.5, height=4)
 p <- ggplot(data = agg.1, 
-       aes(x=type, y=mean, fill=type, alpha=Age)) + 
-  geom_bar(stat="identity", position = position_dodge(1)) +
+       aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) + 
+  geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
                       ymax = ci_upper),
                   size = .3,
                   show.legend = FALSE,
-                 position=position_dodge(1)) +
-  theme_bw(base_size = 8) + 
+                 position=position_dodge(width = 0.9)) +
+  theme_bw(base_size = 10) + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank()) +
   scale_alpha_manual(values=c(0.8, 1)) + 
   ylab("Mean correct") + 
   xlab("Trial type") +
-  langcog::scale_fill_solarized() + 
+  scale_fill_manual(values = c("darkcyan", "steelblue1", "firebrick2", "darkorange2", "orange", "purple4")) + 
 facet_grid(~condition, scale = "free_x") + guides(fill = FALSE)
 print(p)
 aux <- dev.off()
@@ -403,24 +411,14 @@ q <- ggplot(exp1_hist, aes(x = mean, fill=type)) +
   xlab("Mean performance") + 
   ylab("Frequency") + 
   facet_wrap(~type) + 
-  theme(legend.position="none") + 
-  theme(axis.title.x = element_text(size = 16), axis.title.y = element_text(size = 16)) +
-  langcog::scale_color_solarized() + 
+  theme_bw(base_size = 10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        legend.position = "none") +
+  scale_fill_manual(values = c("darkcyan", "darkorange2")) + 
   scale_x_continuous(breaks = c(0,.2,.4,.6,.8,1))
 print(q)
 aux <- dev.off()
-
-quartz()
-ggplot(exp1_hist, aes(x = mean, fill=type, )) + 
-  geom_histogram(colour = "black", stat = "bin",breaks = c(0,.2,.4,.6,.8,1), binwidth = .2) + 
-  theme_bw(base_size = 18) + 
-  xlab("Mean performance") + 
-  ylab("Frequency") + 
-  facet_wrap(~type) + 
-  theme(legend.position="none") + 
-  theme(axis.title.x = element_text(size = 16), axis.title.y = element_text(size = 16)) +
-  scale_fill_manual(values = c("#4EB3D3", "#0868AC")) + 
-  scale_x_continuous(breaks = c(0,.2,.4,.6,.8,1))
   
 
 #ggplot
@@ -449,16 +447,23 @@ ms <- ddply(data_exp1, .(type, condition, Subj_ID), summarise,
 names(ms) <- c("type", "condition", "Subj_ID", "mean", "Age")
 cs <- cast(ms, Subj_ID + Age ~ type + condition, value="mean")
 
-#individual differences plot
-quartz()
-ggplot(cs, aes(x=None_Scalar, y=Implicature_Scalar, colour=Age)) + 
-  geom_point(shape = 16, size = 3, stat = "identity", position = position_jitter(.02)) +
-  geom_smooth(method="lm", col="black", lty=1) + 
-  geom_smooth(aes(col=Age, group=Age), 
-				se=FALSE, method="lm",lty=3) + scale_colour_manual(values = c("#4EB3D3", "#0868AC")) + theme_bw(base_size=20) + theme(axis.title.y = element_text(size = 18), 
-				                      axis.title.x = element_text(size = 18)) +
-  labs(x = 'Proportion of "none" trials correct', y = 'Proportion of "some" trials correct')
+cs$Age %<>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
 
+cs %<>%
+  rename(`Age (years)` = Age)
+
+#individual differences plot
+pdf(file="./exp1_diffs.pdf", width=6, height=4)
+p <- ggplot(cs, aes(x=None_Scalar, y=Implicature_Scalar, colour=`Age (years)`)) + 
+  geom_point(shape = 16, size = 1.75, stat = "identity", position = position_jitter(.02)) +
+  geom_smooth(method="lm", col="black", lty=1) + 
+  geom_smooth(aes(col=`Age (years)`, group=`Age (years)`), 
+				se=FALSE, method="lm",lty=3) + scale_colour_manual(values = c("#4EB3D3", "#0868AC")) +   theme_bw(base_size=10)  +
+  labs(x = 'Proportion of "none" trials correct', y = 'Proportion of "some" trials correct')
+print(p)
+aux <- dev.off()
 ```
 
 
@@ -471,6 +476,15 @@ agg.2<- data_exp2 %>%
   multi_boot_standard("correct", na.rm=T)
 
 agg.2$type <- factor(agg.2$type, levels=c("All","Some", "None"))
+
+agg.2$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
+
+agg.2 %<>%
+  rename(`Age (years)` = Age)
 
 # agg.data <- aggregate(data_exp2$correct, list(data_exp2$type, data_exp2$trial_type, data_exp2$Age), FUN=sum)
 # agg.data.len <- aggregate(data_exp2$correct, list(data_exp2$type, data_exp2$trial_type, data_exp2$Age), FUN=length)
@@ -489,39 +503,23 @@ agg.2$type <- factor(agg.2$type, levels=c("All","Some", "None"))
 
 pdf(file="./exp2_performance.pdf", width=6, height=4)
 p <- ggplot(data = agg.2, 
-       aes(x=type, y=mean, fill=type, alpha=Age)) + 
+       aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) + 
   geom_bar(position = "dodge", stat ="identity" ) +
   geom_linerange(aes(ymin = ci_lower,
                       ymax = ci_upper),
                   size = .3,
                   show.legend = FALSE,
                  position=position_dodge(width = 0.9)) +
-  theme_bw(base_size = 8) + 
+  theme_bw(base_size = 10) + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank()) +
   scale_alpha_manual(values=c(.5,.625,.75,1)) + 
   ylab("Mean correct") + 
   xlab("Trial type") +
-  langcog::scale_fill_solarized() + guides(fill = FALSE)
+  scale_fill_manual(values = c("purple4", "darkcyan", "darkorange2")) + guides(fill = FALSE)
 print(p)
 aux <- dev.off()
 
-
-#graph
-quartz()
-ggplot(data = agg.2, 
-       aes(x=type, y=mean, fill=Age)) +
-  geom_bar(stat="identity", position = position_dodge(1)) +
-  geom_linerange(aes(ymin = ci_lower,
-                      ymax = ci_upper),
-                  size = .8,
-                  show_guide = FALSE,
-                 position=position_dodge(1)) +
-  ylab("Proportion correct") + 
-  xlab("Trial Type") +
-  theme_bw(base_size=17) + theme(axis.title.x = element_text(size=18), 
-                                 axis.title.y = element_text(size=18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
 
 # mss.acc <- data_exp2 %>%
 #   group_by(Subj_ID, type)%>%
@@ -547,17 +545,32 @@ exp2_wrong <- data_exp2 %>%
   mutate(n.total = sum(n), prop = n/n.total)
 
 wrong <- exp2_wrong[c(1:12, 14:20),] 
+
+wrong$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
+
+wrong %<>%
+  rename(`Age (years)` = Age)
+
+wrong$selectionType <- factor(wrong$selectionType, levels=c("All", "Some", "None"))  
     
 #now graph
-quartz()
-ggplot(data = wrong, 
-       aes(x=selectionType, y=n, fill=Age)) +
+pdf(file="./exp2_wrong.pdf", width=6, height=4)
+p <- ggplot(data = wrong, 
+       aes(x=selectionType, y=n, fill=selectionType, alpha=`Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge())  +
   ylab("Count of children choosing") + 
-  xlab("Selection Type") + facet_wrap(~type) + theme_bw(base_size=17) + 
-  theme(axis.title.x = element_text(size=18),
-        axis.title.y = element_text(size=18))+
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
+  xlab("Selection Type") + facet_wrap(~type) + 
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + guides(fill = FALSE) +
+  scale_fill_manual(values = c("purple4", "darkcyan", "darkorange"))
+print(p)
+aux <- dev.off()
 ```
 
 Experiment 3
@@ -589,30 +602,42 @@ agg.3$type %<>%
 
 agg.3$type <- factor(agg.3$type, levels=c("All", "Some", "None"))
 
+agg.3$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
 
+agg.3 %<>%
+  rename(`Age (years)` = Age)
 
 #plot
-quartz()
-ggplot(data = agg.3, 
-       aes(x=type, y=mean, fill=Age)) +
-  geom_bar(stat="identity", position = position_dodge(1)) +
+pdf(file="./exp3_SIperformance.pdf", width=6, height=4)
+p <- ggplot(data = agg.3, 
+       aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) +
+  geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
                       ymax = ci_upper),
-                  size = .8,
-                  show_guide = FALSE,
-                 position=position_dodge(1)) +
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width=0.9)) +
   ylab("Proportion correct") + 
   xlab("Trial Type") +
-  theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
-                                 axis.title.y = element_text(size = 18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + 
+  guides(fill = FALSE) +
+  scale_fill_manual(values = c("purple4", "darkcyan", "darkorange2"))
+print(p)
+aux <- dev.off()
 
 #What kinds of items are children giving in incorrect trials? 
 si_wrong <- data_SIexp3 %>%
   filter(correct != "TRUE") %>%
   group_by(Age, type, selection)%>%
   dplyr::summarise(n=n())%>%
-  mutate(n.total = sum(n), prop = n/n.total)
+  mutate(n.total = sum(n), prop = n/n.total)%>%
 
 si_wrong$selection %<>%
   str_replace("all", "All")%>%
@@ -622,16 +647,30 @@ si_wrong$selection %<>%
 si_wrong$type %<>%
   str_replace("Implicature", "Some")
 
+si_wrong$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
 
+si_wrong %<>%
+  rename(`Age (years)` = Age)
 
-quartz()
-ggplot(data = si_wrong, 
-       aes(x=selection, y=n, fill=Age)) +
+si_wrong$selectionType <- factor(si_wrong$selection, levels=c("All", "Some", "None"))  
+
+pdf(file="./exp3_SIwrong.pdf", width=6, height=4)
+p <- ggplot(data = si_wrong, 
+       aes(x=selectionType, y=n, fill=selectionType, alpha=`Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge())  +
   ylab("Count of children choosing") + 
-  xlab("Selection Type") + facet_wrap(~type) + theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18), 
-                                                                              axis.title.y = element_text(size = 18))+
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081"))
+  xlab("Selection Type") + facet_wrap(~type) + 
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + guides(fill = FALSE) +
+  scale_fill_manual(values = c("purple4", "darkcyan", "darkorange2"))
+print(p)
+aux <- dev.off()
   
 ```
 
@@ -646,21 +685,33 @@ agg.DCCS$switch_type <- factor(agg.DCCS$switch_type, levels=c("Pre-switch","Post
 agg.DCCS %<>%
   filter(switch_type=="Post-switch")
 
+agg.DCCS$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
 
-quartz()
-ggplot(data = agg.DCCS, 
-       aes(x=switch_type, y=mean, fill=Age)) +
-  geom_bar(stat="identity", position = position_dodge(1)) +
+agg.DCCS %<>%
+  rename(`Age (years)` = Age)
+
+
+pdf(file="./exp3_DCCS.pdf", width=4, height=4)
+p <- ggplot(data = agg.DCCS, 
+       aes(x=switch_type, y=mean, fill=`Age (years)`)) +
+  geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
                       ymax = ci_upper),
-                  size = .8,
-                  show_guide = FALSE,
-                 position=position_dodge(1)) +
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
   ylab("Proportion correct") + 
   xlab("Trial Type") +
-  theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
-                                 axis.title.y = element_text(size = 18)) +
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
   scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
+print(p)
+aux <- dev.off()
 ```
 
 GQ
@@ -673,20 +724,33 @@ agg.gq <- data_gq %>%
 
 agg.gq$prompt <- factor(agg.gq$prompt, levels=c("All","Some", "None"))
 
-quartz()
-ggplot(data = agg.gq, 
-       aes(x=prompt, y=mean, fill=Age)) +
-  geom_bar(stat="identity", position = position_dodge(1)) +
+agg.gq$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
+
+agg.gq %<>%
+  rename(`Age (years)` = Age)
+
+pdf(file="./exp3_GQperf.pdf", width=6, height=4)
+p <- ggplot(data = agg.gq, 
+       aes(x=prompt, y=mean, fill=prompt, alpha = `Age (years)`)) +
+  geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
                       ymax = ci_upper),
-                  size = .8,
-                  show_guide = FALSE,
-                 position=position_dodge(1)) +
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
   ylab("Proportion correct") + 
   xlab("Quantifier Prompt") +
-  theme_bw(base_size=17) + theme(axis.title.x = element_text(size=18),
-                                 axis.title.y = element_text(size=18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + geom_hline(yintercept = .5, linetype = "dashed")
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + guides(fill = FALSE) +
+  scale_fill_manual(values = c("purple4", "darkcyan", "darkorange2"))
+print(p)
+aux <- dev.off()
 
 
 hist_data <- data_gq %>%
@@ -696,16 +760,33 @@ hist_data <- data_gq %>%
   group_by(Age, prompt) %>%
   mutate(n.total = sum(n), prop = n/n.total)
 
+hist_data$Age %<>%
+  str_replace("3-3.5 years", "3-3.5")%>%
+  str_replace("3.5-4 years", "3.5-4")%>%
+  str_replace("4-4.5 years", "4-4.5")%>%
+  str_replace("4.5-5 years", "4.5-5")
 
-quartz()
+hist_data %<>%
+  rename(`Age (years)` = Age)
+
+hist_data$prompt <- factor(hist_data$prompt, levels = c("All", "Some", "None", "Most"))
+
+pdf(file="./exp3_GQhist.pdf", width=6, height=4)
 ggplot(data = hist_data, 
-       aes(x=num_given, y=prop, fill=Age)) +
+       aes(x=num_given, y=prop, fill=prompt, alpha = `Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge(1)) +
   ylab("Proportion of children giving number") + 
   xlab("Number of items") +
-  theme_bw(base_size=17) + theme(axis.title.x = element_text(size = 18),
-                                 axis.title.y = element_text(size=18)) +
-  scale_fill_manual(values = c("#4EB3D3", "#2B8CBE", "#0868AC", "#084081")) + facet_grid(prompt~Age) + theme(legend.position="none") 
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + 
+  guides(fill = FALSE) + 
+  facet_grid(prompt~`Age (years)`) + 
+  theme(legend.position="none") + 
+  scale_fill_manual(values = c("purple4", "darkcyan", "darkorange2", "firebrick2"))
+print(p)
+aux <- dev.off()
 
 ```
 
