@@ -349,7 +349,7 @@ agg.1 %<>%
   rename(`Age (years)`= Age)
 
 
-pdf(file="./exp1_performance.pdf", width=6.5, height=4)
+pdf(file="./exp1_performance.pdf", width=6.5, height=3.5)
 p <- ggplot(data = agg.1, 
        aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) + 
   geom_bar(stat="identity", position = position_dodge()) +
@@ -404,7 +404,7 @@ exp1_hist <- data_exp1 %>%
   group_by(Subj_ID, type)%>%
   multi_boot_standard("numcorr", na.rm = TRUE)
 
-pdf(file="./exp1_hist.pdf", width=6, height=4)
+pdf(file="./exp1_hist.pdf", width=6, height=3.5)
 q <- ggplot(exp1_hist, aes(x = mean, fill=type)) + 
   geom_histogram(colour = "black", stat = "bin",breaks = c(0,.2,.4,.6,.8,1), binwidth = .2) + 
   theme_bw(base_size = 18) + 
@@ -455,7 +455,7 @@ cs %<>%
   rename(`Age (years)` = Age)
 
 #individual differences plot
-pdf(file="./exp1_diffs.pdf", width=6, height=4)
+pdf(file="./exp1_diffs.pdf", width=6, height=3.5)
 p <- ggplot(cs, aes(x=None_Scalar, y=Implicature_Scalar, colour=`Age (years)`)) + 
   geom_point(shape = 16, size = 1.75, stat = "identity", position = position_jitter(.02)) +
   geom_smooth(method="lm", col="black", lty=1) + 
@@ -501,7 +501,7 @@ agg.2 %<>%
 # #save df for later
 # agg.exp2 <- agg.data
 
-pdf(file="./exp2_performance.pdf", width=6, height=4)
+pdf(file="./exp2_performance.pdf", width=6, height=3.5)
 p <- ggplot(data = agg.2, 
        aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) + 
   geom_bar(position = "dodge", stat ="identity" ) +
@@ -556,9 +556,10 @@ wrong %<>%
   rename(`Age (years)` = Age)
 
 wrong$selectionType <- factor(wrong$selectionType, levels=c("All", "Some", "None"))  
+wrong$type <- factor(wrong$type, levels = c("All", "Some", "None"))
     
 #now graph
-pdf(file="./exp2_wrong.pdf", width=6, height=4)
+pdf(file="./exp2_wrong.pdf", width=6, height=3.5)
 p <- ggplot(data = wrong, 
        aes(x=selectionType, y=n, fill=selectionType, alpha=`Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge())  +
@@ -612,7 +613,7 @@ agg.3 %<>%
   rename(`Age (years)` = Age)
 
 #plot
-pdf(file="./exp3_SIperformance.pdf", width=6, height=4)
+pdf(file="./exp3_SIperformance.pdf", width=6, height=3.5)
 p <- ggplot(data = agg.3, 
        aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge()) +
@@ -637,7 +638,7 @@ si_wrong <- data_SIexp3 %>%
   filter(correct != "TRUE") %>%
   group_by(Age, type, selection)%>%
   dplyr::summarise(n=n())%>%
-  mutate(n.total = sum(n), prop = n/n.total)%>%
+  mutate(n.total = sum(n), prop = n/n.total)
 
 si_wrong$selection %<>%
   str_replace("all", "All")%>%
@@ -657,8 +658,9 @@ si_wrong %<>%
   rename(`Age (years)` = Age)
 
 si_wrong$selectionType <- factor(si_wrong$selection, levels=c("All", "Some", "None"))  
+si_wrong$type <- factor(si_wrong$type, levels = c("All", "Some", "None"))
 
-pdf(file="./exp3_SIwrong.pdf", width=6, height=4)
+pdf(file="./exp3_SIwrong.pdf", width=6, height=3.5)
 p <- ggplot(data = si_wrong, 
        aes(x=selectionType, y=n, fill=selectionType, alpha=`Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge())  +
@@ -733,7 +735,7 @@ agg.gq$Age %<>%
 agg.gq %<>%
   rename(`Age (years)` = Age)
 
-pdf(file="./exp3_GQperf.pdf", width=6, height=4)
+pdf(file="./exp3_GQperf.pdf", width=6, height=3.5)
 p <- ggplot(data = agg.gq, 
        aes(x=prompt, y=mean, fill=prompt, alpha = `Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge()) +
@@ -774,7 +776,7 @@ hist_data$prompt <- factor(hist_data$prompt, levels = c("All", "Some", "None", "
 pdf(file="./exp3_GQhist.pdf", width=6, height=4)
 ggplot(data = hist_data, 
        aes(x=num_given, y=prop, fill=prompt, alpha = `Age (years)`)) +
-  geom_bar(stat="identity", position = position_dodge(1)) +
+  geom_bar(stat="identity", position = position_dodge(width = 0.9)) +
   ylab("Proportion of children giving number") + 
   xlab("Number of items") +
   theme_bw(base_size=10) + 
