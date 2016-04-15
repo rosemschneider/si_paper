@@ -85,7 +85,7 @@ data_exp1$condition <- factor(data_exp1$condition,
 #   dplyr::rename(Age = agesplit)
 ```
 
-EXP 1 - T-tests against chance
+EXP 1 - T-tests
 ```{r}
 #look at only SI trials
 d <- data_exp1 %>%
@@ -94,18 +94,70 @@ d <- data_exp1 %>%
 
 d <- aggregate(correct ~ type + Age +  Subj_ID, data=d, mean)
 
-##First test against chance
-#All
-t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, mu=0.5)
-t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, mu=0.5)
+# ##First test against chance - no longer included, as the definition of "Chance" in this study is difficulty
+# #All
+# t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, mu=0.5)
+# t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, mu=0.5)
+# 
+# #Some
+# t.test(subset(d, Age=="4-4.5 years" & type=="Implicature")$correct, mu=0.5)
+# t.test(subset(d, Age=="4.5-5 years"  & type=="Implicature")$correct, mu=0.5)
+# 
+# #none
+# t.test(subset(d, Age=="4-4.5 years" & type=="None")$correct, mu=0.5)
+# t.test(subset(d, Age=="4.5-5 years" & type=="None")$correct, mu=0.5)
 
-#Some
-t.test(subset(d, Age=="4-4.5 years" & type=="Implicature")$correct, mu=0.5)
-t.test(subset(d, Age=="4.5-5 years"  & type=="Implicature")$correct, mu=0.5)
+#t-tests against "all"
+#4-4.5
+#all-some
+t.test(subset(d, Age == "4-4.5 years" & type == "All")$correct,
+       subset(d, Age == "4-4.5 years" & type == "Implicature")$correct,
+       var.equal = TRUE)
+#all-none
+t.test(subset(d, Age == "4-4.5 years" & type == "All")$correct,
+       subset(d, Age == "4-4.5 years" & type == "None")$correct,
+       var.equal = TRUE)
+#all-unambig.some
+t.test(subset(d, Age == "4-4.5 years" & type == "All")$correct,
+       subset(d, Age == "4-4.5 years" & type == "Unambig. Some")$correct,
+       var.equal = TRUE)
 
-#none
-t.test(subset(d, Age=="4-4.5 years" & type=="None")$correct, mu=0.5)
-t.test(subset(d, Age=="4.5-5 years" & type=="None")$correct, mu=0.5)
+#4.5-5
+#all-some
+t.test(subset(d, Age == "4.5-5 years" & type == "All")$correct,
+       subset(d, Age == "4.5-5 years" & type == "Implicature")$correct,
+       var.equal = TRUE)
+#all-none
+t.test(subset(d, Age == "4.5-5 years" & type == "All")$correct,
+       subset(d, Age == "4.5-5 years" & type == "None")$correct,
+       var.equal = TRUE)
+#all-unambig.some
+t.test(subset(d, Age == "4.5-5 years" & type == "All")$correct,
+       subset(d, Age == "4.5-5 years" & type == "Unambig. Some")$correct,
+       var.equal = TRUE)
+```
+
+T-tests: Scalar vs. ad-hoc
+```{r}
+d <- data_exp1 %>%
+  mutate(correct = as.numeric(correct))
+
+d <- aggregate(correct ~ type + Age + condition + Subj_ID, data=d, mean)
+
+#comparison - ad-hoc implicature vs. scalar
+#4-4.5
+t.test(subset(d, Age == "4-4.5 years" & type == "Implicature" 
+              & condition == "Ad-hoc")$correct,
+       subset(d, Age == "4-4.5 years" & type == "Implicature" 
+              & condition == "Scalar")$correct,
+       var.equal = TRUE)
+
+#4.5-5
+t.test(subset(d, Age == "4.5-5 years" & type == "Implicature" 
+              & condition == "Ad-hoc")$correct,
+       subset(d, Age == "4.5-5 years" & type == "Implicature" 
+              & condition == "Scalar")$correct,
+       var.equal = TRUE)
 ```
 
 EXP 1 - Diptest
@@ -132,32 +184,32 @@ dip.test(cs$control_all_scalar)
 
 EXP 1 - correlations (full)
 ```{r}
+#full correlations
 cor.test(cs$control_none_scalar, cs$implicature_scalar)
+cor.test(cs$control_all_scalar, cs$implicature_scalar)
+cor.test(cs$control_none_scalar, cs$control_all_scalar)
+
+#by age
+#none-some
 cs %>% group_by(Age) %>% 
 	summarise(r = cor.test(control_none_scalar, implicature_scalar)$estimate,
 			  p = cor.test(control_none_scalar, implicature_scalar)$p.value)
-
+#all-some
 cor.test(cs$control_all_scalar, cs$implicature_scalar)
 cs %>% group_by(Age) %>% 
 	summarise(r = cor.test(control_all_scalar, implicature_scalar)$estimate,
-			  p = cor.test(control_all_scalar, implicature_scalar)$p.value)					  	  
+			  p = cor.test(control_all_scalar, implicature_scalar)$p.value)
+#all-none
 cor.test(cs$control_all_scalar, cs$control_none_scalar)
 cs %>% group_by(Age) %>% 
 	summarise(r = cor.test(control_all_scalar, control_none_scalar)$estimate,
 			  p = cor.test(control_all_scalar, control_none_scalar)$p.value)		
 ```
 
-Exp1 - models
+Exp1 - model
 ```{r}
 library(lme4)
 gl <- glmer(correct ~ trial_type * condition * age   + (trial_type | Subj_ID), data=data_exp1, family=binomial)
-summary(gl)
-
-gl <- glmer(correct ~ half * trial_type * condition  * age   + (trial_type | Subj_ID), data=data, family=binomial)
-summary(gl)
-
-
-gl <- glmer(correct ~ half   * age   + (trial_type | Subj_ID), data=data, family=binomial)
 summary(gl)
 ```
 
@@ -317,13 +369,40 @@ gl.int <- glmer(correct ~  type * age
 			data=data_exp2, family=binomial)
 summary(gl.int)
 
-#removing random effects
+
 gl.norand <- glmer(correct ~  type * age 
 			+ (1 | Subj_ID), 
 			data=data_exp2, family=binomial)
 summary(gl.norand)
 ```
 
+Diptests
+```{r}
+data_exp2 %<>%
+  mutate(correct = as.numeric(correct))
+
+ms <- ddply(data_exp2, .(type, Subj_ID), summarise, 
+	mean = mean(correct),
+	Age = Age[1])
+
+names(ms) <- c("type", "Subj_ID", "mean", "Age")
+
+cs <- cast(ms, Subj_ID + Age ~ type, value="mean")
+
+dip.test(cs$Some)
+dip.test(cs$None)
+dip.test(cs$All)
+```
+
+Correlations
+```{r}
+cor.test(cs$Some, cs$None)
+
+cs %>% group_by(Age) %>% 
+	summarise(r = cor.test(None, Some)$estimate,
+			  p = cor.test(None, Some)$p.value)
+
+```
 Experiment 3 
 Set up data
 Scalar Implicature
@@ -629,6 +708,8 @@ Partial correlations for age - SI/GQ and DCCS
 ```{r}
 library(ppcor)
 #partial correlation - implicature and dccs
+pcor.test(d_all$SI_implicature, d_all$SI_none, d_all$test_age)
+
 pcor.test(d_all$SI_implicature, d_all$`Post-switch`, d_all$test_age)
 
 pcor.test(d_all$SI_none, d_all$`Post-switch`, d_all$test_age)
@@ -658,7 +739,7 @@ pcor.test(d_all$SI_none, d_all$GQ_none_correct, d_all$test_age)
 pcor.test(d_all$SI_none, d_all$GQ_some_correct, d_all$test_age)
 ```
 
-test against chance
+T-tests
 ```{r}
 #aggregate mean
 df <- data_si %>%
@@ -674,23 +755,31 @@ df.dccs <- aggregate(correct ~ switch_type + Age +  sub_ID, data=d.dccs, mean)
 #tests against All
 #all and some
 t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, 
-       subset(d, Age=="3-3.5 years" & type=="Implicature")$correct)
+       subset(d, Age=="3-3.5 years" & type=="Implicature")$correct,
+       var.equal = TRUE)
 t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, 
-       subset(d, Age=="3.5-4 years" & type=="Implicature")$correct)
+       subset(d, Age=="3.5-4 years" & type=="Implicature")$correct,
+       var.equal = TRUE)
 t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, 
-       subset(d, Age=="4-4.5 years" & type=="Implicature")$correct)
+       subset(d, Age=="4-4.5 years" & type=="Implicature")$correct,
+       var.equal = TRUE)
 t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, 
-       subset(d, Age=="4.5-5 years" & type=="Implicature")$correct)
+       subset(d, Age=="4.5-5 years" & type=="Implicature")$correct,
+       var.equal = TRUE)
 
 #all and none
 t.test(subset(d, Age=="3-3.5 years" & type=="All")$correct, 
-       subset(d, Age=="3-3.5 years" & type=="None")$correct)
+       subset(d, Age=="3-3.5 years" & type=="None")$correct,
+       var.equal = TRUE)
 t.test(subset(d, Age=="3.5-4 years" & type=="All")$correct, 
-       subset(d, Age=="3.5-4 years" & type=="None")$correct)
+       subset(d, Age=="3.5-4 years" & type=="None")$correct,
+       var.equal = TRUE)
 t.test(subset(d, Age=="4-4.5 years" & type=="All")$correct, 
-       subset(d, Age=="4-4.5 years" & type=="None")$correct)
+       subset(d, Age=="4-4.5 years" & type=="None")$correct,
+       var.equal = TRUE)
 t.test(subset(d, Age=="4.5-5 years" & type=="All")$correct, 
-       subset(d, Age=="4.5-5 years" & type=="None")$correct)
+       subset(d, Age=="4.5-5 years" & type=="None")$correct,
+       var.equal = TRUE)
 
 #3-3.5 - SI
 t.test(subset(df, Age=="3-3.5 years" & type=="All")$correct, mu=0.5)
