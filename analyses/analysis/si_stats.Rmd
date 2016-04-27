@@ -208,8 +208,16 @@ cs %>% group_by(Age) %>%
 
 Exp1 - model
 ```{r}
+#center age to facilitate model fit
+data_exp1 %<>%
+  mutate(age.c = scale(age, center = TRUE, scale=FALSE))
+
 library(lme4)
-gl <- glmer(correct ~ trial_type * condition * age   + (trial_type | Subj_ID), data=data_exp1, family=binomial)
+gl <- glmer(correct ~ trial_type * condition * age.c  + 
+              (trial_type | Subj_ID), data=data_exp1, 
+            family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5))) 
+#change optimizer, otherwise model won't converge
 summary(gl)
 ```
 
@@ -273,6 +281,7 @@ data_exp2$selectionType <- factor(data_exp2$selectionType,
 
 tests against chance
 ```{r}
+
 ##First test against chance
 d <- data_exp2 %>%
   mutate(correct = as.numeric(as.character(correct)))
@@ -361,19 +370,19 @@ t.test(old3$None, old4$None)
 
 Exp 2 models
 ```{r}
-data_exp2$type <- factor(data_exp2$type, levels=c("All","Some","None"))
 data_exp2 %<>%
-  mutate(correct=as.numeric(correct))
-gl.int <- glmer(correct ~  type * age 
+  mutate(correct = as.integer(correct),
+         age.c = scale(age, center=TRUE, scale=FALSE))
+gl.int <- glmer(correct ~  type * age.c 
 			+ (type | Subj_ID), 
 			data=data_exp2, family=binomial)
 summary(gl.int)
 
-
-gl.norand <- glmer(correct ~  type * age 
+gl.norand <- glmer(correct ~  type * age.c 
 			+ (1 | Subj_ID), 
 			data=data_exp2, family=binomial)
 summary(gl.norand)
+
 ```
 
 Diptests
@@ -694,6 +703,10 @@ d_all <- right_join(tmp3, mss.acc4, by = "sub_ID") %>%
          GQ_some_correct = Some.y, 
          GQ_none_correct = None,
          test_age = test_age)
+
+#center age for model fit
+d_all %<>%
+  mutate(age.c = scale(test_age, scale = FALSE, center = TRUE))
 ```
 
 Correlations - full
