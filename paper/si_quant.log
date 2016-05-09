@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 MAY 2016 11:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  9 MAY 2016 15:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -434,89 +434,37 @@ LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10.95> not available
 
 ]
 [2]
-
-LaTeX Warning: Citation `horn1972' undefined on input line 44.
-
-LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 44
+LaTeX Font Info:    Try loading font information for OT1+ptmcm on input line 46
 .
-(/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/ot1ptmcm.fd
+ (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/ot1ptmcm.fd
 File: ot1ptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OT1/ptmcm.
 )
-LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 44
+LaTeX Font Info:    Try loading font information for OML+ptmcm on input line 46
 .
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/omlptmcm.fd
 File: omlptmcm.fd 2000/01/03 Fontinst v1.801 font definitions for OML/ptmcm.
 )
-LaTeX Font Info:    Try loading font information for OMX+psycm on input line 44
+LaTeX Font Info:    Try loading font information for OMX+psycm on input line 46
 .
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/omxpsycm.fd
 File: omxpsycm.fd 2000/01/03 Fontinst v1.801 font definitions for OMX/psycm.
 )
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
 LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <6> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
-LaTeX Font Info:    Try loading font information for U+msa on input line 44.
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 46.
+LaTeX Font Info:    Try loading font information for U+msa on input line 46.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 44.
+LaTeX Font Info:    Try loading font information for U+msb on input line 46.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 44.
-
-
-LaTeX Warning: Citation `grice1975' undefined on input line 44.
-
-
-LaTeX Warning: Citation `bott2004' undefined on input line 46.
-
-
-LaTeX Warning: Citation `grodner2010' undefined on input line 46.
-
-
-LaTeX Warning: Citation `huang2009b' undefined on input line 46.
-
-
-LaTeX Warning: Citation `noveck2001' undefined on input line 46.
-
-
-LaTeX Warning: Citation `guasti2005' undefined on input line 48.
-
-
-LaTeX Warning: Citation `papafragou2003' undefined on input line 48.
-
-
-LaTeX Warning: Citation `papafragou2004' undefined on input line 48.
-
-
-LaTeX Warning: Citation `katsos2011' undefined on input line 48.
-
-
-LaTeX Warning: Citation `stiller2014' undefined on input line 48.
-
-
-LaTeX Warning: Citation `huang2009' undefined on input line 48.
-
-[3]
-
-LaTeX Warning: Reference `tab:lit_review' on page 4 undefined on input line 50.
-
-
-
-LaTeX Warning: Citation `degen2015b' undefined on input line 50.
-
-[4]
+) [3] [4]
 *geometry* verbose mode - [ newgeometry ] result:
 * driver: pdftex
 * paper: <default>
@@ -549,6 +497,12 @@ LaTeX Warning: Citation `degen2015b' undefined on input line 50.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
+LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
+(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 58.
 
 Underfull \hbox (badness 10000) in paragraph at lines 60--60
 []|\OT1/ptm/m/n/9 non-necessity--
@@ -660,8 +614,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 64--64
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 64--64
-\OT1/ptm/m/n/9 HAPPY faces'' (Study 1), ``Shoe
+Underfull \hbox (badness 6725) in paragraph at lines 64--64
+\OT1/ptm/m/n/9 HAPPY faces'' (Study 1), ``Show
  []
 
 
@@ -699,52 +653,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 68--68
 \OT1/ptm/m/n/9 Papafragou
  []
 
-[5]
-
-LaTeX Warning: Citation `barner2010' undefined on input line 78.
-
-
-LaTeX Warning: Citation `barner2011' undefined on input line 78.
-
-
-LaTeX Warning: Citation `skordos2016' undefined on input line 80.
-
-
-LaTeX Warning: Citation `miller2005' undefined on input line 80.
-
-[6
+[5] [6
 
 
 
 
-]
-
-LaTeX Warning: Citation `barner2009' undefined on input line 84.
-
-
-LaTeX Warning: Citation `franke2014' undefined on input line 84.
-
-
-LaTeX Warning: Citation `hurewitz2006' undefined on input line 84.
-
-[7] [8]
-
-LaTeX Warning: Citation `degen2015' undefined on input line 107.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 107--107
-[][]\OT1/ptm/m/n/9 All stim-uli, data, and anal-y-ses are avail-able in a versi
-on-controlled pub-lic repos-i-tory at
- []
-
-
-LaTeX Warning: Reference `tab:exp_1_demo' on page 9 undefined on input line 128
-.
-
-[9]
-
-LaTeX Warning: Reference `fig:demo' on page 10 undefined on input line 134.
-
+] [7] [8] [9]
 <figures/implicatures_demo_letters.png, id=36, 997.7275pt x 364.36125pt>
 File: figures/implicatures_demo_letters.png Graphic file (type png)
 
@@ -752,15 +666,173 @@ File: figures/implicatures_demo_letters.png Graphic file (type png)
 Package pdftex.def Info: figures/implicatures_demo_letters.png used on input li
 ne 138.
 (pdftex.def)             Requested size: 395.7803pt x 144.54pt.
+ [10] [11 <./figures/implicatures_demo_letters.png>] [12]
+<figures/exp1_performance.pdf, id=46, 469.755pt x 252.945pt>
+File: figures/exp1_performance.pdf Graphic file (type pdf)
 
+<use figures/exp1_performance.pdf>
+Package pdftex.def Info: figures/exp1_performance.pdf used on input line 178.
+(pdftex.def)             Requested size: 433.62pt x 233.488pt.
 
-LaTeX Warning: Reference `tab:scripts' on page 10 undefined on input line 145.
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 178--179
+ [] 
+ []
 
-[10]
+[13 <./figures/exp1_performance.pdf>]
+./si_quant.tex:187: Too many }'s.
+l.187 ... Age was centered for ease of model fit.}
+                                                   We found that performance...
 
-LaTeX Warning: Reference `fig:demo' on page 11 undefined on input line 164.
+? 
+<figures/exp1_hist.pdf, id=60, 433.62pt x 252.945pt>
+File: figures/exp1_hist.pdf Graphic file (type pdf)
 
+<use figures/exp1_hist.pdf>
+Package pdftex.def Info: figures/exp1_hist.pdf used on input line 191.
+(pdftex.def)             Requested size: 433.62pt x 252.95595pt.
 
-LaTeX Warning: Reference `fig:demo' on page 11 undefined on input line 170.
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 191--192
+ [] 
+ []
 
-[11 <./figures/implicatures_demo_letters.png>] 
+[14]
+LaTeX Font Info:    Try loading font information for OML+ptm on input line 196.
+
+ (/usr/local/texlive/2015/texmf-dist/tex/latex/psnfss/omlptm.fd
+File: omlptm.fd 
+)
+LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <10.95> not available
+(Font)              Font shape `OML/cmm/m/it' tried instead on input line 196.
+ [15 <./figures/exp1_hist.pdf>] [16] [17]
+<figures/exp2_performance.pdf, id=80, 433.62pt x 252.945pt>
+File: figures/exp2_performance.pdf Graphic file (type pdf)
+
+<use figures/exp2_performance.pdf>
+Package pdftex.def Info: figures/exp2_performance.pdf used on input line 259.
+(pdftex.def)             Requested size: 433.62pt x 252.95595pt.
+
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 259--260
+ [] 
+ []
+
+[18] [19 <./figures/exp2_performance.pdf>]
+<figures/exp2_wrong.pdf, id=102, 433.62pt x 252.945pt>
+File: figures/exp2_wrong.pdf Graphic file (type pdf)
+
+<use figures/exp2_wrong.pdf>
+Package pdftex.def Info: figures/exp2_wrong.pdf used on input line 272.
+(pdftex.def)             Requested size: 433.62pt x 252.95595pt.
+
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 272--273
+ [] 
+ []
+
+[20] [21 <./figures/exp2_wrong.pdf>] [22] [23] [24]
+<figures/exp3_SIperformance.pdf, id=128, 433.62pt x 252.945pt>
+File: figures/exp3_SIperformance.pdf Graphic file (type pdf)
+
+<use figures/exp3_SIperformance.pdf>
+Package pdftex.def Info: figures/exp3_SIperformance.pdf used on input line 331.
+
+(pdftex.def)             Requested size: 433.62pt x 252.95595pt.
+
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 331--332
+ [] 
+ []
+
+[25 <./figures/exp3_SIperformance.pdf>]
+<figures/exp3_GQperf.pdf, id=146, 433.62pt x 252.945pt>
+File: figures/exp3_GQperf.pdf Graphic file (type pdf)
+
+<use figures/exp3_GQperf.pdf>
+Package pdftex.def Info: figures/exp3_GQperf.pdf used on input line 358.
+(pdftex.def)             Requested size: 433.62pt x 252.95595pt.
+
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 358--359
+ [] 
+ []
+
+[26] [27 <./figures/exp3_GQperf.pdf>]
+<figures/exp3_SIwrong.pdf, id=167, 433.62pt x 252.945pt>
+File: figures/exp3_SIwrong.pdf Graphic file (type pdf)
+
+<use figures/exp3_SIwrong.pdf>
+Package pdftex.def Info: figures/exp3_SIwrong.pdf used on input line 373.
+(pdftex.def)             Requested size: 433.62pt x 252.95595pt.
+
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 373--374
+ [] 
+ []
+
+<figures/exp3_GQhist.pdf, id=168, 433.62pt x 289.08pt>
+File: figures/exp3_GQhist.pdf Graphic file (type pdf)
+
+<use figures/exp3_GQhist.pdf>
+Package pdftex.def Info: figures/exp3_GQhist.pdf used on input line 381.
+(pdftex.def)             Requested size: 433.62pt x 289.09251pt.
+
+Overfull \hbox (3.61537pt too wide) in paragraph at lines 381--382
+ [] 
+ []
+
+[28] [29 <./figures/exp3_SIwrong.pdf>] [30 <./figures/exp3_GQhist.pdf>]
+[31] [32] [33] (./si_quant.bbl [34]
+Missing character: There is no ’ in font ptmr7t!
+Missing character: There is no ” in font ptmr7t!
+ [35
+
+]
+./si_quant.bbl:406: Missing $ inserted.
+<inserted text> 
+                $
+l.406 ...CrefDOI} \doi{10.1207/s15473341lld0202_1}
+                                                   \end{APACrefDOI}
+? 
+./si_quant.bbl:406: Missing $ inserted.
+<inserted text> 
+                $
+l.406 ...1207/s15473341lld0202_1} \end{APACrefDOI}
+                                                  
+? 
+[36]
+./si_quant.bbl:608: Missing $ inserted.
+<inserted text> 
+                $
+l.608 ...ACrefDOI} \doi{10.1207/s15327817la1201_3}
+                                                   \end{APACrefDOI}
+? 
+./si_quant.bbl:608: Missing $ inserted.
+<inserted text> 
+                $
+l.608 ....1207/s15327817la1201_3} \end{APACrefDOI}
+                                                  
+? 
+) [37] (./si_quant.aux) )
+(\end occurred inside a group at level 1)
+
+### simple group (level 1) entered at line 367 ({)
+### bottom level 
+Here is how much of TeX's memory you used:
+ 5416 strings out of 493089
+ 77081 string characters out of 6134842
+ 165456 words of memory out of 5000000
+ 8757 multiletter control sequences out of 15000+600000
+ 43496 words of font info for 103 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 38i,12n,38p,1351b,331s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2015/texmf-dist/fonts/enc/dvips/base/8r.enc
+}</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb>
+</usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></
+usr/local/texlive/2015/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></u
+sr/local/texlive/2015/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local
+/texlive/2015/texmf-dist/fonts/type1/urw/symbol/usyr.pfb></usr/local/texlive/20
+15/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2015/texmf-d
+ist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2015/texmf-dist/fonts/
+type1/urw/times/utmri8a.pfb>
+Output written on si_quant.pdf (37 pages, 364583 bytes).
+PDF statistics:
+ 251 PDF objects out of 1000 (max. 8388607)
+ 185 compressed objects within 2 object streams
+ 0 named destinations out of 1000 (max. 500000)
+ 46 words of extra memory for PDF output out of 10000 (max. 10000000)
+
