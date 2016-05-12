@@ -37,7 +37,7 @@ Experiment 1 - read in data
 d <- read.csv("../data/implicatures_adhocScalar_data.csv")
 
 #fill in the selection types for easier analyses
-d_exp1=melt.data.frame(d,c("Subj_ID", "age","agegroup", "list"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+d_exp1=melt.data.frame(d,c("Subj_ID", "age","agegroup", "gender"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
 "carrots_condition", "hats_condition", "cookies_condition", "trains_condition", "cats_condition", "purses_condition",  "keys_condition", "shirts_condition", "breads_condition", "horses_condition", "bears_condition", "frogs_condition", "plates_condition", "books_condition", "elephants_condition", "lamps_condition", "bananas_condition", "butterflies_condition", 
 "carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
 
@@ -83,6 +83,12 @@ data_exp1$condition <- factor(data_exp1$condition,
 
 # data_exp1 %<>%
 #   dplyr::rename(Age = agesplit)
+
+#demographic information
+gender <- data_exp1 %>%
+  group_by(gender, Age)%>%
+  distinct(Subj_ID)%>%
+  summarise(n = n())
 ```
 
 EXP 1 - T-tests
