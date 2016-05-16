@@ -288,6 +288,11 @@ gender <- data_exp2 %>%
   group_by(gender, Age)%>%
   distinct(Subj_ID)%>%
   summarise(n= n())
+
+ethnicity <- d2 %>%
+  group_by(ethnicity)%>%
+  distinct(Subj_ID)%>%
+  summarise(n = n())
 ```
 
 tests against chance
@@ -500,6 +505,11 @@ age <- data_si %>%
 #gender
 gender <- data %>%
   group_by(gender, Age)%>%
+  distinct(sub_ID)%>%
+  summarise(n = n())
+
+ethnicity <- d1 %>%
+  group_by(ethnicity)%>%
   distinct(sub_ID)%>%
   summarise(n = n())
 ```
