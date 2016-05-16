@@ -232,7 +232,7 @@ Read in data
 ```{r}
 d2 <- read.csv("../data/implicatures_scalarOnly_data.csv")
 
-data_exp2=melt.data.frame(d2,c("Subj_ID","age","agegroup","list"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+data_exp2=melt.data.frame(d2,c("Subj_ID","age","agegroup","gender"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
 "carrots_selectionType", "hats_selectionType", "cookies_selectionType", "trains_selectionType", "cats_selectionType", "purses_selectionType",  "keys_selectionType", "shirts_selectionType", "breads_selectionType", "horses_selectionType", "bears_selectionType", "frogs_selectionType", "plates_selectionType", "books_selectionType", "elephants_selectionType", "lamps_selectionType", "bananas_selectionType", "butterflies_selectionType", 
 "carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
 
@@ -283,6 +283,11 @@ data_exp2$selectionType <- factor(data_exp2$selectionType,
 
 # data_exp2 %<>%
 #   rename(Age = agesplit)
+
+gender <- data_exp2 %>%
+  group_by(gender, Age)%>%
+  distinct(Subj_ID)%>%
+  summarise(n= n())
 ```
 
 tests against chance
@@ -446,7 +451,7 @@ d1 %<>%
          bananas_selection = factor(bananas_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")), 
          butterflies_selection = factor(butterflies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")))
 
-d2=melt.data.frame(d1,c("sub_ID","test_age", "agegroup","training"),c("carrot", "hat", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", "carrot_selection", "hat_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection", "carrot_type", "hat_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+d2=melt.data.frame(d1,c("sub_ID","test_age", "agegroup","gender"),c("carrot", "hat", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", "carrot_selection", "hat_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection", "carrot_type", "hat_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
 
 
 #making a respectable df  
@@ -491,6 +496,12 @@ data_si <- data %>%
 age <- data_si %>%
   group_by(Age)%>%
   summarise(mean = mean(test_age), median = median(test_age), sd = sd(test_age))
+
+#gender
+gender <- data %>%
+  group_by(gender, Age)%>%
+  distinct(sub_ID)%>%
+  summarise(n = n())
 ```
 
 GQ
