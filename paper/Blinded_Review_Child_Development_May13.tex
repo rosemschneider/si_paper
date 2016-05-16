@@ -12,34 +12,51 @@
 \usepackage{pdflscape}
 \usepackage{array}
 \usepackage{floatrow}
+\usepackage{fancyhdr}
+
+\fancyhf{} % sets both header and footer to nothing
+\renewcommand{\headrulewidth}{0pt}
 
 \newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
-
-
-\title{The trouble with quantifiers: Explaining children's deficits in scalar implicature}
-
-\author{}
-\affiliation{}
-
-\abstract{Scalar implicatures (SI) require a listener to make pragmatic inferences that extend beyond the literal meaning of an utterance (e.g., inferring from ``I ate some of the cookies'' that I ate some, but not all). Adults reliably make this pragmatic inference but children generally have more difficulty. In a supportive paradigm, three- to five-year-olds (N = 171) can compute ad-hoc, but not scalar, implicatures (Experiment 1); implicature computation and success understanding the quantifier "none" were strongly correlated (Experiment 2). An individual differences study showed that quantifier knowledge predicted the ability to make implicatures (Experiment 3). Our findings suggest that SI failures may in fact be rooted in a lack of quantifier knowledge rather than general pragmatic or processing demands.
+\pagestyle{fancy}
+\rhead{The trouble with quantifiers \ \ \thepage}
+\begin{document}
+~\\
+~\\
+~\\
+%\shorttitle{The trouble with quantifiers}
+%\rightheader{The trouble with quantifiers}
+\begin{center}
+\textbf{The trouble with quantifiers: Explaining children's deficits in scalar implicature}
+\end{center}
+%\author{  }
+%\affiliation{  }
+\newpage 
+\begin{center}
+\textbf{Abstract}
+\vspace{5 mm}
+\end{center}
+\noindent
+Scalar implicatures (SI) require a listener to make pragmatic inferences that extend beyond the literal meaning of an utterance (e.g., inferring from ``I ate some of the cookies'' that I ate some, but not all). Adults reliably make this pragmatic inference but children generally have more difficulty. In a supportive paradigm, three- to five-year-olds (N = 171) can compute ad-hoc, but not scalar, implicatures (Experiment 1); implicature computation and success understanding the quantifier "none" were strongly correlated (Experiment 2). An individual differences study showed that quantifier knowledge predicted the ability to make implicatures (Experiment 3). Our findings suggest that SI failures may in fact be rooted in a lack of quantifier knowledge rather than general pragmatic or processing demands.
 
 %Using language requires making pragmatic inferences that extend beyond the literal meaning of utterances. For example, ``\textit{some} of the cookies are oatmeal raisin'' carries the scalar implicature that \emph{not all} the cookies are. Adults make this pragmatic inference very reliably but children generally have more difficulty. Their performance varies tremendously across studies, however, and it is unclear how much of their difficulty stems from issues specific to quantifiers and how much comes from general pragmatic or processing demands. We designed an experimental paradigm to address this question. In Experiment 1, we measured children's ability to compute both ad-hoc (contextual) and scalar (quantifier) implicatures. While 4-year-olds were at ceiling for ad-hoc descriptions, they performed poorly using quantifiers. We also found correlated performance between the quantifiers ``some'' and ``none.''  Experiment 2 replicated this correlation in an experiment including only quantifiers. In Experiment 3 we found that inhibitory control did not predict the ability to make implicatures, but that performance across quantifier tasks was highly correlated. Our findings suggest that difficulty with scalar implicatures may in fact be rooted in a lack of quantifier knowledge.
 
 ~\\
 
-Keywords: scalar implicature, pragmatics, development}
+\noindent
+Keywords: scalar implicature, pragmatics, development
 
-\shorttitle{The trouble with quantifiers}
-\rightheader{The trouble with quantifiers}
-\acknowledgements{
+%\shorttitle{The trouble with quantifiers}
+%\rightheader{The trouble with quantifiers}
+%\acknowledgements{
+%
+%~\\
+%
+%\noindent }
 
-~\\
-
-\noindent }
-
-\begin{document}
-\maketitle
-
+%\begin{document}
+%\maketitle
+\newpage
 
 \section{}
 
@@ -61,7 +78,7 @@ Previous research has provided a number of tests of this hypothesis. First,  chi
 
 On the other hand, this body of research leaves open an alternative explanation. Perhaps the problem is not with inferential alternatives generally, but instead a specific issue with quantificational alternatives. Perhaps children have trouble summoning to mind quantificational alternatives because at varying developmental time points they either 1) do not know the quantifiers, 2) do know them but cannot process them effectively, or 3) know them and can process them but have not grouped them into sets of lexical alternatives. In some sense, all three of these possibilities are consistent with the general spirit of the Alternatives Hypothesis, but problems 1 and 2 are perhaps more specific to quantifier meaning than otherwise supposed.
 
-Supporting this general line of reasoning, quantifiers are a difficult lexical class for children to acquire. Unlike many other lexical classes (e.g., colors), quantifiers are not mutually exclusive with one another. In addition, quantifier semantics are relative to the total set size. For example, in a set size of 8, the quantifier ``some'' can be used felicitously to describe anywhere from 2 -- 7 objects \cite{barner2009} (and truth-functionally to describe sets 1 -- 8), although adult-like responses tend to center around the mean of the set-size \cite{franke2014}. These difficulties can be seen in an experiment by \citeA{hurewitz2006}, who found that 3--4-year-olds were only 75\% correct in choosing the referent of ``all'' in a four-alternative forced choice. Thus, perhaps quantificational alternatives in particular general are the problem, rather than alternatives more generally.
+Supporting this general line of reasoning, quantifiers are a difficult lexical class for children to acquire. Unlike many other lexical classes (e.g., colors), quantifiers are not mutually exclusive with one another. In addition, quantifier semantics are relative to the total set size. For example, in a set size of 8, the quantifier ``some'' can be used felicitously to describe anywhere from 2 -- 7 objects \cite{barner2009} (and truth-functionally to describe sets 1 -- 8), although adult-like responses tend to center around the mean of the set-size \cite{franke2014}. These difficulties can be seen in an experiment by \citeA{hurewitz2006}, who found that 3--4-year-olds were only 75\% correct in choosing the referent of ``all'' in a four-alternative forced choice. Thus, perhaps quantificational alternatives in particular are the problem, rather than alternatives more generally.
 %
 % Finally, we mention another possible hypothesis that has not been discussed in the literature. Perhaps the difficult part of implicature tasks is not summoning to mind the alternatives, it is instead inhibiting the match between even a less-felicitous
 %
@@ -84,7 +101,7 @@ In Experiment 3, we used an individual differences study to explore this correla
 
 \section{Experiment 1: Ad-hoc and scalar implicature computation in children}
 
-Given the difficulty equating results on children's computation of implicatures across different methods and paradigms, we created a single task that could be adapted to investigate both ad-hoc and scalar items in one task. This task involved one set of visual stimuli presented in the same order to all participants; however, the particular items (ad-hoc or scalar) queried were counterbalanced across participants. Thus, with one set of visual stimuli we could directly compare children's performance on both ad-hoc and scalar implicatures in a single experimental session. In Experiment 1, we included both ad-hoc and scalar implicatures. In all scalar items, we used a partitive construction to increase the likelihood of making an implicature \cite{degen2015}. All stimuli, data, and analyses are available in a version-controlled public repository at http://github.com/rosemschneider/si\_paper.
+Given the difficulty equating results on children's computation of implicatures across different methods and paradigms, we created a single task that could be adapted to investigate both ad-hoc and scalar items in one task. This task involved one set of visual stimuli presented in the same order to all participants; however, the particular items (ad-hoc or scalar) queried were counterbalanced across participants. Thus, with one set of visual stimuli we could directly compare children's performance on both ad-hoc and scalar implicatures in a single experimental session. In Experiment 1, we included both ad-hoc and scalar implicatures. In all scalar items, we used a partitive construction to increase the likelihood of making an implicature \cite{degen2015}. All stimuli, data, and analyses are available in a version-controlled public repository at ({\tt{https://osf.io/mucf9/?view\char`_only=d86868edecd840b3bf01ddde3928523b}}).
 
 % In Experiment 2, we included only scalar items in the task, and found that participants were moderately more successful at making implicatures when these trials were presented in isolation. In Experiment 3, we explored two alternatives potentially driving children's difficulties in this task.
 
@@ -116,9 +133,9 @@ We found that all children performed at ceiling on ad-hoc implicature trials. In
 
 % Here we assume that chance performance on implicature trials is .5,  Although they succeeded in ``all'' and ``unambiguous some'' trials, children performed at chance on ``some'' (scalar implicature) trials (4--4.5-year-olds: \emph{t}(22) = .36, \emph{p} = .72; 4.5--5-year-olds: \emph{t}(24) = -2, \emph{p} =  .06). In additat chance on ``none'' trials (4--4.5-year-olds: \emph{t}(22) = -.9, \emph{p} = .4; 4.5--5-year-olds: \emph{t}(24) = 1.6, \emph{p} = .13).
 
-We ran a logistic mixed effects model, predicting a correct response as an interaction of age, condition (ad-hoc or scalar) and trial type (implicature or control), with random effects of participant and trial type. All mixed effects models were fit in R using the lme4 package. The model specifications are as follows: correct $\sim$ trial\char`_type * condition * age + (trial\char`_type | subject\char`_ID). Age was centered for ease of model fit. We found that performance was significantly lower for scalar trials than ad-hoc trials ($\beta$ = --1.04, \textit{p} = .001), and that there was a significant interaction between condition and trial type, such that performance was significantly worse on scalar implicature trials ($\beta$ = --2.21, \textit{p} $<$ .0001). We also found a significant 3-way interaction between condition, trial type, and age, such that performance on scalar implicature trials decreased with age ($\beta$ = --4.2, \textit{p} = .006). There were no significant effects of adding trial order (trials in the first half vs. second half of the experiment), indicating that performance did not change throughout the course of the experiment.
+We ran a logistic mixed effects model, predicting a correct response as an interaction of age, condition (ad-hoc or scalar) and trial type (implicature or control), with random effects of participant and trial type. All mixed effects models were fit in R using the lme4 package. The model specifications are as follows: ({\tt{correct $\sim$ trial\char`_type * condition * age + (trial\char`_type | subject\char`_ID)}}). Age was centered for ease of model fit. We found that performance was significantly lower for scalar trials than ad-hoc trials ($\beta$ = --1.04, \textit{p} = .001), and that there was a significant interaction between condition and trial type, such that performance was significantly worse on scalar implicature trials ($\beta$ = --2.21, \textit{p} $<$ .0001). We also found a significant 3-way interaction between condition, trial type, and age, such that performance on scalar implicature trials decreased with age ($\beta$ = --4.2, \textit{p} = .006). There were no significant effects of adding trial order (trials in the first half vs. second half of the experiment), indicating that performance did not change throughout the course of the experiment.
 
-In post-hoc analysis of the data, we found an unpredicted consistency in performance on ``some'' and ``none'' trials (Figure \ref{fig:imp_hist}).\footnote{We also observed this bimodal performance in a pilot sample (N = 23), so we had some reason to expect it in Experiment 1.}  To examine this patterns of responses more closely, we ran Hartigan's dip test and found significant bimodal distributions for both ``some'' (\textit{D} = .15, \textit{p} \textless  .0001) and ``none'' (\textit{D} = .20, \textit{p} \textless  .0001). This result suggests children did not respond at chance in scalar trials, but instead were consistently either correct or incorrect. Additionally, children's success on ``some'' and ``none'' trials was correlated (\textit{r} = .45, \textit{p} =  .001), such that children who performed better on ``some'' trials also tended to perform better on ``none'' trials. Performance on ``none'' and ``all'' trials (\textit{r} = .11, \textit{p} = .45) and ``some'' and ``all'' trials (\textit{r} = .01, \textit{p} = .95) was not correlated.
+In post-hoc analysis of the data, we found an unpredicted consistency in performance on ``some'' and ``none'' trials (Figure \ref{fig:imp_hist}). We also observed this bimodal performance in a pilot sample (N = 23), so we had some reason to expect it in Experiment 1. To examine this patterns of responses more closely, we ran Hartigan's dip test and found significant bimodal distributions for both ``some'' (\textit{D} = .15, \textit{p} \textless  .0001) and ``none'' (\textit{D} = .20, \textit{p} \textless  .0001). This result suggests children did not respond at chance in scalar trials, but instead were consistently either correct or incorrect. Additionally, children's success on ``some'' and ``none'' trials was correlated (\textit{r} = .45, \textit{p} =  .001), such that children who performed better on ``some'' trials also tended to perform better on ``none'' trials. Performance on ``none'' and ``all'' trials (\textit{r} = .11, \textit{p} = .45) and ``some'' and ``all'' trials (\textit{r} = .01, \textit{p} = .95) was not correlated.
 
 \subsection{Discussion}
 

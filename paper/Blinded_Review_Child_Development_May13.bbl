@@ -403,7 +403,7 @@ Hurewitz, F.%
 \newblock
 \APACjournalVolNumPages{Language Learning and Development}{2}{2}{77-96}.
 \newblock
-\begin{APACrefDOI} \doi{10.1207/s15473341lld0202_1} \end{APACrefDOI}
+\begin{APACrefDOI} \doi{10.1207/s15473341lld0202\char`_1} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -605,7 +605,7 @@ Papafragou, A.%
 \newblock
 \APACjournalVolNumPages{Language Acquisition}{12}{}{71-82}.
 \newblock
-\begin{APACrefDOI} \doi{10.1207/s15327817la1201_3} \end{APACrefDOI}
+\begin{APACrefDOI} \doi{10.1207/s15327817la1201\char`_3} \end{APACrefDOI}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
