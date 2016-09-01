@@ -141,6 +141,11 @@ t.test(subset(d, Age == "4.5-5 years" & type == "All")$correct,
 t.test(subset(d, Age == "4.5-5 years" & type == "All")$correct,
        subset(d, Age == "4.5-5 years" & type == "Unambig. Some")$correct,
        var.equal = TRUE)
+
+#SI between ages
+t.test(subset(d, Age == "4.5-5 years" & type == "Implicature")$correct,
+       subset(d, Age == "4-4.5 years" & type == "Implicature")$correct,
+       var.equal = TRUE)
 ```
 
 T-tests: Scalar vs. ad-hoc
@@ -216,7 +221,8 @@ Exp1 - model
 ```{r}
 #center age to facilitate model fit
 data_exp1 %<>%
-  mutate(age.c = scale(age, center = TRUE, scale=FALSE))
+  mutate(age.c = as.vector(scale(age, center = TRUE, scale=FALSE)))%>%
+  mutate(correct = as.integer(correct))
 
 library(lme4)
 gl <- glmer(correct ~ trial_type * condition * age.c  + 
