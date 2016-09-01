@@ -469,6 +469,32 @@ aux <- dev.off()
 
 
 Experiment 2
+Correlation between "some" and "none"
+```{r}
+data_exp2 %<>%
+  mutate(correct = as.numeric(correct))
+
+ms <- data_exp2 %>%
+  group_by(type, Subj_ID, Age)%>%
+  multi_boot_standard("correct", na.rm = TRUE)
+
+cs <- cast(ms, Subj_ID + Age ~ type, value="mean")
+
+ggplot(cs, aes(x=None, y=Some, colour=Age)) + 
+  geom_point(shape = 16, size = 2.5, stat = "identity", position = position_jitter(.01)) +
+  geom_smooth(method="lm", col="black", lty=1) + 
+  geom_smooth(aes(col=Age, group=Age), 
+				se=FALSE, method="lm",lty=3) + scale_color_solarized() +   theme_bw(base_size=18)  +
+  theme(legend.title = element_text(size=14),
+        legend.text = element_text(size=12),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size=14), 
+        legend.position = "top")+
+  labs(x = 'Prop. "none" trials correct', y = 'Prop. "some" trials correct')
+
+cs <- cast(data?spread_exp2, Subj_ID + Age)
+```
+
 ```{r}
 agg.2<- data_exp2 %>%
   mutate(correct = as.integer(correct)) %>%
@@ -502,7 +528,9 @@ agg.2 %<>%
 # agg.exp2 <- agg.data
 
 pdf(file="./exp2_performance.pdf", width=6, height=3.5)
-p <- ggplot(data = agg.2, 
+p <- 
+quartz()
+ggplot(data = agg.2, 
        aes(x=type, y=mean, fill=type, alpha=`Age (years)`)) + 
   geom_bar(position = "dodge", stat ="identity" ) +
   geom_linerange(aes(ymin = ci_lower,
@@ -510,13 +538,17 @@ p <- ggplot(data = agg.2,
                   size = .3,
                   show.legend = FALSE,
                  position=position_dodge(width = 0.9)) +
-  theme_bw(base_size = 10) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank()) +
+  theme_bw(base_size = 18) + 
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y  = element_text(size=16),
+        legend.title=element_text(size=14), 
+        legend.text=element_text(size=14), 
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank()) +
   scale_alpha_manual(values=c(.5,.625,.75,1)) + 
   ylab("Mean correct") + 
   xlab("Trial type") +
-  scale_fill_solarized() + guides(fill = FALSE)
+  scale_fill_manual(values = palette) + guides(fill = FALSE)
 print(p)
 aux <- dev.off()
 
@@ -676,6 +708,32 @@ aux <- dev.off()
   
 ```
 
+Relating "some" and "none" in exp 3
+```{r}
+data_SIexp3 %<>%
+  mutate(correct = as.numeric(correct))
+
+ms <- data_SIexp3 %>%
+  group_by(type, sub_ID, Age)%>%
+  multi_boot_standard("correct", na.rm = TRUE)
+
+cs <- cast(ms, sub_ID + Age ~ type, value="mean") %>%
+  mutate(Some = Implicature)
+
+ggplot(cs, aes(x=None, y=Some, colour=Age)) + 
+  geom_point(shape = 16, size = 2.5, stat = "identity", position = position_jitter(.01)) +
+  geom_smooth(method="lm", col="black", lty=1) + 
+  geom_smooth(aes(col=Age, group=Age), 
+				se=FALSE, method="lm",lty=3) + scale_color_solarized() +   theme_bw(base_size=18)  +
+  theme(legend.title = element_text(size=14),
+        legend.text = element_text(size=12),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size=14))+
+  labs(x = 'Prop. "none" trials correct', y = 'Prop. "some" trials correct')
+
+cs <- cast(data?spread_exp2, Subj_ID + Age)
+```
+
 DCCS
 ```{r}
 agg.DCCS <- dccs %>%
@@ -736,7 +794,10 @@ agg.gq %<>%
   rename(`Age (years)` = Age)
 
 pdf(file="./exp3_GQperf.pdf", width=6, height=3.5)
-p <- ggplot(data = agg.gq, 
+p <- 
+  
+quartz()
+ggplot(data = agg.gq, 
        aes(x=prompt, y=mean, fill=prompt, alpha = `Age (years)`)) +
   geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
@@ -746,11 +807,15 @@ p <- ggplot(data = agg.gq,
                  position=position_dodge(width = 0.9)) +
   ylab("Proportion correct") + 
   xlab("Quantifier Prompt") +
-  theme_bw(base_size=10) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank()) +
+  theme_bw(base_size=18) + 
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y  = element_text(size=16),
+        legend.title=element_text(size=14), 
+        legend.text=element_text(size=14), 
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank()) +
   scale_alpha_manual(values=c(.5,.625,.75,1)) + guides(fill = FALSE) +
-  scale_fill_solarized()
+  scale_fill_manual(values = palette)
 print(p)
 aux <- dev.off()
 
