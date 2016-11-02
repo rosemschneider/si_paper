@@ -229,6 +229,11 @@ gl <- glmer(correct ~ trial_type * condition * age.c  +
               (trial_type | Subj_ID), data=data_exp1, 
             family=binomial, control=glmerControl(optimizer="bobyqa",
                             optCtrl=list(maxfun=2e5))) 
+
+lm <- glmer(correct ~ trial_type * condition * age.c +
+              (trial_type| Subj_ID) + (trial_type|item), 
+            data = data_exp1, family = binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
 #change optimizer, otherwise model won't converge
 summary(gl)
 ```
@@ -927,4 +932,177 @@ Logistic regressions
 #             family = "binomial"))
 # summary(glm(GQ_none_correct == 0 ~  DCCS_post + test_age, data=d_all, 
 #             family = "binomial"))
+```
+
+#Experiment 4 - control with some and all
+```{r}
+#reading in the original wide-form dataframe
+d4 <- read.csv("../data/si_paper_control.csv")
+
+#fill in the selection types for easier analyses
+d4 %<>%
+  mutate(carrot_selection = factor(carrot_selection, levels=c(1, 2, 3)), 
+         hat_selection = factor(hat_selection, levels=c(1, 2, 3)),
+         cat_selection = factor(cat_selection, levels=c(1, 2, 3)),
+         purses_selection = factor(purses_selection, levels=c(1, 2, 3)),
+         shirts_selection = factor(shirts_selection, levels=c(1, 2, 3)),
+         horses_selection = factor(horses_selection, levels=c(1, 2, 3)), 
+         bears_selection= factor(bears_selection, levels=c(1, 2, 3)),
+         frogs_selection = factor(frogs_selection, levels=c(1, 2, 3)),
+         plates_selection = factor(plates_selection, levels=c(1, 2, 3)),
+         books_selection = factor(books_selection, levels=c(1, 2, 3)),
+         elephants_selection = factor(elephants_selection, levels=c(1, 2, 3)),
+         bananas_selection = factor(bananas_selection, levels=c(1, 2, 3)),
+         carrot_correct = factor(carrot_correct, levels=c(0, 1)), 
+         hat_correct = factor(hat_correct, levels=c(0, 1)),
+         cat_correct = factor(cat_correct, levels=c(0, 1)),
+         purses_correct = factor(purses_correct, levels=c(0, 1)),
+         shirts_correct = factor(shirts_correct, levels=c(0, 1)),
+         horses_correct = factor(horses_correct, levels=c(0, 1)), 
+         bears_correct= factor(bears_correct, levels=c(0, 1)),
+         frogs_correct = factor(frogs_correct, levels=c(0, 1)),
+         plates_correct = factor(plates_correct, levels=c(0, 1)),
+         books_correct = factor(books_correct, levels=c(0, 1)),
+         elephants_correct = factor(elephants_correct, levels=c(0, 1)),
+         bananas_correct = factor(bananas_correct, levels=c(0, 1)))
+
+data=melt.data.frame(d4,c("SID","age", "agegroup","sex", "Exclude"),c("carrot_prompt", "hat_prompt", "cat_prompt", "purses_prompt",  "shirts_prompt", "horses_prompt", "bears_prompt", "frogs_prompt", "plates_prompt", "books_prompt", "elephants_prompt", "bananas_prompt", "carrot_selection", "hat_selection", "cat_selection", "purses_selection",  "shirts_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "bananas_selection", "carrot_selection_type", "hat_selection_type", "cat_selection_type", "purses_selection_type",  "shirts_selection_type", "horses_selection_type", "bears_selection_type", "frogs_selection_type", "plates_selection_type", "books_selection_type", "elephants_selection_type", "bananas_selection_type", "carrot_correct", "hat_correct", "cat_correct", "purses_correct",  "shirts_correct", "horses_correct", "bears_correct", "frogs_correct", "plates_correct", "books_correct", "elephants_correct", "bananas_correct"))
+
+
+#making a respectable df  
+onefourth <- (1/4)*nrow(data)
+data1 <- data[1:onefourth,]
+data1$prompt <- data$value[1:onefourth]
+data1$selection <- data$value[(onefourth+1):(2*onefourth)]
+data1$selection_type <- data$value[(2*onefourth+1):(3*onefourth)]
+data1$correct <- data$value[(3*onefourth+1):(nrow(data))]
+data1$correct_factor <- data1$correct==1
+
+exp4 <- data1
+
+sum <- exp4 %>%
+group_by(Exclude)%>%
+distinct(SID)%>%
+summarise(n = n())
+
+#filtering exclusions
+exp4 %<>%
+  filter(Exclude != 1)%>%
+  filter(selection != "NaN")
+  
+#making correct a num for analysis
+exp4 %<>%
+  mutate(correct = as.numeric(correct_factor))
+  
+```
+
+Summary Statistics, general sanity checks
+```{r}
+#how many participants per age group?
+num_kids <- exp4 %>%
+  distinct(SID, age, agegroup)%>%
+  group_by(agegroup)%>%
+  summarise(n = n(), mean = mean(age), sd = sd(age), median = median(age))
+
+#Any errors in data recording?
+check <- exp4 %>%
+  group_by(prompt, selection_type, correct)%>%
+  summarise(n = n())
+  
+#1 error, with "all" being chosen for "some" >> removing this
+exp4 %<>% 
+  mutate(correct = replace(correct, c(prompt == "some" & selection_type == "all" & correct == "1"), NA), 
+         correct = replace(correct, c(prompt == "all" & selection_type == "all" & correct == "0"), NA))
+
+#look at means
+ms <- exp4 %>%
+  group_by(prompt, agegroup) %>%
+  multi_boot_standard("correct", na.rm=TRUE)
+  
+```  
+
+Graphs
+```{r}
+  #bar plot
+quartz()  
+ggplot(data = ms, 
+   aes(x=prompt, y=mean, fill=agegroup)) +
+  geom_bar(stat="identity", position = position_dodge()) +
+  geom_linerange(aes(ymin = ci_lower,
+        ymax = ci_upper),
+      size = .4,
+      show.legend = FALSE,
+       position=position_dodge(.9)) +
+  ylab("Proportion correct") + 
+  xlab("Trial Type") +
+  theme_bw(base_size = 12) + 
+  scale_fill_solarized(name = "agegroup")
+  
+```  
+  
+incorrect selections  
+```{r}  
+#What kind of incorrect selections are children making? 
+ms_wrong <- exp4 %>%
+filter(correct_factor == FALSE)%>%
+group_by(agegroup, prompt, selection_type)%>%
+  dplyr::summarise(n=n())%>%
+  mutate(n.total = sum(n), prop = n/n.total)
+  
+```  
+  
+  
+Incorrect selection graph
+```{r}
+quartz()
+ggplot(data = ms_wrong, 
+       aes(x=selection_type, y=n, fill=selection_type, alpha=agegroup)) +
+  geom_bar(stat="identity", position = position_dodge())  +
+  ylab("Count of children choosing") + 
+  xlab("Selection Type") + facet_wrap(~prompt) + 
+  theme_bw(base_size=12) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.625,1)) + guides(fill = FALSE) +
+  scale_fill_solarized()
+```
+
+Stats
+T-tests
+```{r}
+#difference in accuracy on either type of trial between age groups? #some
+#create df for tests
+cs <- exp4 %>%
+  group_by(SID, agegroup, prompt)%>%
+  summarise(correct = mean(correct))
+
+t.test(subset(cs, prompt == "all" & agegroup == "4-4.5")$correct, subset(cs, prompt == "all" & agegroup == "4.5-5")$correct, 
+  var.equal = TRUE)
+t.test(subset(cs, prompt == "some" & agegroup == "4-4.5")$correct, subset(cs, prompt == "some" & agegroup == "4.5-5")$correct, 
+  var.equal = TRUE)
+  
+#no difference here, so we can collapse across age groups, I think
+t.test(subset(cs, prompt == "some")$correct, subset(cs, prompt == "all")$correct, 
+  var.equal = TRUE)
+  
+#t-test between old and control data
+data_si %<>%
+  mutate(SI_correct = as.numeric(SI_correct))
+t.test(subset(d, type == "Implicature" & Age == "4-4.5 years")$correct, subset(cs, prompt == "some" & agegroup == "4-4.5")$correct, 
+  var.equal = TRUE)
+  t.test(subset(d, type == "Implicature" & Age == "4.5-5 years")$correct, subset(cs, prompt == "some" & agegroup == "4.5-5")$correct, 
+  var.equal = TRUE)
+  
+```
+
+Diptest
+```{r}
+mss <- ddply(exp4, .(prompt, SID), summarise, 
+	mean = mean(correct),
+  agegroup = agegroup[1])
+
+cs <- cast(mss, SID + agegroup ~ prompt, value="mean") 
+
+dip.test(cs$some)
+dip.test(cs$all)
 ```
