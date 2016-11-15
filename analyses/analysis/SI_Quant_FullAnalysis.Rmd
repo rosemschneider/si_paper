@@ -1,0 +1,218 @@
+---
+title: "SI-Quant_FullAnalysis"
+author: "Rose Schneider"
+date: "11/14/2016"
+output: html_document
+---
+
+Full and updated analysis for Horowitz, Schneider, & Frank (under review). Codebase is being updated to streamline and consolidate in advance of and prep for submission. All updated code is validated against the original output.
+
+#Preliminaries
+```{r setup, include=FALSE}
+rm(list=ls())
+library(knitr)
+opts_chunk$set(cache=FALSE, message=FALSE, warning=FALSE, error=FALSE)  
+```
+
+```{r}
+library(ggplot2)
+library(reshape)
+library(plyr)
+library(dplyr)
+library(stringr)
+library(tidyr)
+library(markdown)
+library(directlabels)
+library(magrittr)
+library(bootstrap)
+library(RCurl)
+library(langcog)
+library(diptest)
+theme_set(theme_bw())
+
+setwd("~/Documents/Projects/si_paper/analyses/analysis/")
+```
+
+#Experiment 1
+
+##Data management
+```{r}
+d <- read.csv("../data/implicatures_adhocScalar_data.csv")
+
+#fill in the selection types for easier analyses
+d_exp1=melt.data.frame(d,c("Subj_ID", "age","agegroup", "gender"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_condition", "hats_condition", "cookies_condition", "trains_condition", "cats_condition", "purses_condition",  "keys_condition", "shirts_condition", "breads_condition", "horses_condition", "bears_condition", "frogs_condition", "plates_condition", "books_condition", "elephants_condition", "lamps_condition", "bananas_condition", "butterflies_condition", 
+"carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+data_exp1 <- d_exp1[1:864,] 
+data_exp1$condition <- d_exp1$value[865:1728]
+data_exp1$type <- d_exp1$value[1729:2592]
+names(data_exp1)[5] <- "item"
+names(data_exp1)[6] <- "correct"
+
+#some tidying
+data_exp1 %<>%
+  mutate(trial_type = ifelse(type == "implicature", "Implicature", "Control")) %>%
+  mutate(type = factor(type, levels = c("implicature","control_comparison","control_distractor",
+					      "control_none","control_unambiguous", "control_all"), 
+				    	  labels = c("Implicature","Comparison","Distractor","None","Unambig. Some", "All")),
+         condition = factor(condition, levels = c("adhoc", "scalar"), 
+                            labels = c("Ad hoc", "Scalar")))
+
+```         
+    
+##Demographic information          
+```{r}
+exp1_demo <- data_exp1 %>%
+  distinct(agegroup, Subj_ID, gender, age)%>%
+  group_by(agegroup) %>%
+  summarise(n = n(), 
+            n_female = sum(gender == "f"), 
+            n_male = sum(gender == "m"), 
+            mean_age = mean(age), 
+            median_age = median(age), 
+            sd_age = sd(age))
+```
+
+##Mean performance across conditions, by agegroup
+```{r}
+ms_exp1 <- data_exp1 %>%
+  mutate(correct = as.numeric(correct))%>%
+  group_by(condition, type, trial_type, agegroup)%>%
+  multi_boot_standard("correct", na.rm = TRUE)
+
+legend_title <- "OMG My Title"
+pdf(file="./exp1_performance.pdf", width=6.5, height=4)
+p <- ggplot(data = ms_exp1,aes(x=type, y=mean, fill=type, alpha=agegroup)) + 
+  geom_bar(stat="identity", position = position_dodge()) +
+  geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  theme_bw(base_size = 10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(0.8, 1), 
+                     guide = guide_legend(title = "Age group (years)")) + 
+  labs(x = "Mean Correct", y = "Trial Type") +
+  scale_fill_solarized() +
+facet_grid(~condition, scale = "free_x") + guides(fill = FALSE)
+print(p)
+aux <- dev.off()
+```
+
+###T-tests of performance across trial types and age groups
+```{r}
+d <- data_exp1 %>%
+  filter(condition == "Scalar")%>%
+  mutate(correct = as.numeric(correct))
+
+d <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d, mean)
+```
+
+
+###T-tests: Age-groups, by trial type
+```{r}
+#t-tests against "all"
+#4-4.5
+#all-some
+t.test(subset(d, agegroup == "4.0--4.5" & type == "All")$correct,
+       subset(d, agegroup == "4.0--4.5" & type == "Implicature")$correct,
+       var.equal = TRUE)
+#all-none
+t.test(subset(d, agegroup == "4.0--4.5" & type == "All")$correct,
+       subset(d, agegroup == "4.0--4.5" & type == "None")$correct,
+       var.equal = TRUE)
+#all-unambig.some
+t.test(subset(d, agegroup == "4.0--4.5" & type == "All")$correct,
+       subset(d, agegroup == "4.0--4.5" & type == "Unambig. Some")$correct,
+       var.equal = TRUE)
+
+#4.5-5
+#all-some
+t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
+       subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+       var.equal = TRUE)
+#all-none
+t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
+       subset(d, agegroup == "4.5--5.0" & type == "None")$correct,
+       var.equal = TRUE)
+#all-unambig.some
+t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
+       subset(d, agegroup == "4.5--5.0" & type == "Unambig. Some")$correct,
+       var.equal = TRUE)
+
+#SI between ages
+t.test(subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+       subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+       var.equal = TRUE)
+```
+
+###T-tests: Scalar vs. ad hoc
+T-tests: Scalar vs. ad-hoc
+```{r}
+d1 <- data_exp1 %>%
+  mutate(correct = as.numeric(correct))
+
+d1 <- aggregate(correct ~ type + agegroup + condition + Subj_ID, data=d1, mean)
+
+#comparison - ad-hoc implicature vs. scalar
+#4-4.5
+t.test(subset(d1, agegroup == "4.0--4.5" & type == "Implicature" 
+              & condition == "Ad hoc")$correct,
+       subset(d1, agegroup == "4.0--4.5" & type == "Implicature" 
+              & condition == "Scalar")$correct,
+       var.equal = TRUE)
+
+#4.5-5
+t.test(subset(d1, agegroup == "4.5--5.0" & type == "Implicature" 
+              & condition == "Ad hoc")$correct,
+       subset(d1, agegroup == "4.5--5.0" & type == "Implicature" 
+              & condition == "Scalar")$correct,
+       var.equal = TRUE)
+```
+
+###Diptest for bimodal performance
+```{r}
+ms1 <- data_exp1 %>%
+  group_by(type, condition, Subj_ID) %>%
+  mutate(correct = as.numeric(correct)) %>%
+  summarise(mean = mean(correct), 
+            agegroup = agegroup[1]) %>%
+  filter(condition == "Scalar")
+
+cs <- cast(ms, Subj_ID + agegroup ~ type + condition, value="mean") %>%
+  rename(control_none_scalar = None_Scalar, 
+         implicature_scalar = Implicature_Scalar, control_all_scalar = All_Scalar)
+
+dip.test(cs$implicature_scalar)
+dip.test(cs$control_none_scalar)
+dip.test(cs$control_all_scalar)
+```
+
+####Graph of bimodal distribution
+```{r}
+exp1_hist <- data_exp1 %>%
+  filter(condition == "Scalar" & type != "All" & type != "Unambig. Some")%>%
+  group_by(Subj_ID, type)%>%
+  mutate(correct = as.numeric(correct))%>%
+  multi_boot_standard("correct", na.rm = TRUE)
+
+pdf(file="./exp1_hist.pdf", width=6, height=3.5)
+q <- ggplot(exp1_hist, aes(x = mean, fill=type)) + 
+  geom_histogram(colour = "black", stat = "bin",breaks = c(0,.2,.4,.6,.8,1), binwidth = .2) + 
+  theme_bw(base_size = 18) + 
+  xlab("Mean performance") + 
+  ylab("Frequency") + 
+  facet_wrap(~type) + 
+  theme_bw(base_size = 10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        legend.position = "none") +
+  scale_fill_solarized() + 
+  scale_x_continuous(breaks = c(0,.2,.4,.6,.8,1))
+print(q)
+aux <- dev.off()
+```
+  
