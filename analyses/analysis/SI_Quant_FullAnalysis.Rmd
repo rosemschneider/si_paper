@@ -25,9 +25,9 @@ library(markdown)
 library(directlabels)
 library(magrittr)
 library(bootstrap)
-library(RCurl)
 library(langcog)
 library(diptest)
+library(lme4)
 theme_set(theme_bw())
 
 setwd("~/Documents/Projects/si_paper/analyses/analysis/")
@@ -81,7 +81,6 @@ ms_exp1 <- data_exp1 %>%
   group_by(condition, type, trial_type, agegroup)%>%
   multi_boot_standard("correct", na.rm = TRUE)
 
-legend_title <- "OMG My Title"
 pdf(file="./exp1_performance.pdf", width=6.5, height=4)
 p <- ggplot(data = ms_exp1,aes(x=type, y=mean, fill=type, alpha=agegroup)) + 
   geom_bar(stat="identity", position = position_dodge()) +
@@ -103,6 +102,7 @@ aux <- dev.off()
 ```
 
 ###T-tests of performance across trial types and age groups
+
 ```{r}
 d <- data_exp1 %>%
   filter(condition == "Scalar")%>%
@@ -182,7 +182,7 @@ ms1 <- data_exp1 %>%
             agegroup = agegroup[1]) %>%
   filter(condition == "Scalar")
 
-cs <- cast(ms, Subj_ID + agegroup ~ type + condition, value="mean") %>%
+cs <- cast(ms1, Subj_ID + agegroup ~ type + condition, value="mean") %>%
   rename(control_none_scalar = None_Scalar, 
          implicature_scalar = Implicature_Scalar, control_all_scalar = All_Scalar)
 
@@ -215,4 +215,498 @@ q <- ggplot(exp1_hist, aes(x = mean, fill=type)) +
 print(q)
 aux <- dev.off()
 ```
+
+###Full correlations
+```{r}
+#full correlations
+cor.test(cs$control_none_scalar, cs$implicature_scalar)
+cor.test(cs$control_all_scalar, cs$implicature_scalar)
+cor.test(cs$control_none_scalar, cs$control_all_scalar)
+
+#by age
+#none-some
+cs %>% group_by(agegroup) %>% 
+	summarise(r = cor.test(control_none_scalar, implicature_scalar)$estimate,
+			  p = cor.test(control_none_scalar, implicature_scalar)$p.value)
+#all-some
+cor.test(cs$control_all_scalar, cs$implicature_scalar)
+cs %>% group_by(agegroup) %>% 
+	summarise(r = cor.test(control_all_scalar, implicature_scalar)$estimate,
+			  p = cor.test(control_all_scalar, implicature_scalar)$p.value)
+#all-none
+cor.test(cs$control_all_scalar, cs$control_none_scalar)
+cs %>% group_by(agegroup) %>% 
+	summarise(r = cor.test(control_all_scalar, control_none_scalar)$estimate,
+			  p = cor.test(control_all_scalar, control_none_scalar)$p.value)	
+```
   
+###Logistic regression
+```{r}
+#center age to facilitate model fit
+data_exp1 %<>%
+  mutate(age.c = as.vector(scale(age, center = TRUE, scale=FALSE)))%>%
+  mutate(correct = as.integer(correct))
+
+gl <- glmer(correct ~ trial_type * condition * age.c  + 
+              (trial_type | Subj_ID), data=data_exp1, 
+            family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5))) 
+
+lm <- glmer(correct ~ trial_type * condition * age.c +
+              (trial_type| Subj_ID) + (trial_type|item), 
+            data = data_exp1, family = binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
+#change optimizer, otherwise model won't converge
+summary(lm)
+summary(gl)
+```
+  
+#Experiment 2
+
+##Read in data
+```{r}
+d2 <- read.csv("../data/implicatures_scalarOnly_data.csv")
+
+data_exp2=melt.data.frame(d2,c("Subj_ID","age","agegroup","gender", "ethnicity"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_selectionType", "hats_selectionType", "cookies_selectionType", "trains_selectionType", "cats_selectionType", "purses_selectionType",  "keys_selectionType", "shirts_selectionType", "breads_selectionType", "horses_selectionType", "bears_selectionType", "frogs_selectionType", "plates_selectionType", "books_selectionType", "elephants_selectionType", "lamps_selectionType", "bananas_selectionType", "butterflies_selectionType", 
+"carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+data <- data_exp2[1:918,] 
+data$selectionType <- data_exp2$value[919:1836]
+data$type <- data_exp2$value[1837:2754]
+names(data)[4] <- "gender"
+names(data)[5] <-"ethnicity"
+names(data)[6] <- "item"
+names(data)[7] <- "correct"
+
+data_exp2 <- data
+
+data_exp2 %<>%
+  mutate(type = factor(type, levels = c("all","some","none"), 
+				    	  labels = c("All","Some","None")),
+         selectionType = factor(selectionType, levels = c("all", "some", "none"), 
+                            labels = c("All", "Some", "None")), 
+         correct = as.numeric(correct))
+
+attach(data_exp2)
+data_exp2$trial_type[type == "some"] <- "implicature"
+data_exp2$trial_type[type != "some"] <- "control"
+detach(data_exp2)
+
+```
+
+###Demographic information
+```{r}
+demo_exp2 <- data_exp2 %>%
+  distinct(agegroup, age, gender, ethnicity, Subj_ID)%>%
+  group_by(agegroup)%>%
+  summarise(n = n(), 
+            n_female = sum(gender == "f"), 
+            n_male = sum(gender == "m"), 
+            mean_age = mean(age), 
+            median_age = median(age), 
+            sd_age = sd(age), 
+            n_white = sum(ethnicity == "white"), 
+            n_asian = sum(ethnicity == "asian"), 
+            n_black = sum(ethnicity == " black"), 
+            n_other = sum(ethnicity == "mixed" | ethnicity == "other"), 
+            n_na = sum(is.na(ethnicity)))
+
+```
+
+##Mean performance by trial and age group
+```{r}
+ms_exp2 <- data_exp2 %>%
+  group_by(type, agegroup)%>%
+  multi_boot_standard("correct", na.rm=T)
+
+pdf(file="./exp2_performance.pdf", width=6, height=3.5)
+p <- 
+quartz()
+ggplot(data = ms_exp2, aes(x=type, y=mean, fill=type, alpha=agegroup)) + 
+  geom_bar(stat="identity", position = position_dodge()) +
+  geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  theme_bw(base_size = 10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(0.5,.625, .725, 1), 
+                     guide = guide_legend(title = "Age group (years)")) + 
+  labs(x = "Mean Correct", y = "Trial Type") +
+  scale_fill_solarized() + guides(fill = FALSE)
+print(p)
+aux <- dev.off()
+```
+  
+###T-tests by trial type and age group
+```{r}
+d <- data_exp2 %>%
+  mutate(correct = as.numeric(as.character(correct)))
+
+d <- aggregate(correct ~ type + agegroup +Subj_ID, data=d, mean)
+
+#tests between quantifiers
+#all and some
+t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, 
+       subset(d, agegroup=="3.0--3.5" & type=="Some")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, 
+       subset(d, agegroup=="3.5--4.0"& type=="Some")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, 
+       subset(d, agegroup=="4.0--4.5" & type=="Some")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, 
+       subset(d, agegroup=="4.5--5.0" & type=="Some")$correct, 
+       var.equal = TRUE)
+
+#all and none
+t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, 
+       subset(d, agegroup=="3.0--3.5" & type=="None")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, 
+       subset(d, agegroup=="3.5--4.0" & type=="None")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, 
+       subset(d, agegroup=="4.0--4.5" & type=="None")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, 
+       subset(d, agegroup=="4.5--5.0" & type=="None")$correct, 
+       var.equal = TRUE)
+```
+
+###T-tests between exp 1 and exp. 2
+```{r}
+d1 <- data_exp1 %>%
+  filter(condition == "Scalar")
+d2 <- data_exp2
+
+df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
+  spread(type, correct)
+df2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%>%
+  spread(type, correct)
+
+#4-4.5s
+t.test(subset(df1, agegroup == "4.0--4.5")$All, subset(df2, agegroup == "4.0--4.5")$All, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.0--4.5")$Implicature, subset(df2, agegroup == "4.0--4.5")$Some, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.0--4.5")$None, subset(df2, agegroup == "4.0--4.5")$None, 
+       var.equal = TRUE)
+
+#4.5-5
+t.test(subset(df1, agegroup == "4.5--5.0")$All, subset(df2, agegroup == "4.5--5.0")$All, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.5--5.0")$Implicature, subset(df2, agegroup == "4.5--5.0")$Some, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.5--5.0")$None, subset(df2, agegroup == "4.5--5.0")$None, 
+       var.equal = TRUE)
+```
+
+##Diptests and bimodal distribution
+```{r}
+ms <- data_exp2 %>%
+  group_by(type, Subj_ID)%>%
+  mutate(agegroup = agegroup[1]) %>%
+  summarise(mean = mean(correct),
+            agegroup = agegroup[1])
+
+cs <- cast(ms, Subj_ID + agegroup ~ type, value="mean")
+
+dip.test(cs$Some)
+dip.test(cs$None)
+dip.test(cs$All)
+```
+
+##Incorrect selection 
+```{r}
+exp2_wrong <- data_exp2 %>%
+  filter(correct != 1) %>%
+  group_by(agegroup, type, selectionType)%>%
+  dplyr::summarise(n=n())%>%
+  mutate(n.total = sum(n), prop = n/n.total)
+
+wrong <- exp2_wrong[c(1:9, 11:19, 21),] 
+    
+#now graph
+pdf(file="./exp2_wrong.pdf", width=6, height=3.5)
+p <- ggplot(data = wrong, 
+       aes(x=selectionType, y=n, fill=selectionType, alpha=agegroup)) +
+  geom_bar(stat="identity", position = position_dodge())  +
+  ylab("Count of children choosing") + 
+  xlab("Selection Type") + facet_wrap(~type) + 
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
+  scale_fill_solarized() + scale_alpha_manual(values=c(0.5,.625, .725, 1), 
+                     guide = guide_legend(title = "Age group (years)")) + 
+  labs(x = "Mean Correct", y = "Trial Type")
+print(p)
+aux <- dev.off()
+```
+
+##Correlations (full)
+
+```{r}
+cor.test(cs$Some, cs$None)
+
+cs %>% group_by(agegroup) %>% 
+	summarise(r = cor.test(None, Some)$estimate,
+			  p = cor.test(None, Some)$p.value)
+```
+
+##Logistic regression
+```{r}
+data_exp2 %<>%
+  mutate(age.c = scale(age, center=TRUE, scale=FALSE))
+
+gl.int <- glmer(correct ~  type * age.c 
+			+ (type | Subj_ID), 
+			data=data_exp2, family=binomial)
+summary(gl.int)
+
+gl.norand <- glmer(correct ~  type * age.c 
+			+ (1 | Subj_ID), 
+			data=data_exp2, family=binomial)
+summary(gl.norand)
+```
+
+#Experiment 3 - Scalar Implicature main analyses
+##Read in data - Scalar Implicature
+```{r}
+#reading in the original wide-form dataframe
+d3 <- read.csv("../data/SI_coding.csv")
+
+#fill in the selection types for easier analyses
+d3 %<>%
+  mutate(carrot_selection = factor(carrot_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")), 
+         hat_selection = factor(hat_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         cookies_selection = factor(cookies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         trains_selection = factor(trains_selection, levels=c(1, 2, 3), labels = c("none", "all", "some")), 
+         cats_selection = factor(cats_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")),
+         purses_selection = factor(purses_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         keys_selection = factor(keys_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         shirts_selection = factor(shirts_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")),
+         breads_selection = factor(breads_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         horses_selection = factor(horses_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         bears_selection= factor(bears_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")),
+         frogs_selection = factor(frogs_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         plates_selection = factor(plates_selection, levels=c(1, 2, 3), labels = c("all", "some", "none")), 
+         books_selection = factor(books_selection, levels=c(1, 2, 3), labels = c("none", "all", "some")), 
+         elephants_selection = factor(elephants_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")),
+         lamps_selection = factor(lamps_selection, levels=c(1, 2, 3), labels = c("none", "all", "some")), 
+         bananas_selection = factor(bananas_selection, levels=c(1, 2, 3), labels = c("some", "all", "none")), 
+         butterflies_selection = factor(butterflies_selection, levels=c(1, 2, 3), labels = c("none", "some", "all")))
+
+d2=melt.data.frame(d3,c("sub_ID","test_age", "agegroup","ethnicity", "gender"),c("carrot", "hat", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", "carrot_selection", "hat_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection", "carrot_type", "hat_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
+
+
+#making a respectable df  
+onethird <- (1/3)*nrow(d2)
+data <- d2[1:onethird,]
+data$selection <- d2$value[(onethird+1):(onethird*2)]
+data$type <- d2$value[(2*onethird+1):nrow(d2)]
+names(data)[6] <- "item"
+names(data)[7] <- "SI_correct"
+data$correct <- data$SI_correct==1
+
+#filtering out NAs, adding agesplit
+data %<>%
+  filter(sub_ID != "", correct != "NA")%>%
+  mutate(agegroup = factor(agegroup, levels = c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"), 
+                           labels = c("3.0--3.5", "3.5--4.0", "4.0--4.5", "4.5--5.0")), 
+         selection = factor(selection, levels = c("all", "some", "none"), 
+                            labels = c("All", "Some", "None")), 
+         type = factor(type, levels = c("control_all", "implicature", "control_none"), 
+                       labels = c("All", "Some", "None")), 
+         SI_correct = as.numeric(SI_correct),
+         test = "Scalar Implicature")
+
+data_si <- data
+```
+
+###Demographic information
+```{r}
+#Find the Mean and median ages
+exp3_demo <- data_si %>%
+  distinct(agegroup, test_age, gender, ethnicity, sub_ID)%>%
+  group_by(agegroup)%>%
+  summarise(n = n(), 
+            n_female = sum(gender == "f"), 
+            n_male = sum(gender == "m"), 
+            mean_age = mean(test_age), 
+            median_age = median(test_age), 
+            sd_age = sd(test_age), 
+            n_white = sum(ethnicity == "white"), 
+            n_asian = sum(ethnicity == "asian"), 
+            n_black = sum(ethnicity == " black"), 
+            n_other = sum(ethnicity == "mixed" | ethnicity == "other"), 
+            n_na = sum(is.na(ethnicity)))
+
+
+#use this dataframe for stats
+data_si <- data %>%
+  mutate(test = "Scalar Implicature")
+```
+
+##Mean performance by trial type and age
+```{r}
+ms_exp3 <- data_si %>%
+  group_by(type, agegroup)%>%
+  multi_boot_standard("correct", na.rm=T)
+
+
+#plot
+pdf(file="./exp3_SIperformance.pdf", width=6, height=3.5)
+p <- ggplot(data = ms_exp3, aes(x=type, y=mean, fill=type, alpha=agegroup)) + 
+  geom_bar(stat="identity", position = position_dodge()) +
+  geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  theme_bw(base_size = 10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(0.5,.625, .725, 1), 
+                     guide = guide_legend(title = "Age group (years)")) + 
+  labs(x = "Mean Correct", y = "Trial Type") +
+  scale_fill_solarized() + guides(fill = FALSE)
+aux <- dev.off()
+```
+
+##T-tests
+###Testing against Ali's original data
+```{r}
+#first create a df 
+#aggregate correct repsonses 
+df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=data_exp2, mean)%>%
+  spread(type, correct)
+df2 <- aggregate(correct ~ type + agegroup +  sub_ID, data=data_si, mean)%>%
+  spread(type, correct)
+
+#tests across age groups
+#3-3.5
+t.test(subset(df1, agegroup == "3.0--3.5")$All, subset(df2, agegroup == "3.0--3.5")$All, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "3.0--3.5")$Some, subset(df2, agegroup == "3.0--3.5")$Some, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "3.0--3.5")$None, subset(df2, agegroup == "3.0--3.5")$None, 
+       var.equal = TRUE)
+
+#3.5-4
+t.test(subset(df1, agegroup == "3.5--4.0")$All, subset(df2, agegroup == "3.5--4.0")$All, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "3.5--4.0")$Some, subset(df2, agegroup == "3.5--4.0")$Some, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "3.5--4.0")$None, subset(df2, agegroup == "3.5--4.0")$None, 
+       var.equal = TRUE)
+
+#4-4.5
+t.test(subset(df1, agegroup == "4.0--4.5")$All, subset(df2, agegroup == "4.0--4.5")$All, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.0--4.5")$Some, subset(df2, agegroup == "4.0--4.5")$Some, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.0--4.5")$None, subset(df2, agegroup == "4.0--4.5")$None, 
+       var.equal = TRUE)
+
+#4.5-5
+t.test(subset(df1, agegroup == "4.5--5.0")$All, subset(df2, agegroup == "4.5--5.0")$All, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.5--5.0")$Some, subset(df2, agegroup == "4.5--5.0")$Some, 
+       var.equal = TRUE)
+t.test(subset(df1, agegroup == "4.5--5.0")$None, subset(df2, agegroup == "4.5--5.0")$None, 
+       var.equal = TRUE)
+```
+
+###T-tests across trial types within agegroups with exp 3 data
+```{r}
+d <- data_si 
+
+d <- aggregate(correct ~ type + agegroup +sub_ID, data=d, mean)
+
+#tests between quantifiers
+#all and some
+t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, 
+       subset(d, agegroup=="3.0--3.5" & type=="Some")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, 
+       subset(d, agegroup=="3.5--4.0"& type=="Some")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, 
+       subset(d, agegroup=="4.0--4.5" & type=="Some")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, 
+       subset(d, agegroup=="4.5--5.0" & type=="Some")$correct, 
+       var.equal = TRUE)
+
+#all and none
+t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, 
+       subset(d, agegroup=="3.0--3.5" & type=="None")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, 
+       subset(d, agegroup=="3.5--4.0" & type=="None")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, 
+       subset(d, agegroup=="4.0--4.5" & type=="None")$correct, 
+       var.equal = TRUE)
+t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, 
+       subset(d, agegroup=="4.5--5.0" & type=="None")$correct, 
+       var.equal = TRUE)
+```
+
+##Diptest for bimodal performance
+```{r}
+ms3 <- data_si %>%
+  group_by(type, sub_ID) %>%
+  summarise(mean = mean(correct), 
+            agegroup = agegroup[1])
+
+cs <- cast(ms3, sub_ID + agegroup ~ type, value="mean")
+
+dip.test(cs$Some)
+dip.test(cs$None)
+dip.test(cs$All)
+```
+
+##Correlations (full)
+```{r}
+cor.test(cs$Some, cs$None)
+
+cs %>% group_by(agegroup) %>% 
+	summarise(r = cor.test(None, Some)$estimate,
+			  p = cor.test(None, Some)$p.value)
+```
+##Incorrect selections 
+```{r}
+si_wrong <- data_si %>%
+  filter(correct != "TRUE") %>%
+  group_by(agegroup, type, selection)%>%
+  dplyr::summarise(n=n())%>%
+  mutate(n.total = sum(n), prop = n/n.total)
+
+pdf(file="./exp3_SIwrong.pdf", width=6, height=3.5)
+p <- ggplot(data = si_wrong, 
+       aes(x=selection, y=n, fill=selection, alpha=agegroup)) +
+  geom_bar(stat="identity", position = position_dodge())  +
+  ylab("Count of children choosing") + 
+  xlab("Selection Type") + facet_wrap(~type) + 
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
+  scale_fill_solarized() + scale_alpha_manual(values=c(0.5,.625, .725, 1), 
+                     guide = guide_legend(title = "Age group (years)")) + 
+  labs(x = "Mean Correct", y = "Trial Type")
+print(p)
+aux <- dev.off()
+```  
+
+#Experiment 3 - Give-Quantifier full analyses
+```{r}
+
+```
