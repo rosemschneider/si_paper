@@ -94,7 +94,7 @@ p <- ggplot(data = ms_exp1,aes(x=type, y=mean, fill=type, alpha=agegroup)) +
         panel.grid.minor = element_blank()) +
   scale_alpha_manual(values=c(0.8, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Mean Correct", y = "Trial Type") +
+  labs(x = "Trial Type", y = "Mean Correct") +
   scale_fill_solarized() +
 facet_grid(~condition, scale = "free_x") + guides(fill = FALSE)
 print(p)
@@ -335,7 +335,7 @@ ggplot(data = ms_exp2, aes(x=type, y=mean, fill=type, alpha=agegroup)) +
         panel.grid.minor = element_blank()) +
   scale_alpha_manual(values=c(0.5,.625, .725, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Mean Correct", y = "Trial Type") +
+  labs(x = "Trial Type", y = "Mean Correct") +
   scale_fill_solarized() + guides(fill = FALSE)
 print(p)
 aux <- dev.off()
@@ -444,7 +444,7 @@ p <- ggplot(data = wrong,
   scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
   scale_fill_solarized() + scale_alpha_manual(values=c(0.5,.625, .725, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Mean Correct", y = "Trial Type")
+  labs(x = "Trial Type", y = "Mean Correct")
 print(p)
 aux <- dev.off()
 ```
@@ -574,7 +574,7 @@ p <- ggplot(data = ms_exp3, aes(x=type, y=mean, fill=type, alpha=agegroup)) +
         panel.grid.minor = element_blank()) +
   scale_alpha_manual(values=c(0.5,.625, .725, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Mean Correct", y = "Trial Type") +
+  labs(x = "Trial Type", y = "Mean Correct") +
   scale_fill_solarized() + guides(fill = FALSE)
 aux <- dev.off()
 ```
@@ -701,12 +701,73 @@ p <- ggplot(data = si_wrong,
   scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
   scale_fill_solarized() + scale_alpha_manual(values=c(0.5,.625, .725, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Mean Correct", y = "Trial Type")
+  labs(x = "Trial Type", y = "Count of children choosing")
 print(p)
 aux <- dev.off()
 ```  
 
 #Experiment 3 - Give-Quantifier full analyses
 ```{r}
+#read in and establish dataframe
+d1 <- read.csv("../data/GQ_coding.csv")
+d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] <- sapply(d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
 
+#change to long form
+d2=melt.data.frame(d1,c("sub_ID", "test_age","agegroup", "condition", "training"),c("X1_condition", "X2_condition", "X3_condition", "X4_condition", "X5_condition", "X6_condition",  "X7_condition", "X8_condition", "X1_given", "X2_given", "X3_given", "X4_given", "X5_given", "X6_given",  "X7_given", "X8_given", "X1_correct", "X2_correct", "X3_correct", "X4_correct", "X5_correct", "X6_correct",  "X7_correct", "X8_correct"))
+
+#making a respectable df  
+onethird <- (1/3)*nrow(d2)
+data <- d2[1:onethird,]
+data$selection <- d2$value[(onethird+1):(onethird*2)]
+data$type <- d2$value[(2*onethird+1):nrow(d2)]
+names(data)[6] <- "trial"
+names(data)[7] <- "prompt"
+names(data)[8] <- "num_given"
+names(data)[9] <- "GQ_correct"
+
+#filtering data, creating age breaks
+data %<>%
+  filter(sub_ID != "", num_given != "N/A")%>%
+  mutate(num_given = as.numeric(as.character(num_given)), 
+         GQ_correct = as.numeric(as.character(GQ_correct)), 
+         test = "Give-Quantifier", 
+         agegroup = factor(agegroup, levels = c("3-3.5 years", "3.5-4 years", "4-4.5 years", "4.5-5 years"), 
+                           labels = c("3.0--3.5", "3.5--4.0", "4.0--4.5", "4.5--5.0")), 
+         prompt = factor(prompt, levels = c("all", "some", "none", "most"), 
+                            labels = c("All", "Some", "None", "Most")))
+
+data_gq <- data
+```
+
+##Mean correct by age and trial type 
+"Correct" responses outlined in Barner, Chow, & Yang (2009).
+```{r}
+ms_gq <- data_gq %>%
+  filter(prompt != "Most") %>%
+  group_by(prompt, agegroup)%>%
+  multi_boot_standard("GQ_correct", na.rm=T)
+
+pdf(file="./exp3_GQperf.pdf", width=6, height=3.5)
+p <- quartz()
+ggplot(data = ms_gq, 
+       aes(x=prompt, y=mean, fill=prompt, alpha = `agegroup`)) +
+  geom_bar(stat="identity", position = position_dodge()) +
+  geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  ylab("Proportion correct") + 
+  xlab("Quantifier Prompt") +
+  theme_bw(base_size=18) + 
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y  = element_text(size=16),
+        legend.title=element_text(size=14), 
+        legend.text=element_text(size=14), 
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
+  scale_fill_solarized()
+print(p)
+aux <- dev.off()
 ```
