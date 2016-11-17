@@ -24,7 +24,6 @@ library(tidyr)
 library(markdown)
 library(directlabels)
 library(magrittr)
-library(bootstrap)
 library(langcog)
 library(diptest)
 library(lme4)
@@ -766,8 +765,528 @@ ggplot(data = ms_gq,
         legend.text=element_text(size=14), 
         panel.grid.minor = element_blank(),
         panel.grid.major = element_blank()) +
-  scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
+  scale_alpha_manual(values=c(.5,.625,.725,1), 
+                     guide = guide_legend(title = "Age group (years)")) + guides(fill = FALSE) +
   scale_fill_solarized()
 print(p)
 aux <- dev.off()
+```
+
+##Histogram of mean items given by age and prompt
+```{r}
+hist_data <- data_gq %>%
+  filter(prompt != "Most")%>%
+  group_by(agegroup, prompt, num_given)%>%
+  dplyr::summarise(n = n()) %>%
+  dplyr::group_by(agegroup, prompt) %>%
+  mutate(n.total = 36, prop = n/n.total)
+
+#unclear why "group_by" isn't working in this second instance here; hardcoded until I debug
+
+pdf(file="./exp3_GQhist.pdf", width=6, height=4)
+p <- ggplot(data = hist_data, 
+       aes(x=num_given, y=prop, fill=prompt, alpha = agegroup)) +
+  geom_bar(stat="identity", position = position_dodge(width = 0.9)) +
+  ylab("Proportion of children giving number") + 
+  xlab("Number of items") +
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.75,1)) + 
+  guides(fill = FALSE) + 
+  facet_grid(prompt~agegroup) + 
+  theme(legend.position="none") + 
+  scale_fill_solarized()
+print(p)
+aux <- dev.off()
+```
+
+#Experiment 3 - DCCS
+```{r}
+d1 <- read.csv("../data/DCCS_coding.csv")
+#long form
+d2=melt.data.frame(d1,c("sub_ID","test_age", "agegroup", "condition"),c("pre_1", "pre_2", "pre_3", "pre_4", "pre_5", "pre_6",  "post_1", "post_2", "post_3", "post_4", "post_5", "post_6"))
+
+#filtering data, creating age breaks
+data <- d2 %>%
+  filter(sub_ID != "") 
+
+#renaming things
+names(data)[5] <- "trial_type"
+names(data)[6] <- "DCCS_correct"
+
+#df for further analyses
+data_dccs <- data
+data_dccs$test <- "DCCS"
+  
+#rename trials
+tmp1 <- unlist(data$trial_type)%>%
+  str_replace("pre_1", "pre")%>%
+  str_replace("pre_2", "pre")%>%
+  str_replace("pre_3", "pre")%>%
+  str_replace("pre_4", "pre")%>%
+  str_replace("pre_5", "pre")%>%
+  str_replace("pre_6", "pre")%>%
+  str_replace("post_1", "post")%>%
+  str_replace("post_2", "post")%>%
+  str_replace("post_3", "post")%>%
+  str_replace("post_4", "post")%>%
+  str_replace("post_5", "post")%>%
+  str_replace("post_6", "post")
+
+tmp <- as.data.frame(tmp1) %>%
+  dplyr::rename(switch_type = tmp1)
+tmp2 <- bind_cols(data, tmp)
+data <- tmp2
+
+#renaming for prettier graphs
+data$switch_type %<>%
+  str_replace("post", "Post-switch")%>%
+  str_replace("pre", "Pre-switch")
+
+data$switch_type <- as.factor(data$switch_type)
+data_dccs <- data
+```
+
+##Mean correct across age group for post-switch trials
+```{r}
+ms.dccs <- data_dccs %>%
+  mutate(DCCS_correct = as.integer(DCCS_correct)) %>%
+  group_by(switch_type, agegroup)%>%
+  filter(switch_type == "Post-switch")%>%
+  multi_boot_standard("DCCS_correct", na.rm=T)
+  
+
+
+pdf(file="./exp3_DCCS.pdf", width=4, height=4)
+p <- ggplot(data = ms.dccs, 
+       aes(x=switch_type, y=mean, fill = switch_type, alpha = agegroup)) +
+  geom_bar(stat="identity", position = position_dodge()) +
+  geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  ylab("Proportion correct") + 
+  xlab("Trial Type") +
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_fill_solarized() + 
+  scale_alpha_manual(values=c(.5,.625,.725,1), 
+                     guide = guide_legend(title = "Age group (years)")) + geom_hline(yintercept = .5, linetype = "dashed")
+print(p)
+aux <- dev.off()
+```
+
+##Full analyses
+First, create long-form dataframe for group analyses
+```{r}
+#si df
+data_si$SI_correct <- as.character(data_si$SI_correct)
+data_si$SI_correct <- as.numeric(data_si$SI_correct)
+
+#scalar implicature task
+mss.acc <- data_si %>%
+  group_by(sub_ID, type)%>%
+  dplyr::summarise(mean = mean(SI_correct), 
+                   test_age = test_age[1],
+                   agegroup = agegroup[1])%>%
+  spread(type, mean)%>%
+  dplyr::rename(SI_All = All, 
+         SI_Some = Some, 
+         SI_None = None)
+
+#dccs
+mss.acc2 <- data_dccs %>%
+  group_by(sub_ID, switch_type)%>%
+  dplyr::summarise(mean=mean(DCCS_correct))%>%
+  spread(switch_type, mean)
+  
+
+#now gq
+#first mean number
+mss.acc3 <- data_gq %>%
+  group_by(sub_ID, prompt)%>%
+  dplyr::summarise(mean_num = mean(num_given)) %>%
+  spread(prompt, mean_num)%>%
+  dplyr::rename(GQ_All_mean = All, 
+                GQ_Some_mean = Some, 
+                GQ_None_mean = None, 
+                GQ_Most_mean = Most)
+
+#then correct
+mss.acc4 <- data_gq %>%
+  group_by(sub_ID, prompt)%>%
+  dplyr::summarise(mean_correct = mean(GQ_correct))%>%
+  spread(prompt, mean_correct)%>%
+  dplyr::rename(GQ_All = All, 
+                GQ_Some = Some, 
+                GQ_None = None, 
+                GQ_Most = Most)
+  
+
+#overall correct for GQ
+mss.acc5 <- data_gq %>%
+  group_by(sub_ID)%>%
+  dplyr::summarise(mean_correct = mean(GQ_correct))%>%
+  dplyr::rename(GQ_overall = mean_correct)
+
+#overall correct for SI
+mss.acc6 <- data_si %>%
+  group_by(sub_ID)%>%
+  dplyr::summarise(SI_overall = mean(SI_correct))
+  
+
+#bind together
+tmp <- right_join(mss.acc, mss.acc2, by = "sub_ID")
+tmp1 <- right_join(tmp, mss.acc3, by = "sub_ID") 
+tmp2 <- right_join(tmp1, mss.acc5, by = "sub_ID")
+tmp3 <- right_join(tmp2, mss.acc6, by="sub_ID")
+d_all <- right_join(tmp3, mss.acc4, by = "sub_ID") 
+
+#center age for model fit
+d_all %<>%
+  mutate(age.c = scale(test_age, scale = FALSE, center = TRUE))
+```
+
+##Full correlations
+SI
+```{r}
+cor.test(d_all$SI_All, d_all$SI_Some)
+cor.test(d_all$SI_Some, d_all$SI_None)
+cor.test(d_all$SI_All, d_all$SI_None)
+```
+GQ
+```{r}
+cor.test(d_all$GQ_All, d_all$GQ_Some)
+cor.test(d_all$GQ_Some, d_all$GQ_None)
+cor.test(d_all$GQ_All, d_all$GQ_None)
+```
+
+DCCS
+```{r}
+cor.test(d_all$`Post-switch`, d_all$`Pre-switch`)
+```
+
+SI-GQ
+```{r}
+#within quantifier
+cor.test(d_all$SI_All, d_all$GQ_All)
+cor.test(d_all$SI_Some, d_all$GQ_Some)
+cor.test(d_all$SI_None, d_all$GQ_None)
+
+#across quantifiers
+cor.test(d_all$SI_All, d_all$GQ_None)
+cor.test(d_all$SI_Some, d_all$GQ_All)
+cor.test(d_all$SI_None, d_all$GQ_Some)
+cor.test(d_all$SI_All, d_all$GQ_Some)
+cor.test(d_all$SI_None, d_all$GQ_All)
+```
+
+DCCS-SI
+```{r}
+cor.test(d_all$SI_All, d_all$`Post-switch`)
+cor.test(d_all$SI_Some, d_all$`Post-switch`)
+cor.test(d_all$SI_None, d_all$`Post-switch`)
+```
+
+```{r}
+#Significant correlation between age and DCCS
+cor.test(~d_all$test_age + d_all$`Post-switch`)
+#full correlation between some and none
+cor.test(~d_all$SI_Some + d_all$SI_None)
+```
+
+Partial correlations for age - SI/GQ and DCCS
+```{r}
+library(ppcor)
+#partial correlation - implicature and dccs
+pcor.test(d_all$SI_Some, d_all$SI_None, d_all$test_age)
+
+pcor.test(d_all$SI_Some, d_all$`Post-switch`, d_all$test_age)
+
+pcor.test(d_all$SI_None, d_all$`Post-switch`, d_all$test_age)
+
+pcor.test(d_all$SI_All, d_all$`Post-switch`, d_all$test_age)
+
+pcor.test(d_all$GQ_None, d_all$`Post-switch`, d_all$test_age)
+
+pcor.test(d_all$GQ_Some, d_all$`Post-switch`, d_all$test_age)
+
+pcor.test(d_all$GQ_Most, d_all$`Post-switch`, d_all$test_age)
+
+pcor.test(d_all$GQ_All, d_all$`Post-switch`, d_all$test_age)
+```
+
+SI and GQ partial correlations
+```{r}
+library(ppcor)
+pcor.test(d_all$SI_Some, d_all$GQ_Some, d_all$test_age)
+
+pcor.test(d_all$SI_Some, d_all$GQ_None, d_all$test_age)
+
+pcor.test(d_all$SI_None, d_all$SI_Some, d_all$test_age)
+
+pcor.test(d_all$SI_None, d_all$GQ_None, d_all$test_age)
+
+pcor.test(d_all$SI_None, d_all$GQ_Some, d_all$test_age)
+```
+
+##T-tests
+###DCCS
+```{r}
+df.dccs <- aggregate(DCCS_correct ~ switch_type + agegroup +  sub_ID, data=data_dccs, mean) 
+
+t.test(subset(data_dccs, agegroup=="3-3.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(data_dccs, agegroup=="3.5-4 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(data_dccs, agegroup=="4-4.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(data_dccs, agegroup=="4.5-5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+```
+  
+##Diptests
+```{r}
+#scalar implicature
+dip.test(d_all$SI_Some)
+dip.test(d_all$SI_All)
+dip.test(d_all$SI_None)
+
+#GQ
+dip.test(d_all$GQ_Some)
+dip.test(d_all$GQ_None)
+dip.test(d_all$GQ_All)
+
+#break GQ down by age, see if a specific age group is driving this effect
+young1 <- d_all%>%
+  filter(agegroup == "3.0--3.5")
+
+dip.test(young1$GQ_Some)
+dip.test(young1$GQ_None)
+
+young2 <- d_all%>%
+  filter(agegroup == "3.5--4.0")
+
+dip.test(young2$GQ_Some)
+dip.test(young2$GQ_None)
+
+old1 <- d_all %>%
+  filter(agegroup == "4.0--4.5")
+
+dip.test(old1$GQ_Some)
+dip.test(old1$GQ_None)
+
+old2 <- d_all %>%
+  filter(agegroup == "4.5--5.0 years")
+dip.test(old2$GQ_Some)
+dip.test(old2$GQ_None)
+```
+
+#Experiment 4
+```{r}
+#reading in the original wide-form dataframe
+d4 <- read.csv("../data/si_paper_control.csv")
+
+#fill in the selection types for easier analyses
+d4 %<>%
+  mutate(carrot_selection = factor(carrot_selection, levels=c(1, 2, 3)), 
+         hat_selection = factor(hat_selection, levels=c(1, 2, 3)),
+         cat_selection = factor(cat_selection, levels=c(1, 2, 3)),
+         purses_selection = factor(purses_selection, levels=c(1, 2, 3)),
+         shirts_selection = factor(shirts_selection, levels=c(1, 2, 3)),
+         horses_selection = factor(horses_selection, levels=c(1, 2, 3)), 
+         bears_selection= factor(bears_selection, levels=c(1, 2, 3)),
+         frogs_selection = factor(frogs_selection, levels=c(1, 2, 3)),
+         plates_selection = factor(plates_selection, levels=c(1, 2, 3)),
+         books_selection = factor(books_selection, levels=c(1, 2, 3)),
+         elephants_selection = factor(elephants_selection, levels=c(1, 2, 3)),
+         bananas_selection = factor(bananas_selection, levels=c(1, 2, 3)),
+         carrot_correct = factor(carrot_correct, levels=c(0, 1)), 
+         hat_correct = factor(hat_correct, levels=c(0, 1)),
+         cat_correct = factor(cat_correct, levels=c(0, 1)),
+         purses_correct = factor(purses_correct, levels=c(0, 1)),
+         shirts_correct = factor(shirts_correct, levels=c(0, 1)),
+         horses_correct = factor(horses_correct, levels=c(0, 1)), 
+         bears_correct= factor(bears_correct, levels=c(0, 1)),
+         frogs_correct = factor(frogs_correct, levels=c(0, 1)),
+         plates_correct = factor(plates_correct, levels=c(0, 1)),
+         books_correct = factor(books_correct, levels=c(0, 1)),
+         elephants_correct = factor(elephants_correct, levels=c(0, 1)),
+         bananas_correct = factor(bananas_correct, levels=c(0, 1)))
+
+data=melt.data.frame(d4,c("SID","age", "agegroup","sex", "Exclude"),c("carrot_prompt", "hat_prompt", "cat_prompt", "purses_prompt",  "shirts_prompt", "horses_prompt", "bears_prompt", "frogs_prompt", "plates_prompt", "books_prompt", "elephants_prompt", "bananas_prompt", "carrot_selection", "hat_selection", "cat_selection", "purses_selection",  "shirts_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "bananas_selection", "carrot_selection_type", "hat_selection_type", "cat_selection_type", "purses_selection_type",  "shirts_selection_type", "horses_selection_type", "bears_selection_type", "frogs_selection_type", "plates_selection_type", "books_selection_type", "elephants_selection_type", "bananas_selection_type", "carrot_correct", "hat_correct", "cat_correct", "purses_correct",  "shirts_correct", "horses_correct", "bears_correct", "frogs_correct", "plates_correct", "books_correct", "elephants_correct", "bananas_correct"))
+
+
+#making a respectable df  
+onefourth <- (1/4)*nrow(data)
+data1 <- data[1:onefourth,]
+data1$prompt <- data$value[1:onefourth]
+data1$selection <- data$value[(onefourth+1):(2*onefourth)]
+data1$selection_type <- data$value[(2*onefourth+1):(3*onefourth)]
+data1$correct <- data$value[(3*onefourth+1):(nrow(data))]
+data1$correct_factor <- data1$correct==1
+
+exp4 <- data1 %>%
+  dplyr::select(SID, age, agegroup, sex, Exclude, prompt, selection, selection_type, correct, correct_factor)
+
+exp4$selection_type %<>%
+  str_replace("all", "All")%>%
+  str_replace("some", "Some")
+
+exp4$prompt %<>%
+  str_replace("all", "All")%>%
+  str_replace("some", "Some")
+  
+sum <- exp4 %>%
+group_by(Exclude)%>%
+distinct(SID)%>%
+dplyr::summarise(n = n())
+
+#filtering exclusions
+exp4 %<>%
+  filter(Exclude != 1)%>%
+  filter(selection != "NaN")
+  
+#making correct a num for analysis
+exp4 %<>%
+  mutate(correct = as.numeric(correct_factor))
+  
+```
+
+Summary Statistics, general sanity checks
+```{r}
+#how many participants per age group?
+num_kids <- exp4 %>%
+  distinct(SID, age, agegroup, sex)%>%
+  group_by(agegroup)%>%
+  dplyr::summarise(n = n(), mean = mean(age), sd = sd(age), median = median(age), 
+            n_f = sum(sex == "F"), 
+            n_m = sum(sex == "M"))
+
+#Any errors in data recording?
+check <- exp4 %>%
+  group_by(prompt, selection_type, correct)%>%
+  dplyr::summarise(n = n())
+  
+#1 error, with "all" being chosen for "some" >> removing this
+tmp <- exp4 %>% 
+  mutate(correct_factor = replace(correct_factor, c(prompt == "Some" & selection_type == "All" & correct_factor == TRUE), NA), 
+         correct_factor = replace(correct_factor, c(prompt == "All" & selection_type == "All" & correct_factor == FALSE), NA))
+
+exp4 <-tmp
+  
+```  
+
+##Mean correct by trial type and age
+```{r}
+#look at means
+ms <- exp4 %>%
+  group_by(prompt, agegroup) %>%
+  multi_boot_standard("correct", na.rm=TRUE)
+
+pdf(file="./exp4_SIperf.pdf", width=6, height=3.5)
+p <- quartz()
+ggplot(data = ms, 
+       aes(x=prompt, y=mean, fill=prompt, alpha = `agegroup`)) +
+  geom_bar(stat="identity", position = position_dodge()) + 
+   geom_linerange(aes(ymin = ci_lower,
+                      ymax = ci_upper),
+                  size = .3,
+                  show.legend = FALSE,
+                 position=position_dodge(width = 0.9)) +
+  ylab("Mean Correct") + 
+    xlab("Trial type") +
+  theme_bw(base_size=18) + 
+  theme(axis.title.x = element_text(size=16),
+        axis.title.y  = element_text(size=16),
+        legend.title=element_text(size=14), 
+        legend.text=element_text(size=14), 
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank()) +
+  scale_alpha_manual(values=c(.625, 1), 
+                     guide = guide_legend(title = "Age group (years)")) + guides(fill = FALSE) +
+  scale_fill_solarized()
+print(p)
+aux <- dev.off()
+```  
+  
+incorrect selections  
+```{r}  
+#What kind of incorrect selections are children making? 
+ms_wrong <- exp4 %>%
+filter(correct_factor == FALSE)%>%
+group_by(agegroup, prompt, selection_type)%>%
+  dplyr::summarise(n=n())%>%
+  mutate(n.total = sum(n), prop = n/n.total)
+  
+```  
+  
+Incorrect selection graph
+```{r}
+ms_wrong$prompt %<>%
+  str_replace("none", "None")
+ms_wrong$selection_type %<>%
+  str_replace("none", "None")
+
+ms_wrong <-ms_wrong[c(1:3, 5:6),] 
+
+ms_wrong %<>%
+  mutate(selection_type = factor(selection_type, levels = c("All", "Some", 
+                                                            "None")))
+
+pdf(file="./exp4_SIwrong.pdf", width=6, height=3.5)
+p <- quartz()
+ggplot(data = ms_wrong, 
+       aes(x=selection_type, y=n, fill=selection_type, alpha=agegroup)) +
+  geom_bar(stat="identity", position = position_dodge())  +
+  ylab("Count of children choosing") + 
+  xlab("Selection Type") + facet_wrap(~prompt) + 
+  theme_bw(base_size=10) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank()) +
+  scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
+  scale_fill_solarized() + scale_alpha_manual(values=c(.625,1), 
+                     guide = guide_legend(title = "Age group (years)")) + 
+  labs(x = "Trial Type", y = "Count of children choosing")
+print(p)
+aux <- dev.off()
+```
+
+##T-tests
+```{r}
+#difference in accuracy on either type of trial between age groups? #some
+#create df for tests
+d1 <- exp4 
+
+cs <- aggregate(correct ~ prompt + agegroup + SID, data=d1, mean)
+
+t.test(subset(cs, prompt == "All" & agegroup == "4-4.5")$correct, subset(cs, prompt == "All" & agegroup == "4.5-5")$correct, 
+  var.equal = TRUE)
+t.test(subset(cs, prompt == "Some" & agegroup == "4-4.5")$correct, subset(cs, prompt == "Some" & agegroup == "4.5-5")$correct, 
+  var.equal = TRUE)
+  
+#no difference here, so we can collapse across age groups, I think
+t.test(subset(cs, prompt == "Some")$correct, subset(cs, prompt == "All")$correct, 
+  var.equal = TRUE)
+  
+#t-test between old and control data
+d <- aggregate(SI_correct ~ type + agegroup + sub_ID, data = data_si, mean)
+
+t.test(subset(d, type == "Some" & agegroup == "4.0--4.5")$SI_correct, subset(cs, prompt == "Some" & agegroup == "4-4.5")$correct, 
+  var.equal = TRUE)
+
+t.test(subset(d, type == "Some" & agegroup == "4.5--5.0")$SI_correct, subset(cs, prompt == "Some" & agegroup == "4.5-5")$correct, 
+  var.equal = TRUE)
+  
+```
+
+##Diptest
+```{r}
+mss <- ddply(exp4, .(prompt, SID), summarise, 
+	mean = mean(correct),
+  agegroup = agegroup[1])
+
+cs <- cast(mss, SID + agegroup ~ prompt, value="mean") 
+
+dip.test(cs$Some)
+dip.test(cs$All)
 ```
