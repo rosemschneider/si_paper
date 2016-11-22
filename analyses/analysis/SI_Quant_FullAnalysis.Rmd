@@ -1113,7 +1113,7 @@ d4 %<>%
          elephants_correct = factor(elephants_correct, levels=c(0, 1)),
          bananas_correct = factor(bananas_correct, levels=c(0, 1)))
 
-data=melt.data.frame(d4,c("SID","age", "agegroup","sex", "Exclude"),c("carrot_prompt", "hat_prompt", "cat_prompt", "purses_prompt",  "shirts_prompt", "horses_prompt", "bears_prompt", "frogs_prompt", "plates_prompt", "books_prompt", "elephants_prompt", "bananas_prompt", "carrot_selection", "hat_selection", "cat_selection", "purses_selection",  "shirts_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "bananas_selection", "carrot_selection_type", "hat_selection_type", "cat_selection_type", "purses_selection_type",  "shirts_selection_type", "horses_selection_type", "bears_selection_type", "frogs_selection_type", "plates_selection_type", "books_selection_type", "elephants_selection_type", "bananas_selection_type", "carrot_correct", "hat_correct", "cat_correct", "purses_correct",  "shirts_correct", "horses_correct", "bears_correct", "frogs_correct", "plates_correct", "books_correct", "elephants_correct", "bananas_correct"))
+data=melt.data.frame(d4,c("SID","age", "agegroup","sex", "ethnicity", "Exclude"),c("carrot_prompt", "hat_prompt", "cat_prompt", "purses_prompt",  "shirts_prompt", "horses_prompt", "bears_prompt", "frogs_prompt", "plates_prompt", "books_prompt", "elephants_prompt", "bananas_prompt", "carrot_selection", "hat_selection", "cat_selection", "purses_selection",  "shirts_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "bananas_selection", "carrot_selection_type", "hat_selection_type", "cat_selection_type", "purses_selection_type",  "shirts_selection_type", "horses_selection_type", "bears_selection_type", "frogs_selection_type", "plates_selection_type", "books_selection_type", "elephants_selection_type", "bananas_selection_type", "carrot_correct", "hat_correct", "cat_correct", "purses_correct",  "shirts_correct", "horses_correct", "bears_correct", "frogs_correct", "plates_correct", "books_correct", "elephants_correct", "bananas_correct"))
 
 
 #making a respectable df  
@@ -1126,7 +1126,7 @@ data1$correct <- data$value[(3*onefourth+1):(nrow(data))]
 data1$correct_factor <- data1$correct==1
 
 exp4 <- data1 %>%
-  dplyr::select(SID, age, agegroup, sex, Exclude, prompt, selection, selection_type, correct, correct_factor)
+  dplyr::select(SID, age, agegroup, sex, ethnicity, Exclude, prompt, selection, selection_type, correct, correct_factor)
 
 exp4$selection_type %<>%
   str_replace("all", "All")%>%
@@ -1136,7 +1136,7 @@ exp4$prompt %<>%
   str_replace("all", "All")%>%
   str_replace("some", "Some")
   
-sum <- exp4 %>%
+sum <- d4 %>%
 group_by(Exclude)%>%
 distinct(SID)%>%
 dplyr::summarise(n = n())
@@ -1155,12 +1155,16 @@ exp4 %<>%
 Summary Statistics, general sanity checks
 ```{r}
 #how many participants per age group?
-num_kids <- exp4 %>%
-  distinct(SID, age, agegroup, sex)%>%
-  group_by(agegroup)%>%
-  dplyr::summarise(n = n(), mean = mean(age), sd = sd(age), median = median(age), 
-            n_f = sum(sex == "F"), 
-            n_m = sum(sex == "M"))
+exp4 %<>%
+  mutate(ethnicity_simp = factor(ethnicity, levels = c("white", "whte", "black", "asian", "indian", 
+                                                       "native hawaiian/pacific islander",
+                                                       "", "american indian/alaskan native/asian", 
+                                                       "american indian/alaskan native/white", 
+                                                       "asian/white", "black/african american/white", 
+                                                       "hispanic", "indian/french", "n/a"), 
+                                 labels = c("white", "white", "black", "asian", "asian", 
+                                            "other", "other", "mixed", "mixed", 
+                                            "mixed", "mixed", "other", "mixed", "other")))
 
 #Any errors in data recording?
 check <- exp4 %>%
@@ -1184,8 +1188,7 @@ ms <- exp4 %>%
   multi_boot_standard("correct", na.rm=TRUE)
 
 pdf(file="./exp4_SIperf.pdf", width=6, height=3.5)
-p <- quartz()
-ggplot(data = ms, 
+p <- ggplot(data = ms, 
        aes(x=prompt, y=mean, fill=prompt, alpha = `agegroup`)) +
   geom_bar(stat="identity", position = position_dodge()) + 
    geom_linerange(aes(ymin = ci_lower,
@@ -1195,11 +1198,11 @@ ggplot(data = ms,
                  position=position_dodge(width = 0.9)) +
   ylab("Mean Correct") + 
     xlab("Trial type") +
-  theme_bw(base_size=18) + 
-  theme(axis.title.x = element_text(size=16),
-        axis.title.y  = element_text(size=16),
-        legend.title=element_text(size=14), 
-        legend.text=element_text(size=14), 
+  theme_bw(base_size=10) + 
+  theme(axis.title.x = element_text(size=14),
+        axis.title.y  = element_text(size=14),
+        legend.title=element_text(size=12), 
+        legend.text=element_text(size=12), 
         panel.grid.minor = element_blank(),
         panel.grid.major = element_blank()) +
   scale_alpha_manual(values=c(.625, 1), 
@@ -1213,8 +1216,9 @@ incorrect selections
 ```{r}  
 #What kind of incorrect selections are children making? 
 ms_wrong <- exp4 %>%
+  dplyr::select(-age.c)%>%
 filter(correct_factor == FALSE)%>%
-group_by(agegroup, prompt, selection_type)%>%
+group_by(prompt, selection_type)%>%
   dplyr::summarise(n=n())%>%
   mutate(n.total = sum(n), prop = n/n.total)
   
@@ -1234,7 +1238,7 @@ ms_wrong %<>%
                                                             "None")))
 
 pdf(file="./exp4_SIwrong.pdf", width=6, height=3.5)
-p <- quartz()
+p <- 
 ggplot(data = ms_wrong, 
        aes(x=selection_type, y=n, fill=selection_type, alpha=agegroup)) +
   geom_bar(stat="identity", position = position_dodge())  +
@@ -1259,7 +1263,7 @@ d1 <- exp4
 
 cs <- aggregate(correct ~ prompt + agegroup + SID, data=d1, mean)
 
-t.test(subset(cs, prompt == "All" & agegroup == "4-4.5")$correct, subset(cs, prompt == "All" & agegroup == "4.5-5")$correct, 
+t.test(subset(cs, prompt == "All" & agegroup == "4-4.5")$correct, subset(cs, prompt == "All" & agegroup == "4.5-5")$correct,
   var.equal = TRUE)
 t.test(subset(cs, prompt == "Some" & agegroup == "4-4.5")$correct, subset(cs, prompt == "Some" & agegroup == "4.5-5")$correct, 
   var.equal = TRUE)
@@ -1276,7 +1280,22 @@ t.test(subset(d, type == "Some" & agegroup == "4.0--4.5")$SI_correct, subset(cs,
 
 t.test(subset(d, type == "Some" & agegroup == "4.5--5.0")$SI_correct, subset(cs, prompt == "Some" & agegroup == "4.5-5")$correct, 
   var.equal = TRUE)
-  
+```
+
+##Effect size
+```{r}
+cohens_d <- function(x, y) {
+    lx <- length(x)- 1
+    ly <- length(y)- 1
+    md  <- abs(mean(x) - mean(y))        ## mean difference (numerator)
+    csd <- lx * var(x) + ly * var(y)
+    csd <- csd/(lx + ly)
+    csd <- sqrt(csd)                     ## common sd computation
+
+    cd  <- md/csd                        ## cohen's d
+}
+
+res <- cohens_d(subset(exp4,  prompt == "All")$correct, subset(exp4, prompt == "Some")$correct)
 ```
 
 ##Diptest
@@ -1289,4 +1308,16 @@ cs <- cast(mss, SID + agegroup ~ prompt, value="mean")
 
 dip.test(cs$Some)
 dip.test(cs$All)
+```
+
+#General linearized model
+```{r}
+exp4 %<>%
+  mutate(age.c = scale(age, center=TRUE, scale=FALSE))
+
+gl.int <- glmer(correct ~  prompt * age.c 
+			+ (prompt | SID), 
+			data=exp4, family=binomial)
+summary(gl.int)
+
 ```
