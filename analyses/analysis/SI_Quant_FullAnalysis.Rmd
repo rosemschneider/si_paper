@@ -143,7 +143,7 @@ t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
        var.equal = TRUE)
 
 #SI between ages
-t.test(subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+t.test(subset(d, agegroup == "4.0--4.5" & type == "Implicature")$correct,
        subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
        var.equal = TRUE)
 ```
@@ -663,9 +663,10 @@ t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct,
 ms3 <- data_si %>%
   group_by(type, sub_ID) %>%
   summarise(mean = mean(correct), 
-            agegroup = agegroup[1])
+            agegroup = agegroup[1], 
+            age = test_age[1])
 
-cs <- cast(ms3, sub_ID + agegroup ~ type, value="mean")
+cs <- cast(ms3, sub_ID + agegroup + age ~ type, value="mean")
 
 dip.test(cs$Some)
 dip.test(cs$None)
@@ -680,6 +681,12 @@ cs %>% group_by(agegroup) %>%
 	summarise(r = cor.test(None, Some)$estimate,
 			  p = cor.test(None, Some)$p.value)
 ```
+##Correlation (partial, controlling for age)
+```{r}
+library(ppcor)
+pcor.test(cs$Some, cs$None, cs$age)
+```
+
 ##Incorrect selections 
 ```{r}
 si_wrong <- data_si %>%
@@ -1019,6 +1026,10 @@ pcor.test(d_all$GQ_Most, d_all$`Post-switch`, d_all$test_age)
 pcor.test(d_all$GQ_All, d_all$`Post-switch`, d_all$test_age)
 ```
 
+GQ partial correlations
+```{r}
+pcor.test(d_all$GQ_Some, d_all$GQ_None, d_all$test_age)
+```
 SI and GQ partial correlations
 ```{r}
 library(ppcor)
@@ -1038,10 +1049,12 @@ pcor.test(d_all$SI_None, d_all$GQ_Some, d_all$test_age)
 ```{r}
 df.dccs <- aggregate(DCCS_correct ~ switch_type + agegroup +  sub_ID, data=data_dccs, mean) 
 
-t.test(subset(data_dccs, agegroup=="3-3.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
-t.test(subset(data_dccs, agegroup=="3.5-4 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
-t.test(subset(data_dccs, agegroup=="4-4.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
-t.test(subset(data_dccs, agegroup=="4.5-5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(df.dccs, agegroup=="3-3.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5, 
+       var.equal = TRUE)
+t.test(subset(df.dccs, agegroup=="3.5-4 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(df.dccs, agegroup=="4-4.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5, 
+       var.equal = TRUE)
+t.test(subset(df.dccs, agegroup=="4.5-5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
 ```
   
 ##Diptests
