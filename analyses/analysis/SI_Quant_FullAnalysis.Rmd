@@ -58,7 +58,16 @@ data_exp1 %<>%
          condition = factor(condition, levels = c("adhoc", "scalar"), 
                             labels = c("Ad hoc", "Scalar")))
 
-```         
+``` 
+
+##Classify trials as first or second half
+```{r}
+data_exp1$item <- as.character(data_exp1$item)
+first_half <- c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads")
+
+data_exp1$half <- ifelse(data_exp1$item %in% first_half, "first", "second")
+data_exp1$item <- factor(data_exp1$item)
+```
     
 ##Demographic information          
 ```{r}
@@ -68,9 +77,9 @@ exp1_demo <- data_exp1 %>%
   summarise(n = n(), 
             n_female = sum(gender == "f"), 
             n_male = sum(gender == "m"), 
-            mean_age = mean(age), 
-            median_age = median(age), 
-            sd_age = sd(age))
+            mean_age = round(mean(age), 2), 
+            median_age = round(median(age), 2), 
+            sd_age = round(sd(age), 2))
 ```
 
 ##Mean performance across conditions, by agegroup
@@ -171,6 +180,20 @@ t.test(subset(d1, agegroup == "4.5--5.0" & type == "Implicature"
               & condition == "Scalar")$correct,
        var.equal = TRUE)
 ```
+####T-Tests between adge groups - scalar
+```{r}
+d1 <- data_exp1 %>%
+  mutate(correct = as.numeric(correct))
+
+d1 <- aggregate(correct ~ type + agegroup + Subj_ID + condition, data = d1, mean) %>%
+  filter(condition == "Scalar")
+
+#age group test
+t.test(subset(d1, agegroup == "4.0--4.5" & type == "Implicature")$correct,
+       subset(d1, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+       var.equal = TRUE)
+```
+
 
 ###Diptest for bimodal performance
 ```{r}
@@ -255,9 +278,17 @@ lm <- glmer(correct ~ trial_type * condition * age.c +
               (trial_type| Subj_ID) + (trial_type|item), 
             data = data_exp1, family = binomial, control=glmerControl(optimizer="bobyqa",
                             optCtrl=list(maxfun=2e5)))
-#change optimizer, otherwise model won't converge
+
 summary(lm)
 summary(gl)
+
+#is half of experiment significant?
+gl_half <- glmer(correct ~ trial_type * condition * age.c * half + 
+              (trial_type | Subj_ID), data=data_exp1, 
+            family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
+
+summary(gl_half)
 ```
   
 #Experiment 2
@@ -294,6 +325,16 @@ detach(data_exp2)
 
 ```
 
+##Classify trials as first or second half
+```{r}
+data_exp2$item <- as.character(data_exp2$item)
+first_half <- c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads")
+
+data_exp2$half <- ifelse(data_exp2$item %in% first_half, "first", "second")
+data_exp2$item <- factor(data_exp2$item)
+```
+    
+
 ###Demographic information
 ```{r}
 demo_exp2 <- data_exp2 %>%
@@ -302,14 +343,15 @@ demo_exp2 <- data_exp2 %>%
   summarise(n = n(), 
             n_female = sum(gender == "f"), 
             n_male = sum(gender == "m"), 
-            mean_age = mean(age), 
-            median_age = median(age), 
-            sd_age = sd(age), 
-            n_white = sum(ethnicity == "white"), 
-            n_asian = sum(ethnicity == "asian"), 
-            n_black = sum(ethnicity == " black"), 
-            n_other = sum(ethnicity == "mixed" | ethnicity == "other"), 
-            n_na = sum(is.na(ethnicity)))
+            mean_age = round(mean(age), 2), 
+            median_age = round(median(age), 2), 
+            sd_age = round(sd(age), 2))
+
+#for some reason can no longer filter by factor?
+demo_ethnicity_2 <- data_exp2 %>%
+  distinct(agegroup, age, gender, ethnicity, Subj_ID)%>%
+  group_by(ethnicity)%>%
+  summarise(n = n())
 
 ```
 
@@ -380,8 +422,10 @@ t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct,
 ###T-tests between exp 1 and exp. 2
 ```{r}
 d1 <- data_exp1 %>%
-  filter(condition == "Scalar")
-d2 <- data_exp2
+  filter(condition == "Scalar")%>%
+  mutate(correct = as.numeric(correct))
+d2 <- data_exp2%>%
+  mutate(correct = as.numeric(correct))
 
 df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
   spread(type, correct)
@@ -465,12 +509,20 @@ data_exp2 %<>%
 
 gl.int <- glmer(correct ~  type * age.c 
 			+ (type | Subj_ID), 
-			data=data_exp2, family=binomial)
+			data=data_exp2, family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
 summary(gl.int)
+
+gl.half <- glmer(correct ~  type * age.c * half
+			+ (type | Subj_ID), 
+			data=data_exp2, family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
+summary(gl.half)
 
 gl.norand <- glmer(correct ~  type * age.c 
 			+ (1 | Subj_ID), 
-			data=data_exp2, family=binomial)
+			data=data_exp2, family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
 summary(gl.norand)
 ```
 
@@ -535,16 +587,16 @@ exp3_demo <- data_si %>%
   distinct(agegroup, test_age, gender, ethnicity, sub_ID)%>%
   group_by(agegroup)%>%
   summarise(n = n(), 
-            n_female = sum(gender == "f"), 
-            n_male = sum(gender == "m"), 
-            mean_age = mean(test_age), 
-            median_age = median(test_age), 
-            sd_age = sd(test_age), 
-            n_white = sum(ethnicity == "white"), 
-            n_asian = sum(ethnicity == "asian"), 
-            n_black = sum(ethnicity == " black"), 
-            n_other = sum(ethnicity == "mixed" | ethnicity == "other"), 
-            n_na = sum(is.na(ethnicity)))
+            n_female = sum(gender == "F"), 
+            n_male = sum(gender == "M"), 
+            mean_age = round(mean(test_age), 2), 
+            median_age = round(median(test_age), 2), 
+            sd_age = round(sd(test_age), 2))
+
+exp3_ethnicity <- data_si %>%
+  distinct(agegroup, sub_ID, ethnicity)%>%
+  group_by(ethnicity)%>%
+  summarise(n = n())
 
 
 #use this dataframe for stats
