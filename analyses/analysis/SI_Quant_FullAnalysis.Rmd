@@ -471,16 +471,15 @@ dip.test(cs$All)
 ##Incorrect selection 
 ```{r}
 exp2_wrong <- data_exp2 %>%
+  dplyr::select(-age.c)%>%
   filter(correct != 1) %>%
   group_by(agegroup, type, selectionType)%>%
   dplyr::summarise(n=n())%>%
   mutate(n.total = sum(n), prop = n/n.total)
-
-wrong <- exp2_wrong[c(1:9, 11:19, 21),] 
     
 #now graph
 pdf(file="./exp2_wrong.pdf", width=6, height=3.5)
-p <- ggplot(data = wrong, 
+p <- ggplot(data = exp2_wrong, 
        aes(x=selectionType, y=n, fill=selectionType, alpha=agegroup)) +
   geom_bar(stat="identity", position = position_dodge())  +
   ylab("Count of children choosing") + 
