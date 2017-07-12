@@ -323,6 +323,10 @@ data_exp2$trial_type[type == "some"] <- "implicature"
 data_exp2$trial_type[type != "some"] <- "control"
 detach(data_exp2)
 
+
+#filter out incorrectly coded child
+data_exp2 %<>%
+  filter(Subj_ID != "120514_07")
 ```
 
 ##Classify trials as first or second half
@@ -1214,6 +1218,9 @@ exp4 %<>%
 #making correct a num for analysis
 exp4 %<>%
   mutate(correct = as.numeric(correct_factor))
+
+exp4 %<>%
+  mutate(age.c = scale(age, scale = FALSE, center = TRUE))
   
 ```
 
@@ -1242,6 +1249,22 @@ tmp <- exp4 %>%
          correct_factor = replace(correct_factor, c(prompt == "All" & selection_type == "All" & correct_factor == FALSE), NA))
 
 exp4 <-tmp
+
+exp4_demo <- exp4 %>%
+  distinct(agegroup, age, sex, ethnicity_simp, SID)%>%
+  group_by(agegroup)%>%
+  summarise(n = n(), 
+            n_female = sum(sex == "F"), 
+            n_male = sum(sex == "M"), 
+            mean_age = round(mean(age), 2), 
+            median_age = round(median(age), 2), 
+            sd_age = round(sd(age), 2))
+
+exp4_ethnicity <- exp4 %>%
+  distinct(SID, ethnicity_simp)%>%
+  group_by(ethnicity_simp)%>%
+  summarise(n = n())
+  
   
 ```  
 
@@ -1284,8 +1307,13 @@ ms_wrong <- exp4 %>%
   dplyr::select(-age.c)%>%
 filter(correct_factor == FALSE)%>%
 group_by(prompt, selection_type)%>%
-  dplyr::summarise(n=n())%>%
-  mutate(n.total = sum(n), prop = n/n.total)
+  dplyr::summarise(n=n())
+
+#how many total incorrect trials?
+ms_tot.wrong <- exp4 %>%
+  dplyr::select(-age.c)%>%
+  filter(correct_factor == FALSE)%>%
+  summarise(n = n())
   
 ```  
   
@@ -1382,7 +1410,8 @@ exp4 %<>%
 
 gl.int <- glmer(correct ~  prompt * age.c 
 			+ (prompt | SID), 
-			data=exp4, family=binomial)
+			data=exp4, family=binomial, control=glmerControl(optimizer="bobyqa",
+                            optCtrl=list(maxfun=2e5)))
 summary(gl.int)
 
 ```
