@@ -36,16 +36,20 @@ setwd("~/Documents/Projects/si_paper/analyses/analysis/")
 
 ##Data management
 ```{r}
-d <- read.csv("../data/implicatures_adhocScalar_data.csv")
+data_exp1_raw <- read.csv("../data/implicatures_adhocScalar_data.csv")
 
 #fill in the selection types for easier analyses
-d_exp1=melt.data.frame(d,c("Subj_ID", "age","agegroup", "gender"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
-"carrots_condition", "hats_condition", "cookies_condition", "trains_condition", "cats_condition", "purses_condition",  "keys_condition", "shirts_condition", "breads_condition", "horses_condition", "bears_condition", "frogs_condition", "plates_condition", "books_condition", "elephants_condition", "lamps_condition", "bananas_condition", "butterflies_condition", 
+d_exp1=melt.data.frame(data_exp1_raw,c("Subj_ID", "age","agegroup", "gender"),c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads", "horses", "bears", "frogs", "plates", "books", "elephants", "lamps", "bananas", "butterflies", 
+"carrots_condition", "hats_condition", "cookies_condition", "trains_condition", "cats_condition", "purses_condition",  "keys_condition", "shirts_condition", "breads_condition", "horses_condition", "bears_condition", "frogs_condition", "plates_condition", "books_condition", "elephants_condition", "lamps_condition", "bananas_condition", "butterflies_condition",
+"carrots_selection", "hats_selection", "cookies_selection", "trains_selection", "cats_selection", "purses_selection",  "keys_selection", "shirts_selection", "breads_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "lamps_selection", "bananas_selection", "butterflies_selection",
+"carrots_target", "hats_target", "cookies_target", "trains_target", "cats_target", "purses_target",  "keys_target", "shirts_target", "breads_target", "horses_target", "bears_target", "frogs_target", "plates_target", "books_target", "elephants_target", "lamps_target", "bananas_target", "butterflies_target",
 "carrots_type", "hats_type", "cookies_type", "trains_type", "cats_type", "purses_type",  "keys_type", "shirts_type", "breads_type", "horses_type", "bears_type", "frogs_type", "plates_type", "books_type", "elephants_type", "lamps_type", "bananas_type", "butterflies_type"))
 
 data_exp1 <- d_exp1[1:864,] 
 data_exp1$condition <- d_exp1$value[865:1728]
-data_exp1$type <- d_exp1$value[1729:2592]
+data_exp1$selection <- d_exp1$value[1729:2592]
+data_exp1$target <- d_exp1$value[2593:3456]
+data_exp1$type <- d_exp1$value[3457:4320]
 names(data_exp1)[5] <- "item"
 names(data_exp1)[6] <- "correct"
 
@@ -58,6 +62,14 @@ data_exp1 %<>%
          condition = factor(condition, levels = c("adhoc", "scalar"), 
                             labels = c("Ad hoc", "Scalar")))
 
+#quick sanity check to make sure there's nothing incorrectly coded
+data_exp1_check <- data_exp1 %>%
+  filter(target == selection & correct == 0)
+
+#there are two participants with incorrect coding, let's filter those values
+data_exp1 %<>%
+  filter(!(Subj_ID == "101314_04" & item == "frogs"))%>%
+  filter(!(Subj_ID == "110714_01" & item == "books"))
 ``` 
 
 ##Classify trials as first or second half
@@ -112,105 +124,95 @@ aux <- dev.off()
 ###T-tests of performance across trial types and age groups
 
 ```{r}
-d <- data_exp1 %>%
+t_test_exp1 <- data_exp1 %>%
   filter(condition == "Scalar")%>%
   mutate(correct = as.numeric(correct))
 
-d <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d, mean)
+t_test_exp1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=t_test_exp1, mean)
 ```
 
 
-###T-tests: Age-groups, by trial type
+###T-tests: Age-groups, by trial type, scalar condition only
 ```{r}
 #t-tests against "all"
 #4-4.5
 #all-some
-t.test(subset(d, agegroup == "4.0--4.5" & type == "All")$correct,
-       subset(d, agegroup == "4.0--4.5" & type == "Implicature")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5" & type == "All")$correct,
+       subset(t_test_exp1, agegroup == "4.0--4.5" & type == "Implicature")$correct,
        var.equal = TRUE)
 #all-none
-t.test(subset(d, agegroup == "4.0--4.5" & type == "All")$correct,
-       subset(d, agegroup == "4.0--4.5" & type == "None")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5" & type == "All")$correct,
+       subset(t_test_exp1, agegroup == "4.0--4.5" & type == "None")$correct,
        var.equal = TRUE)
 #all-unambig.some
-t.test(subset(d, agegroup == "4.0--4.5" & type == "All")$correct,
-       subset(d, agegroup == "4.0--4.5" & type == "Unambig. Some")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5" & type == "All")$correct,
+       subset(t_test_exp1, agegroup == "4.0--4.5" & type == "Unambig. Some")$correct,
        var.equal = TRUE)
 
 #4.5-5
 #all-some
-t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
-       subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.5--5.0" & type == "All")$correct,
+       subset(t_test_exp1, agegroup == "4.5--5.0" & type == "Implicature")$correct,
        var.equal = TRUE)
 #all-none
-t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
-       subset(d, agegroup == "4.5--5.0" & type == "None")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.5--5.0" & type == "All")$correct,
+       subset(t_test_exp1, agegroup == "4.5--5.0" & type == "None")$correct,
        var.equal = TRUE)
 #all-unambig.some
-t.test(subset(d, agegroup == "4.5--5.0" & type == "All")$correct,
-       subset(d, agegroup == "4.5--5.0" & type == "Unambig. Some")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.5--5.0" & type == "All")$correct,
+       subset(t_test_exp1, agegroup == "4.5--5.0" & type == "Unambig. Some")$correct,
        var.equal = TRUE)
 
 #SI between ages
-t.test(subset(d, agegroup == "4.0--4.5" & type == "Implicature")$correct,
-       subset(d, agegroup == "4.5--5.0" & type == "Implicature")$correct,
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5" & type == "Implicature")$correct,
+       subset(t_test_exp1, agegroup == "4.5--5.0" & type == "Implicature")$correct,
        var.equal = TRUE)
 ```
 
 ###T-tests: Scalar vs. ad hoc
 T-tests: Scalar vs. ad-hoc
 ```{r}
-d1 <- data_exp1 %>%
+t_test_exp1_2 <- data_exp1 %>%
   mutate(correct = as.numeric(correct))
 
-d1 <- aggregate(correct ~ type + agegroup + condition + Subj_ID, data=d1, mean)
+t_test_exp1_2 <- aggregate(correct ~ type + agegroup + condition + Subj_ID, data=t_test_exp1_2, mean)
 
 #comparison - ad-hoc implicature vs. scalar
 #4-4.5
-t.test(subset(d1, agegroup == "4.0--4.5" & type == "Implicature" 
+t.test(subset(t_test_exp1_2, agegroup == "4.0--4.5" & type == "Implicature" 
               & condition == "Ad hoc")$correct,
-       subset(d1, agegroup == "4.0--4.5" & type == "Implicature" 
+       subset(t_test_exp1_2, agegroup == "4.0--4.5" & type == "Implicature" 
               & condition == "Scalar")$correct,
        var.equal = TRUE)
 
 #4.5-5
-t.test(subset(d1, agegroup == "4.5--5.0" & type == "Implicature" 
+t.test(subset(t_test_exp1_2, agegroup == "4.5--5.0" & type == "Implicature" 
               & condition == "Ad hoc")$correct,
-       subset(d1, agegroup == "4.5--5.0" & type == "Implicature" 
+       subset(t_test_exp1_2, agegroup == "4.5--5.0" & type == "Implicature" 
               & condition == "Scalar")$correct,
        var.equal = TRUE)
 ```
-####T-Tests between adge groups - scalar
-```{r}
-d1 <- data_exp1 %>%
-  mutate(correct = as.numeric(correct))
-
-d1 <- aggregate(correct ~ type + agegroup + Subj_ID + condition, data = d1, mean) %>%
-  filter(condition == "Scalar")
-
-#age group test
-t.test(subset(d1, agegroup == "4.0--4.5" & type == "Implicature")$correct,
-       subset(d1, agegroup == "4.5--5.0" & type == "Implicature")$correct,
-       var.equal = TRUE)
-```
-
 
 ###Diptest for bimodal performance
 ```{r}
-ms1 <- data_exp1 %>%
+dip_exp1 <- data_exp1 %>%
   group_by(type, condition, Subj_ID) %>%
   mutate(correct = as.numeric(correct)) %>%
   summarise(mean = mean(correct), 
             agegroup = agegroup[1]) %>%
   filter(condition == "Scalar")
 
-cs <- cast(ms1, Subj_ID + agegroup ~ type + condition, value="mean") %>%
+dip_df_exp1 <- cast(dip_exp1, Subj_ID + agegroup ~ type + condition, value="mean") %>%
   rename(control_none_scalar = None_Scalar, 
          implicature_scalar = Implicature_Scalar, control_all_scalar = All_Scalar)
 
-dip.test(cs$implicature_scalar)
-dip.test(cs$control_none_scalar)
-dip.test(cs$control_all_scalar)
+##note that you have to filter out 101314_04 none because they only have 1 none trial
+dip_df_exp1 %<>%
+  filter(!is.na(control_none_scalar))
+
+dip.test(dip_df_exp1$implicature_scalar)
+dip.test(dip_df_exp1$control_none_scalar)
+dip.test(dip_df_exp1$control_all_scalar)
 ```
 
 ####Graph of bimodal distribution
@@ -241,9 +243,9 @@ aux <- dev.off()
 ###Full correlations
 ```{r}
 #full correlations
-cor.test(cs$control_none_scalar, cs$implicature_scalar)
-cor.test(cs$control_all_scalar, cs$implicature_scalar)
-cor.test(cs$control_none_scalar, cs$control_all_scalar)
+cor.test(dip_df_exp1$control_none_scalar, dip_df_exp1$implicature_scalar)
+cor.test(dip_df_exp1$control_all_scalar, dip_df_exp1$implicature_scalar)
+cor.test(dip_df_exp1$control_none_scalar, dip_df_exp1$control_all_scalar)
 
 #by age
 #none-some
@@ -323,10 +325,10 @@ data_exp2$trial_type[type == "some"] <- "implicature"
 data_exp2$trial_type[type != "some"] <- "control"
 detach(data_exp2)
 
-
-#filter out incorrectly coded child
+#filter out incorrectly coded trials
 data_exp2 %<>%
-  filter(Subj_ID != "120514_07")
+  filter(Subj_ID != "120514_07")%>%
+  filter(!is.na(correct))
 ```
 
 ##Classify trials as first or second half
@@ -388,90 +390,89 @@ aux <- dev.off()
   
 ###T-tests by trial type and age group
 ```{r}
-d <- data_exp2 %>%
+t_test_exp2 <- data_exp2 %>%
   mutate(correct = as.numeric(as.character(correct)))
 
-d <- aggregate(correct ~ type + agegroup +Subj_ID, data=d, mean)
+t_test_exp2  <- aggregate(correct ~ type + agegroup +Subj_ID, data=t_test_exp2 , mean)
 
 #tests between quantifiers
 #all and some
-t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, 
-       subset(d, agegroup=="3.0--3.5" & type=="Some")$correct, 
+t.test(subset(t_test_exp2, agegroup=="3.0--3.5" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="3.0--3.5" & type=="Some")$correct, 
        var.equal = TRUE)
-t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, 
-       subset(d, agegroup=="3.5--4.0"& type=="Some")$correct, 
+t.test(subset(t_test_exp2, agegroup=="3.5--4.0" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="3.5--4.0"& type=="Some")$correct, 
        var.equal = TRUE)
-t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, 
-       subset(d, agegroup=="4.0--4.5" & type=="Some")$correct, 
+t.test(subset(t_test_exp2, agegroup=="4.0--4.5" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="4.0--4.5" & type=="Some")$correct, 
        var.equal = TRUE)
-t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, 
-       subset(d, agegroup=="4.5--5.0" & type=="Some")$correct, 
+t.test(subset(t_test_exp2, agegroup=="4.5--5.0" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="4.5--5.0" & type=="Some")$correct, 
        var.equal = TRUE)
 
 #all and none
-t.test(subset(d, agegroup=="3.0--3.5" & type=="All")$correct, 
-       subset(d, agegroup=="3.0--3.5" & type=="None")$correct, 
+t.test(subset(t_test_exp2, agegroup=="3.0--3.5" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="3.0--3.5" & type=="None")$correct, 
        var.equal = TRUE)
-t.test(subset(d, agegroup=="3.5--4.0" & type=="All")$correct, 
-       subset(d, agegroup=="3.5--4.0" & type=="None")$correct, 
+t.test(subset(t_test_exp2, agegroup=="3.5--4.0" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="3.5--4.0" & type=="None")$correct, 
        var.equal = TRUE)
-t.test(subset(d, agegroup=="4.0--4.5" & type=="All")$correct, 
-       subset(d, agegroup=="4.0--4.5" & type=="None")$correct, 
+t.test(subset(t_test_exp2, agegroup=="4.0--4.5" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="4.0--4.5" & type=="None")$correct, 
        var.equal = TRUE)
-t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct, 
-       subset(d, agegroup=="4.5--5.0" & type=="None")$correct, 
+t.test(subset(t_test_exp2, agegroup=="4.5--5.0" & type=="All")$correct, 
+       subset(t_test_exp2, agegroup=="4.5--5.0" & type=="None")$correct, 
        var.equal = TRUE)
 ```
 
 ###T-tests between exp 1 and exp. 2
 ```{r}
-d1 <- data_exp1 %>%
+exp1_ms <- data_exp1 %>%
   filter(condition == "Scalar")%>%
   mutate(correct = as.numeric(correct))
-d2 <- data_exp2%>%
+exp2_ms <- data_exp2%>%
   mutate(correct = as.numeric(correct))
 
-df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d1, mean)%>%
+t_test_exp1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=exp1_ms, mean)%>%
   spread(type, correct)
-df2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=d2, mean)%>%
+t_test_exp2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=exp2_ms, mean)%>%
   spread(type, correct)
 
 #4-4.5s
-t.test(subset(df1, agegroup == "4.0--4.5")$All, subset(df2, agegroup == "4.0--4.5")$All, 
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5")$All, subset(t_test_exp2, agegroup == "4.0--4.5")$All, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.0--4.5")$Implicature, subset(df2, agegroup == "4.0--4.5")$Some, 
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5")$Implicature, subset(t_test_exp2, agegroup == "4.0--4.5")$Some, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.0--4.5")$None, subset(df2, agegroup == "4.0--4.5")$None, 
+t.test(subset(t_test_exp1, agegroup == "4.0--4.5")$None, subset(t_test_exp2, agegroup == "4.0--4.5")$None, 
        var.equal = TRUE)
 
 #4.5-5
-t.test(subset(df1, agegroup == "4.5--5.0")$All, subset(df2, agegroup == "4.5--5.0")$All, 
+t.test(subset(t_test_exp1, agegroup == "4.5--5.0")$All, subset(t_test_exp2, agegroup == "4.5--5.0")$All, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.5--5.0")$Implicature, subset(df2, agegroup == "4.5--5.0")$Some, 
+t.test(subset(t_test_exp1, agegroup == "4.5--5.0")$Implicature, subset(t_test_exp2, agegroup == "4.5--5.0")$Some, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.5--5.0")$None, subset(df2, agegroup == "4.5--5.0")$None, 
+t.test(subset(t_test_exp1, agegroup == "4.5--5.0")$None, subset(t_test_exp2, agegroup == "4.5--5.0")$None, 
        var.equal = TRUE)
 ```
 
 ##Diptests and bimodal distribution
 ```{r}
-ms <- data_exp2 %>%
+dip_ms_exp2 <- data_exp2 %>%
   group_by(type, Subj_ID)%>%
   mutate(agegroup = agegroup[1]) %>%
   summarise(mean = mean(correct),
             agegroup = agegroup[1])
 
-cs <- cast(ms, Subj_ID + agegroup ~ type, value="mean")
+dip_exp2 <- cast(dip_ms_exp2, Subj_ID + agegroup ~ type, value="mean")
 
-dip.test(cs$Some)
-dip.test(cs$None)
-dip.test(cs$All)
+dip.test(dip_exp2$Some)
+dip.test(dip_exp2$None)
+dip.test(dip_exp2$All)
 ```
 
 ##Incorrect selection 
 ```{r}
 exp2_wrong <- data_exp2 %>%
-  dplyr::select(-age.c)%>%
   filter(correct != 1) %>%
   group_by(agegroup, type, selectionType)%>%
   dplyr::summarise(n=n())%>%
@@ -498,9 +499,9 @@ aux <- dev.off()
 ##Correlations (full)
 
 ```{r}
-cor.test(cs$Some, cs$None)
+cor.test(dip_exp2$Some, dip_exp2$None)
 
-cs %>% group_by(agegroup) %>% 
+dip_exp2 %>% group_by(agegroup) %>% 
 	summarise(r = cor.test(None, Some)$estimate,
 			  p = cor.test(None, Some)$p.value)
 ```
@@ -581,6 +582,10 @@ data %<>%
          test = "Scalar Implicature")
 
 data_si <- data
+
+##sanity check! 
+si_check <- data_si %>%
+  filter(selection == type & SI_correct == 0)
 ```
 
 ###Demographic information
@@ -638,42 +643,42 @@ aux <- dev.off()
 ```{r}
 #first create a df 
 #aggregate correct repsonses 
-df1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=data_exp2, mean)%>%
+ms_exp2 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=data_exp2, mean)%>%
   spread(type, correct)
-df2 <- aggregate(correct ~ type + agegroup +  sub_ID, data=data_si, mean)%>%
+ms_exp3 <- aggregate(correct ~ type + agegroup +  sub_ID, data=data_si, mean)%>%
   spread(type, correct)
 
 #tests across age groups
 #3-3.5
-t.test(subset(df1, agegroup == "3.0--3.5")$All, subset(df2, agegroup == "3.0--3.5")$All, 
+t.test(subset(ms_exp2, agegroup == "3.0--3.5")$All, subset(ms_exp3, agegroup == "3.0--3.5")$All, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "3.0--3.5")$Some, subset(df2, agegroup == "3.0--3.5")$Some, 
+t.test(subset(ms_exp2, agegroup == "3.0--3.5")$Some, subset(ms_exp3, agegroup == "3.0--3.5")$Some, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "3.0--3.5")$None, subset(df2, agegroup == "3.0--3.5")$None, 
+t.test(subset(ms_exp2, agegroup == "3.0--3.5")$None, subset(ms_exp3, agegroup == "3.0--3.5")$None, 
        var.equal = TRUE)
 
 #3.5-4
-t.test(subset(df1, agegroup == "3.5--4.0")$All, subset(df2, agegroup == "3.5--4.0")$All, 
+t.test(subset(ms_exp2, agegroup == "3.5--4.0")$All, subset(ms_exp3, agegroup == "3.5--4.0")$All, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "3.5--4.0")$Some, subset(df2, agegroup == "3.5--4.0")$Some, 
+t.test(subset(ms_exp2, agegroup == "3.5--4.0")$Some, subset(ms_exp3, agegroup == "3.5--4.0")$Some, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "3.5--4.0")$None, subset(df2, agegroup == "3.5--4.0")$None, 
+t.test(subset(ms_exp2, agegroup == "3.5--4.0")$None, subset(ms_exp3, agegroup == "3.5--4.0")$None, 
        var.equal = TRUE)
 
 #4-4.5
-t.test(subset(df1, agegroup == "4.0--4.5")$All, subset(df2, agegroup == "4.0--4.5")$All, 
+t.test(subset(ms_exp2, agegroup == "4.0--4.5")$All, subset(ms_exp3, agegroup == "4.0--4.5")$All, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.0--4.5")$Some, subset(df2, agegroup == "4.0--4.5")$Some, 
+t.test(subset(ms_exp2, agegroup == "4.0--4.5")$Some, subset(ms_exp3, agegroup == "4.0--4.5")$Some, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.0--4.5")$None, subset(df2, agegroup == "4.0--4.5")$None, 
+t.test(subset(ms_exp2, agegroup == "4.0--4.5")$None, subset(ms_exp3, agegroup == "4.0--4.5")$None, 
        var.equal = TRUE)
 
 #4.5-5
-t.test(subset(df1, agegroup == "4.5--5.0")$All, subset(df2, agegroup == "4.5--5.0")$All, 
+t.test(subset(ms_exp2, agegroup == "4.5--5.0")$All, subset(ms_exp3, agegroup == "4.5--5.0")$All, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.5--5.0")$Some, subset(df2, agegroup == "4.5--5.0")$Some, 
+t.test(subset(ms_exp2, agegroup == "4.5--5.0")$Some, subset(ms_exp3, agegroup == "4.5--5.0")$Some, 
        var.equal = TRUE)
-t.test(subset(df1, agegroup == "4.5--5.0")$None, subset(df2, agegroup == "4.5--5.0")$None, 
+t.test(subset(ms_exp2, agegroup == "4.5--5.0")$None, subset(ms_exp3, agegroup == "4.5--5.0")$None, 
        var.equal = TRUE)
 ```
 
@@ -715,22 +720,22 @@ t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct,
 
 ##Diptest for bimodal performance
 ```{r}
-ms3 <- data_si %>%
+dip_ms_exp3 <- data_si %>%
   group_by(type, sub_ID) %>%
   summarise(mean = mean(correct), 
             agegroup = agegroup[1], 
             age = test_age[1])
 
-cs <- cast(ms3, sub_ID + agegroup + age ~ type, value="mean")
+dip_exp3 <- cast(dip_ms_exp3, sub_ID + agegroup + age ~ type, value="mean")
 
-dip.test(cs$Some)
-dip.test(cs$None)
-dip.test(cs$All)
+dip.test(dip_exp3$Some)
+dip.test(dip_exp3$None)
+dip.test(dip_exp3$All)
 ```
 
 ##Correlations (full)
 ```{r}
-cor.test(cs$Some, cs$None)
+cor.test(dip_exp3$Some, dip_exp3$None)
 
 cs %>% group_by(agegroup) %>% 
 	summarise(r = cor.test(None, Some)$estimate,
@@ -739,7 +744,7 @@ cs %>% group_by(agegroup) %>%
 ##Correlation (partial, controlling for age)
 ```{r}
 library(ppcor)
-pcor.test(cs$Some, cs$None, cs$age)
+pcor.test(dip_exp3$Some, dip_exp3$None, dip_exp3$age)
 ```
 
 ##Incorrect selections 
@@ -770,11 +775,11 @@ aux <- dev.off()
 #Experiment 3 - Give-Quantifier full analyses
 ```{r}
 #read in and establish dataframe
-d1 <- read.csv("../data/GQ_coding.csv")
-d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] <- sapply(d1[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
+data_gq_raw <- read.csv("../data/GQ_coding.csv")
+data_gq_raw[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)] <- sapply(data_gq_raw[,c(8,10,12,14,16,18,20,22, 31, 32, 33, 34)],as.character) #for unknown reasons this is necessary for melt.data.frame now
 
 #change to long form
-d2=melt.data.frame(d1,c("sub_ID", "test_age","agegroup", "condition", "training"),c("X1_condition", "X2_condition", "X3_condition", "X4_condition", "X5_condition", "X6_condition",  "X7_condition", "X8_condition", "X1_given", "X2_given", "X3_given", "X4_given", "X5_given", "X6_given",  "X7_given", "X8_given", "X1_correct", "X2_correct", "X3_correct", "X4_correct", "X5_correct", "X6_correct",  "X7_correct", "X8_correct"))
+d2=melt.data.frame(data_gq_raw,c("sub_ID", "test_age","agegroup", "condition", "training"),c("X1_condition", "X2_condition", "X3_condition", "X4_condition", "X5_condition", "X6_condition",  "X7_condition", "X8_condition", "X1_given", "X2_given", "X3_given", "X4_given", "X5_given", "X6_given",  "X7_given", "X8_given", "X1_correct", "X2_correct", "X3_correct", "X4_correct", "X5_correct", "X6_correct",  "X7_correct", "X8_correct"))
 
 #making a respectable df  
 onethird <- (1/3)*nrow(d2)
@@ -798,6 +803,19 @@ data %<>%
                             labels = c("All", "Some", "None", "Most")))
 
 data_gq <- data
+
+#sanity check - is this coded correctly
+data_gq$check <- ifelse((data_gq$prompt == "Most" & 4 < data_gq$num_given & data_gq$num_given < 8  |
+                           data_gq$prompt == "All" & data_gq$num_given == 8 |
+                           data_gq$prompt == "Some" & 1 < data_gq$num_given & data_gq$num_given < 8 |
+                           data_gq$prompt == "None" & data_gq$num_given == 0), 1, 0)
+
+gq_check <- tmp %>%
+  filter(GQ_correct != check)
+
+#some coding errors - fix these
+data_gq %<>%
+  mutate(GQ_correct = ifelse(num_given == 8 & prompt == "Most", 0, GQ_correct))
 ```
 
 ##Mean correct by age and trial type 
@@ -865,9 +883,9 @@ aux <- dev.off()
 
 #Experiment 3 - DCCS
 ```{r}
-d1 <- read.csv("../data/DCCS_coding.csv")
+data_dccs_raw <- read.csv("../data/DCCS_coding.csv")
 #long form
-d2=melt.data.frame(d1,c("sub_ID","test_age", "agegroup", "condition"),c("pre_1", "pre_2", "pre_3", "pre_4", "pre_5", "pre_6",  "post_1", "post_2", "post_3", "post_4", "post_5", "post_6"))
+d2=melt.data.frame(data_dccs_raw,c("sub_ID","test_age", "agegroup", "condition"),c("pre_1", "pre_2", "pre_3", "pre_4", "pre_5", "pre_6",  "post_1", "post_2", "post_3", "post_4", "post_5", "post_6"))
 
 #filtering data, creating age breaks
 data <- d2 %>%
@@ -949,7 +967,7 @@ data_si$SI_correct <- as.character(data_si$SI_correct)
 data_si$SI_correct <- as.numeric(data_si$SI_correct)
 
 #scalar implicature task
-mss.acc <- data_si %>%
+mss.si <- data_si %>%
   group_by(sub_ID, type)%>%
   dplyr::summarise(mean = mean(SI_correct), 
                    test_age = test_age[1],
@@ -960,7 +978,7 @@ mss.acc <- data_si %>%
          SI_None = None)
 
 #dccs
-mss.acc2 <- data_dccs %>%
+mss.dccs <- data_dccs %>%
   group_by(sub_ID, switch_type)%>%
   dplyr::summarise(mean=mean(DCCS_correct))%>%
   spread(switch_type, mean)
@@ -968,7 +986,7 @@ mss.acc2 <- data_dccs %>%
 
 #now gq
 #first mean number
-mss.acc3 <- data_gq %>%
+mss.gq.mean <- data_gq %>%
   group_by(sub_ID, prompt)%>%
   dplyr::summarise(mean_num = mean(num_given)) %>%
   spread(prompt, mean_num)%>%
@@ -978,7 +996,7 @@ mss.acc3 <- data_gq %>%
                 GQ_Most_mean = Most)
 
 #then correct
-mss.acc4 <- data_gq %>%
+mss.gq.corr <- data_gq %>%
   group_by(sub_ID, prompt)%>%
   dplyr::summarise(mean_correct = mean(GQ_correct))%>%
   spread(prompt, mean_correct)%>%
@@ -989,23 +1007,23 @@ mss.acc4 <- data_gq %>%
   
 
 #overall correct for GQ
-mss.acc5 <- data_gq %>%
+mss.gq.over <- data_gq %>%
   group_by(sub_ID)%>%
   dplyr::summarise(mean_correct = mean(GQ_correct))%>%
   dplyr::rename(GQ_overall = mean_correct)
 
 #overall correct for SI
-mss.acc6 <- data_si %>%
+mss.si.over <- data_si %>%
   group_by(sub_ID)%>%
   dplyr::summarise(SI_overall = mean(SI_correct))
   
 
 #bind together
-tmp <- right_join(mss.acc, mss.acc2, by = "sub_ID")
-tmp1 <- right_join(tmp, mss.acc3, by = "sub_ID") 
-tmp2 <- right_join(tmp1, mss.acc5, by = "sub_ID")
-tmp3 <- right_join(tmp2, mss.acc6, by="sub_ID")
-d_all <- right_join(tmp3, mss.acc4, by = "sub_ID") 
+tmp <- right_join(mss.si, mss.dccs, by = "sub_ID")
+tmp1 <- right_join(tmp, mss.gq.mean, by = "sub_ID") 
+tmp2 <- right_join(tmp1, mss.gq.corr, by = "sub_ID")
+tmp3 <- right_join(tmp2, mss.gq.over, by="sub_ID")
+d_all <- right_join(tmp3, mss.si.over, by = "sub_ID") 
 
 #center age for model fit
 d_all %<>%
@@ -1152,10 +1170,10 @@ dip.test(old2$GQ_None)
 #Experiment 4
 ```{r}
 #reading in the original wide-form dataframe
-d4 <- read.csv("../data/si_paper_control.csv")
+data_exp4_raw <- read.csv("../data/si_paper_control.csv")
 
 #fill in the selection types for easier analyses
-d4 %<>%
+data_exp4_raw %<>%
   mutate(carrot_selection = factor(carrot_selection, levels=c(1, 2, 3)), 
          hat_selection = factor(hat_selection, levels=c(1, 2, 3)),
          cat_selection = factor(cat_selection, levels=c(1, 2, 3)),
@@ -1181,7 +1199,7 @@ d4 %<>%
          elephants_correct = factor(elephants_correct, levels=c(0, 1)),
          bananas_correct = factor(bananas_correct, levels=c(0, 1)))
 
-data=melt.data.frame(d4,c("SID","age", "agegroup","sex", "ethnicity", "Exclude"),c("carrot_prompt", "hat_prompt", "cat_prompt", "purses_prompt",  "shirts_prompt", "horses_prompt", "bears_prompt", "frogs_prompt", "plates_prompt", "books_prompt", "elephants_prompt", "bananas_prompt", "carrot_selection", "hat_selection", "cat_selection", "purses_selection",  "shirts_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "bananas_selection", "carrot_selection_type", "hat_selection_type", "cat_selection_type", "purses_selection_type",  "shirts_selection_type", "horses_selection_type", "bears_selection_type", "frogs_selection_type", "plates_selection_type", "books_selection_type", "elephants_selection_type", "bananas_selection_type", "carrot_correct", "hat_correct", "cat_correct", "purses_correct",  "shirts_correct", "horses_correct", "bears_correct", "frogs_correct", "plates_correct", "books_correct", "elephants_correct", "bananas_correct"))
+data=melt.data.frame(data_exp4_raw,c("SID","age", "agegroup","sex", "ethnicity", "Exclude"),c("carrot_prompt", "hat_prompt", "cat_prompt", "purses_prompt",  "shirts_prompt", "horses_prompt", "bears_prompt", "frogs_prompt", "plates_prompt", "books_prompt", "elephants_prompt", "bananas_prompt", "carrot_selection", "hat_selection", "cat_selection", "purses_selection",  "shirts_selection", "horses_selection", "bears_selection", "frogs_selection", "plates_selection", "books_selection", "elephants_selection", "bananas_selection", "carrot_selection_type", "hat_selection_type", "cat_selection_type", "purses_selection_type",  "shirts_selection_type", "horses_selection_type", "bears_selection_type", "frogs_selection_type", "plates_selection_type", "books_selection_type", "elephants_selection_type", "bananas_selection_type", "carrot_correct", "hat_correct", "cat_correct", "purses_correct",  "shirts_correct", "horses_correct", "bears_correct", "frogs_correct", "plates_correct", "books_correct", "elephants_correct", "bananas_correct"))
 
 
 #making a respectable df  
@@ -1204,7 +1222,7 @@ exp4$prompt %<>%
   str_replace("all", "All")%>%
   str_replace("some", "Some")
   
-sum <- d4 %>%
+sum <- data_exp4_raw %>%
 group_by(Exclude)%>%
 distinct(SID)%>%
 dplyr::summarise(n = n())
@@ -1217,9 +1235,6 @@ exp4 %<>%
 #making correct a num for analysis
 exp4 %<>%
   mutate(correct = as.numeric(correct_factor))
-
-exp4 %<>%
-  mutate(age.c = scale(age, scale = FALSE, center = TRUE))
   
 ```
 
@@ -1239,15 +1254,11 @@ exp4 %<>%
 
 #Any errors in data recording?
 check <- exp4 %>%
-  group_by(prompt, selection_type, correct)%>%
-  dplyr::summarise(n = n())
-  
-#1 error, with "all" being chosen for "some" >> removing this
-tmp <- exp4 %>% 
-  mutate(correct_factor = replace(correct_factor, c(prompt == "Some" & selection_type == "All" & correct_factor == TRUE), NA), 
-         correct_factor = replace(correct_factor, c(prompt == "All" & selection_type == "All" & correct_factor == FALSE), NA))
+  filter(prompt == selection_type & correct == 0)
 
-exp4 <-tmp
+#yes, so remove
+exp4 %<>%
+  filter(!(prompt == selection_type & correct == 0))
 
 exp4_demo <- exp4 %>%
   distinct(agegroup, age, sex, ethnicity_simp, SID)%>%
@@ -1303,14 +1314,12 @@ incorrect selections
 ```{r}  
 #What kind of incorrect selections are children making? 
 ms_wrong <- exp4 %>%
-  dplyr::select(-age.c)%>%
 filter(correct_factor == FALSE)%>%
 group_by(prompt, selection_type)%>%
   dplyr::summarise(n=n())
 
 #how many total incorrect trials?
 ms_tot.wrong <- exp4 %>%
-  dplyr::select(-age.c)%>%
   filter(correct_factor == FALSE)%>%
   summarise(n = n())
   
@@ -1351,26 +1360,24 @@ aux <- dev.off()
 ```{r}
 #difference in accuracy on either type of trial between age groups? #some
 #create df for tests
-d1 <- exp4 
+ cs.exp4 <- aggregate(correct ~ prompt + agegroup + SID, data=exp4, mean)
 
-cs <- aggregate(correct ~ prompt + agegroup + SID, data=d1, mean)
-
-t.test(subset(cs, prompt == "All" & agegroup == "4-4.5")$correct, subset(cs, prompt == "All" & agegroup == "4.5-5")$correct,
+t.test(subset(cs.exp4, prompt == "All" & agegroup == "4-4.5")$correct, subset(cs.exp4, prompt == "All" & agegroup == "4.5-5")$correct,
   var.equal = TRUE)
-t.test(subset(cs, prompt == "Some" & agegroup == "4-4.5")$correct, subset(cs, prompt == "Some" & agegroup == "4.5-5")$correct, 
+t.test(subset(cs.exp4, prompt == "Some" & agegroup == "4-4.5")$correct, subset(cs.exp4, prompt == "Some" & agegroup == "4.5-5")$correct, 
   var.equal = TRUE)
   
 #no difference here, so we can collapse across age groups, I think
-t.test(subset(cs, prompt == "Some")$correct, subset(cs, prompt == "All")$correct, 
+t.test(subset(cs.exp4, prompt == "Some")$correct, subset(cs.exp4, prompt == "All")$correct, 
   var.equal = TRUE)
   
 #t-test between old and control data
-d <- aggregate(SI_correct ~ type + agegroup + sub_ID, data = data_si, mean)
+d_exp3 <- aggregate(SI_correct ~ type + agegroup + sub_ID, data = data_si, mean)
 
-t.test(subset(d, type == "Some" & agegroup == "4.0--4.5")$SI_correct, subset(cs, prompt == "Some" & agegroup == "4-4.5")$correct, 
+t.test(subset(d_exp3, type == "Some" & agegroup == "4.0--4.5")$SI_correct, subset(cs.exp4, prompt == "Some" & agegroup == "4-4.5")$correct, 
   var.equal = TRUE)
 
-t.test(subset(d, type == "Some" & agegroup == "4.5--5.0")$SI_correct, subset(cs, prompt == "Some" & agegroup == "4.5-5")$correct, 
+t.test(subset(d_exp3, type == "Some" & agegroup == "4.5--5.0")$SI_correct, subset(cs.exp4, prompt == "Some" & agegroup == "4.5-5")$correct, 
   var.equal = TRUE)
 ```
 
