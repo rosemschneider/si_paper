@@ -210,10 +210,6 @@ dip_df_exp1 <- cast(dip_exp1, Subj_ID + agegroup ~ type + condition, value="mean
   rename(control_none_scalar = None_Scalar, 
          implicature_scalar = Implicature_Scalar, control_all_scalar = All_Scalar)
 
-##note that you have to filter out 101314_04 none because they only have 1 none trial
-dip_df_exp1 %<>%
-  filter(!is.na(control_none_scalar))
-
 dip.test(dip_df_exp1$implicature_scalar)
 dip.test(dip_df_exp1$control_none_scalar)
 dip.test(dip_df_exp1$control_all_scalar)
@@ -349,10 +345,15 @@ data_exp2 %<>%
 
 #also need to fix selection type for incorrectly coded items
 data_exp2 %<>%
-  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "purses", "All", selectionType), 
-         ifelse(Subj_ID == "120514_07" & item == "horses", "All", selectionType), 
-         ifelse(Subj_ID == "120514_07" & item == "plates", "All", selectionType), 
-         ifelse(Subj_ID == "120514_07" & item == "bananas", "All", selectionType))
+  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "purses", 3, selectionType), 
+         ifelse(Subj_ID == "120514_07" & item == "horses", 1, selectionType), 
+         ifelse(Subj_ID == "120514_07" & item == "plates", 1, selectionType), 
+         ifelse(Subj_ID == "120514_07" & item == "bananas", 2, selectionType))
+
+data_exp2 %<>%
+  mutate(selectionType = as.factor(selectionType))
+
+#TO-DO - fill in "none" "some" "all" info for incorrect selection graph
 ```
 
 ##Classify trials as first or second half
