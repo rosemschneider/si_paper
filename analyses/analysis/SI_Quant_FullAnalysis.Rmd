@@ -66,10 +66,14 @@ data_exp1 %<>%
 data_exp1_check <- data_exp1 %>%
   filter(target == selection & correct == 0)
 
-#there are two participants with incorrect coding, let's filter those values
+#two coding errors
+#101314_04 - participant points to 2nd book, which is "some"
 data_exp1 %<>%
-  filter(!(Subj_ID == "101314_04" & item == "frogs"))%>%
-  filter(!(Subj_ID == "110714_01" & item == "books"))
+  mutate(correct = ifelse(Subj_ID == "101314_04" & item == "frogs", 1, correct))
+
+#110714_01 chose 'some' - change this to correct
+data_exp1 %<>%
+  mutate(correct = ifelse(Subj_ID == "110714_01" & item == "books", 1, correct))
 ``` 
 
 ##Classify trials as first or second half
@@ -325,10 +329,30 @@ data_exp2$trial_type[type == "some"] <- "implicature"
 data_exp2$trial_type[type != "some"] <- "control"
 detach(data_exp2)
 
-#filter out incorrectly coded trials
+#is there incorrectly coded data?
+exp2_check <- data_exp2 %>%
+  filter(selectionType == type & correct == 0)
+
+#6 coding errors - these were checked on original videos of trials
+#112014_4 points to 2 book, which is the 'some' book, so change to correct
 data_exp2 %<>%
-  filter(Subj_ID != "120514_07")%>%
-  filter(!is.na(correct))
+  mutate(correct = ifelse(Subj_ID == "112014_04" & item == "hats", 1, correct))
+
+#120514_07 has 5 coding errors - these were checked on original videos of trials
+#trial 6 - picked 'all'
+#trial 8 - picked 'some'
+#trial 11 - picked 'all'
+#trial 14 - picked 'all'
+#trial 17 - picked 'all'
+data_exp2 %<>%
+  mutate(correct = ifelse(Subj_ID == "120514_07" & item == "shirts", 1, correct))
+
+#also need to fix selection type for incorrectly coded items
+data_exp2 %<>%
+  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "purses", "All", selectionType), 
+         ifelse(Subj_ID == "120514_07" & item == "horses", "All", selectionType), 
+         ifelse(Subj_ID == "120514_07" & item == "plates", "All", selectionType), 
+         ifelse(Subj_ID == "120514_07" & item == "bananas", "All", selectionType))
 ```
 
 ##Classify trials as first or second half
