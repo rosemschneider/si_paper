@@ -630,6 +630,10 @@ data_si <- data
 ##sanity check! 
 si_check <- data_si %>%
   filter(selection == type & SI_correct == 0)
+
+if (length(si_check$sub_ID) != 0) {
+  print("ERROR: Data are incorrectly coded")
+}
 ```
 
 ###Demographic information
@@ -854,12 +858,20 @@ data_gq$check <- ifelse((data_gq$prompt == "Most" & 4 < data_gq$num_given & data
                            data_gq$prompt == "Some" & 1 < data_gq$num_given & data_gq$num_given < 8 |
                            data_gq$prompt == "None" & data_gq$num_given == 0), 1, 0)
 
-gq_check <- tmp %>%
+gq_check <- data_gq %>%
   filter(GQ_correct != check)
 
 #some coding errors - fix these
 data_gq %<>%
   mutate(GQ_correct = ifelse(num_given == 8 & prompt == "Most", 0, GQ_correct))
+
+#test for coding errors
+gq_check <- data_gq %>%
+  filter(GQ_correct != check)
+
+if (length(gq_check$sub_ID) != 0) {
+  print("ERROR: Data are incorrectly coded")
+}
 ```
 
 ##Mean correct by age and trial type 
@@ -1070,8 +1082,8 @@ tmp3 <- right_join(tmp2, mss.gq.over, by="sub_ID")
 d_all <- right_join(tmp3, mss.si.over, by = "sub_ID") 
 
 #center age for model fit
-d_all %<>%
-  mutate(age.c = scale(test_age, scale = FALSE, center = TRUE))
+#d_all %<>%
+  #mutate(age.c = scale(test_age, scale = FALSE, center = TRUE))
 ```
 
 ##Full correlations
@@ -1279,6 +1291,22 @@ exp4 %<>%
 #making correct a num for analysis
 exp4 %<>%
   mutate(correct = as.numeric(correct_factor))
+
+#check for coding errors
+exp4_check <- exp4 %>%
+  filter(prompt == selection_type & correct == 0)
+
+#yes, so remove
+exp4 %<>%
+  filter(!(prompt == selection_type & correct == 0))
+
+#check and test
+exp4_check <- exp4 %>%
+  filter(prompt == selection_type & correct == 0)
+
+if (length(exp4_check$SID) != 0) {
+  print("ERROR: Data are incorrectly coded")
+}
   
 ```
 
@@ -1295,14 +1323,6 @@ exp4 %<>%
                                  labels = c("white", "white", "black", "asian", "asian", 
                                             "other", "other", "mixed", "mixed", 
                                             "mixed", "mixed", "other", "mixed", "other")))
-
-#Any errors in data recording?
-check <- exp4 %>%
-  filter(prompt == selection_type & correct == 0)
-
-#yes, so remove
-exp4 %<>%
-  filter(!(prompt == selection_type & correct == 0))
 
 exp4_demo <- exp4 %>%
   distinct(agegroup, age, sex, ethnicity_simp, SID)%>%
@@ -1371,33 +1391,31 @@ ms_tot.wrong <- exp4 %>%
   
 Incorrect selection graph
 ```{r}
-ms_wrong$prompt %<>%
-  str_replace("none", "None")
-ms_wrong$selection_type %<>%
-  str_replace("none", "None")
-
-ms_wrong <-ms_wrong[c(1:3, 5:6),] 
-
-ms_wrong %<>%
-  mutate(selection_type = factor(selection_type, levels = c("All", "Some", 
-                                                            "None")))
-
-pdf(file="./exp4_SIwrong.pdf", width=6, height=3.5)
-p <- 
-ggplot(data = ms_wrong, 
-       aes(x=selection_type, y=n, fill=selection_type, alpha=agegroup)) +
-  geom_bar(stat="identity", position = position_dodge())  +
-  ylab("Count of children choosing") + 
-  xlab("Selection Type") + facet_wrap(~prompt) + 
-  theme_bw(base_size=10) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank()) +
-  scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
-  scale_fill_solarized() + scale_alpha_manual(values=c(.625,1), 
-                     guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Trial Type", y = "Count of children choosing")
-print(p)
-aux <- dev.off()
+# ms_wrong$prompt %<>%
+#   str_replace("none", "None")
+# ms_wrong$selection_type %<>%
+#   str_replace("none", "None")
+# 
+# ms_wrong %<>%
+#   mutate(selection_type = factor(selection_type, levels = c("All", "Some", 
+#                                                             "None")))
+# 
+# pdf(file="./exp4_SIwrong.pdf", width=6, height=3.5)
+# p <- 
+# ggplot(data = ms_wrong, 
+#        aes(x=selection_type, y=n, fill=selection_type, alpha=agegroup)) +
+#   geom_bar(stat="identity", position = position_dodge())  +
+#   ylab("Count of children choosing") + 
+#   xlab("Selection Type") + facet_wrap(~prompt) + 
+#   theme_bw(base_size=10) + 
+#   theme(panel.grid.major = element_blank(), 
+#         panel.grid.minor = element_blank()) +
+#   scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
+#   scale_fill_solarized() + scale_alpha_manual(values=c(.625,1), 
+#                      guide = guide_legend(title = "Age group (years)")) + 
+#   labs(x = "Trial Type", y = "Count of children choosing")
+# print(p)
+# aux <- dev.off()
 ```
 
 ##T-tests
@@ -1411,7 +1429,7 @@ t.test(subset(cs.exp4, prompt == "All" & agegroup == "4-4.5")$correct, subset(cs
 t.test(subset(cs.exp4, prompt == "Some" & agegroup == "4-4.5")$correct, subset(cs.exp4, prompt == "Some" & agegroup == "4.5-5")$correct, 
   var.equal = TRUE)
   
-#no difference here, so we can collapse across age groups, I think
+#no difference here, so we can collapse across age groups
 t.test(subset(cs.exp4, prompt == "Some")$correct, subset(cs.exp4, prompt == "All")$correct, 
   var.equal = TRUE)
   
