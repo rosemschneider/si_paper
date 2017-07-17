@@ -74,6 +74,16 @@ data_exp1 %<>%
 #110714_01 chose 'some' - change this to correct
 data_exp1 %<>%
   mutate(correct = ifelse(Subj_ID == "110714_01" & item == "books", 1, correct))
+
+#check again to make sure everything is correct
+data_exp1_check <- data_exp1 %>%
+  filter(target == selection & correct == 0)
+
+if (length(data_exp1_check$Subj_ID) != 0) {
+  print("ERROR: Check and make sure all data correctly coded")
+} else {
+  print("All data correctly coded")
+}
 ``` 
 
 ##Classify trials as first or second half
@@ -345,15 +355,24 @@ data_exp2 %<>%
 
 #also need to fix selection type for incorrectly coded items
 data_exp2 %<>%
-  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "purses", 3, selectionType), 
-         ifelse(Subj_ID == "120514_07" & item == "horses", 1, selectionType), 
-         ifelse(Subj_ID == "120514_07" & item == "plates", 1, selectionType), 
-         ifelse(Subj_ID == "120514_07" & item == "bananas", 2, selectionType))
+  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "purses", 1, selectionType))%>%
+  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "horses", 1, selectionType))%>% 
+  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "plates", 1, selectionType))%>% 
+  mutate(selectionType = ifelse(Subj_ID == "120514_07" & item == "bananas", 1, selectionType))
 
+#fix factoring from correcting selections
 data_exp2 %<>%
-  mutate(selectionType = as.factor(selectionType))
+  mutate(selectionType = factor(selectionType, levels = c(1, 2, 3), labels = c("All", "Some", "None")))
 
-#TO-DO - fill in "none" "some" "all" info for incorrect selection graph
+#check again, throw an error in there are issues
+exp2_check <- data_exp2 %>%
+  filter(selectionType == type & correct == 0)
+
+if (length(exp2_check$Subj_ID) != 0) {
+  print("ERROR: Data are not correctly coded")
+} else {
+  print("Data are correctly coded")
+}
 ```
 
 ##Classify trials as first or second half
