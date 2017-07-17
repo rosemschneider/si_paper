@@ -35,6 +35,7 @@ setwd("~/Documents/Projects/si_paper/analyses/analysis/")
 #Experiment 1
 
 ##Data management
+The data is coded in with one row per participant. Need to convert that two multiple rows per participant with one trial per row. Additionally, need to perform some sanity checks to catch any errors in data coding. 
 ```{r}
 data_exp1_raw <- read.csv("../data/implicatures_adhocScalar_data.csv")
 
@@ -87,6 +88,7 @@ if (length(data_exp1_check$Subj_ID) != 0) {
 ``` 
 
 ##Classify trials as first or second half
+To test prediction of Alternatives Hypothesis
 ```{r}
 data_exp1$item <- as.character(data_exp1$item)
 first_half <- c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads")
@@ -109,6 +111,7 @@ exp1_demo <- data_exp1 %>%
 ```
 
 ##Mean performance across conditions, by agegroup
+Compute means and 95% CIs, graph
 ```{r}
 ms_exp1 <- data_exp1 %>%
   mutate(correct = as.numeric(correct))%>%
@@ -136,7 +139,7 @@ aux <- dev.off()
 ```
 
 ###T-tests of performance across trial types and age groups
-
+First, aggregate a dataframe with which to run t-tests
 ```{r}
 t_test_exp1 <- data_exp1 %>%
   filter(condition == "Scalar")%>%
@@ -147,6 +150,7 @@ t_test_exp1 <- aggregate(correct ~ type + agegroup +  Subj_ID, data=t_test_exp1,
 
 
 ###T-tests: Age-groups, by trial type, scalar condition only
+Testing performance for "Some" and "None" against ceiling performance on "All" across age groups
 ```{r}
 #t-tests against "all"
 #4-4.5
@@ -184,7 +188,7 @@ t.test(subset(t_test_exp1, agegroup == "4.0--4.5" & type == "Implicature")$corre
 ```
 
 ###T-tests: Scalar vs. ad hoc
-T-tests: Scalar vs. ad-hoc
+T-tests: Scalar vs. ad-hoc - is there significantly lower performance for critical implicature trials in Scalar condition
 ```{r}
 t_test_exp1_2 <- data_exp1 %>%
   mutate(correct = as.numeric(correct))
@@ -208,6 +212,7 @@ t.test(subset(t_test_exp1_2, agegroup == "4.5--5.0" & type == "Implicature"
 ```
 
 ###Diptest for bimodal performance
+Bimodal performance for trial types indicate that participants respond consistently either correctly or incorrectly
 ```{r}
 dip_exp1 <- data_exp1 %>%
   group_by(type, condition, Subj_ID) %>%
@@ -251,6 +256,7 @@ aux <- dev.off()
 ```
 
 ###Full correlations
+Testing whether low performance on "some" and "none" trials is correlated
 ```{r}
 #full correlations
 cor.test(dip_df_exp1$control_none_scalar, dip_df_exp1$implicature_scalar)
@@ -286,6 +292,7 @@ gl <- glmer(correct ~ trial_type * condition * age.c  +
             family=binomial, control=glmerControl(optimizer="bobyqa",
                             optCtrl=list(maxfun=2e5))) 
 
+#testing for random effect of item within trial type
 lm <- glmer(correct ~ trial_type * condition * age.c +
               (trial_type| Subj_ID) + (trial_type|item), 
             data = data_exp1, family = binomial, control=glmerControl(optimizer="bobyqa",
@@ -306,6 +313,7 @@ summary(gl_half)
 #Experiment 2
 
 ##Read in data
+Data format conversion same as above, with same checks.
 ```{r}
 d2 <- read.csv("../data/implicatures_scalarOnly_data.csv")
 
@@ -376,6 +384,7 @@ if (length(exp2_check$Subj_ID) != 0) {
 ```
 
 ##Classify trials as first or second half
+Testing prediction of Alt. Hypothesis.
 ```{r}
 data_exp2$item <- as.character(data_exp2$item)
 first_half <- c("carrots", "hats", "cookies", "trains", "cats", "purses",  "keys", "shirts", "breads")
@@ -406,6 +415,7 @@ demo_ethnicity_2 <- data_exp2 %>%
 ```
 
 ##Mean performance by trial and age group
+Get means and 95% CIs, graph.
 ```{r}
 ms_exp2 <- data_exp2 %>%
   group_by(type, agegroup)%>%
@@ -433,6 +443,7 @@ aux <- dev.off()
 ```
   
 ###T-tests by trial type and age group
+Testing performance for "some" and "none" against performance on "none" across age groups within Experiment 2.
 ```{r}
 t_test_exp2 <- data_exp2 %>%
   mutate(correct = as.numeric(as.character(correct)))
@@ -470,6 +481,7 @@ t.test(subset(t_test_exp2, agegroup=="4.5--5.0" & type=="All")$correct,
 ```
 
 ###T-tests between exp 1 and exp. 2
+Testing whether performance is significantly improved after removing adhoc trials from Exp. 1.
 ```{r}
 exp1_ms <- data_exp1 %>%
   filter(condition == "Scalar")%>%
@@ -500,6 +512,7 @@ t.test(subset(t_test_exp1, agegroup == "4.5--5.0")$None, subset(t_test_exp2, age
 ```
 
 ##Diptests and bimodal distribution
+Replicating bimodal performance for "some" and "none".
 ```{r}
 dip_ms_exp2 <- data_exp2 %>%
   group_by(type, Subj_ID)%>%
@@ -514,7 +527,8 @@ dip.test(dip_exp2$None)
 dip.test(dip_exp2$All)
 ```
 
-##Incorrect selection 
+##Incorrect selection
+What kinds of errors are children making?
 ```{r}
 exp2_wrong <- data_exp2 %>%
   filter(correct != 1) %>%
@@ -541,7 +555,6 @@ aux <- dev.off()
 ```
 
 ##Correlations (full)
-
 ```{r}
 cor.test(dip_exp2$Some, dip_exp2$None)
 
@@ -561,12 +574,14 @@ gl.int <- glmer(correct ~  type * age.c
                             optCtrl=list(maxfun=2e5)))
 summary(gl.int)
 
+#does performance change by half of experiment?
 gl.half <- glmer(correct ~  type * age.c * half
 			+ (type | Subj_ID), 
 			data=data_exp2, family=binomial, control=glmerControl(optimizer="bobyqa",
                             optCtrl=list(maxfun=2e5)))
 summary(gl.half)
 
+#testing with no random effect of trial type
 gl.norand <- glmer(correct ~  type * age.c 
 			+ (1 | Subj_ID), 
 			data=data_exp2, family=binomial, control=glmerControl(optimizer="bobyqa",
@@ -576,6 +591,7 @@ summary(gl.norand)
 
 #Experiment 3 - Scalar Implicature main analyses
 ##Read in data - Scalar Implicature
+Data format conversion checks same as above.
 ```{r}
 #reading in the original wide-form dataframe
 d3 <- read.csv("../data/SI_coding.csv")
@@ -661,6 +677,7 @@ data_si <- data %>%
 ```
 
 ##Mean performance by trial type and age
+Get means and compute 95% CIs.
 ```{r}
 ms_exp3 <- data_si %>%
   group_by(type, agegroup)%>%
@@ -688,6 +705,7 @@ aux <- dev.off()
 
 ##T-tests
 ###Testing against Ali's original data
+Do we see any changes from previous data? Testing against Experiment 2
 ```{r}
 #first create a df 
 #aggregate correct repsonses 
@@ -731,6 +749,7 @@ t.test(subset(ms_exp2, agegroup == "4.5--5.0")$None, subset(ms_exp3, agegroup ==
 ```
 
 ###T-tests across trial types within agegroups with exp 3 data
+Testing performance on "some" and "none" against "all" across age groups.
 ```{r}
 d <- data_si 
 
@@ -767,6 +786,7 @@ t.test(subset(d, agegroup=="4.5--5.0" & type=="All")$correct,
 ```
 
 ##Diptest for bimodal performance
+Replicating bimodal performance for "some" and "none"
 ```{r}
 dip_ms_exp3 <- data_si %>%
   group_by(type, sub_ID) %>%
@@ -782,6 +802,7 @@ dip.test(dip_exp3$All)
 ```
 
 ##Correlations (full)
+Replicating correlated performance for "some" and "none"
 ```{r}
 cor.test(dip_exp3$Some, dip_exp3$None)
 
@@ -790,12 +811,16 @@ cs %>% group_by(agegroup) %>%
 			  p = cor.test(None, Some)$p.value)
 ```
 ##Correlation (partial, controlling for age)
+Because we found that DCCS (inhibitory control measure) was significantly correlated with age, we control for age in correlations between all three measures (SI, GQ, and DCCS). 
+
+Here, testing whether correlation exists between "some" and "none" when controlling for age.
 ```{r}
 library(ppcor)
 pcor.test(dip_exp3$Some, dip_exp3$None, dip_exp3$age)
 ```
 
 ##Incorrect selections 
+What kinds of errors are children making?
 ```{r}
 si_wrong <- data_si %>%
   filter(correct != "TRUE") %>%
@@ -821,6 +846,13 @@ aux <- dev.off()
 ```  
 
 #Experiment 3 - Give-Quantifier full analyses
+Data format conversion and checks same as above. 
+
+Coding for GQ: "Correct" responses outlined in Barner, Chow, & Yang (2009).
+None - correct if number given == 0
+Some - correct if 2 <= number given <= 7
+Most - correct if 5 <= number given <= 7
+All - correct if number given == 8
 ```{r}
 #read in and establish dataframe
 data_gq_raw <- read.csv("../data/GQ_coding.csv")
@@ -875,7 +907,7 @@ if (length(gq_check$sub_ID) != 0) {
 ```
 
 ##Mean correct by age and trial type 
-"Correct" responses outlined in Barner, Chow, & Yang (2009).
+Compute means and 95% CIs.
 ```{r}
 ms_gq <- data_gq %>%
   filter(prompt != "Most") %>%
@@ -909,6 +941,7 @@ aux <- dev.off()
 ```
 
 ##Histogram of mean items given by age and prompt
+How many items (on average) do children give in response to a prompt across age groups?
 ```{r}
 hist_data <- data_gq %>%
   filter(prompt != "Most")%>%
@@ -938,6 +971,7 @@ aux <- dev.off()
 ```
 
 #Experiment 3 - DCCS
+Inhibitory control measure - Dimension Change Card Sort. Data format conversion same as above.
 ```{r}
 data_dccs_raw <- read.csv("../data/DCCS_coding.csv")
 #long form
@@ -991,32 +1025,15 @@ ms.dccs <- data_dccs %>%
   group_by(switch_type, agegroup)%>%
   filter(switch_type == "Post-switch")%>%
   multi_boot_standard("DCCS_correct", na.rm=T)
-  
-
-
-pdf(file="./exp3_DCCS.pdf", width=4, height=4)
-p <- ggplot(data = ms.dccs, 
-       aes(x=switch_type, y=mean, fill = switch_type, alpha = agegroup)) +
-  geom_bar(stat="identity", position = position_dodge()) +
-  geom_linerange(aes(ymin = ci_lower,
-                      ymax = ci_upper),
-                  size = .3,
-                  show.legend = FALSE,
-                 position=position_dodge(width = 0.9)) +
-  ylab("Proportion correct") + 
-  xlab("Trial Type") +
-  theme_bw(base_size=10) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank()) +
-  scale_fill_solarized() + 
-  scale_alpha_manual(values=c(.5,.625,.725,1), 
-                     guide = guide_legend(title = "Age group (years)")) + geom_hline(yintercept = .5, linetype = "dashed")
-print(p)
-aux <- dev.off()
 ```
 
 ##Full analyses
-First, create long-form dataframe for group analyses
+Running correlations between SI, GQ, and DCCS. First, create long-form dataframe for group analyses. This is done by aggregating mean correct by SID by trial type and age group:
+- trial type = all, some, none (SI)
+- trial type = all, some, none (GQ)
+- trial type = pre/post switch (DCCS)
+
+After each individual df is compiled, all around bound together by SID
 ```{r}
 #si df
 data_si$SI_correct <- as.character(data_si$SI_correct)
@@ -1175,6 +1192,7 @@ pcor.test(d_all$SI_None, d_all$GQ_Some, d_all$test_age)
 
 ##T-tests
 ###DCCS
+Is performance significantly different than chance?
 ```{r}
 df.dccs <- aggregate(DCCS_correct ~ switch_type + agegroup +  sub_ID, data=data_dccs, mean) 
 
