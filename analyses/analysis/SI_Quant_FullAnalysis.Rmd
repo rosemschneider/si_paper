@@ -118,7 +118,7 @@ ms_exp1 <- data_exp1 %>%
   group_by(condition, type, trial_type, agegroup)%>%
   multi_boot_standard("correct", na.rm = TRUE)
 
-pdf(file="./exp1_performance.pdf", width=6.5, height=4)
+pdf(file="./exp1_performance.pdf", width=7, height=4)
 p <- ggplot(data = ms_exp1,aes(x=type, y=mean, fill=type, alpha=agegroup)) + 
   geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
@@ -241,7 +241,6 @@ exp1_hist <- data_exp1 %>%
 pdf(file="./exp1_hist.pdf", width=6, height=3.5)
 q <- ggplot(exp1_hist, aes(x = mean, fill=type)) + 
   geom_histogram(colour = "black", stat = "bin",breaks = c(0,.2,.4,.6,.8,1), binwidth = .2) + 
-  theme_bw(base_size = 18) + 
   xlab("Mean performance") + 
   ylab("Frequency") + 
   facet_wrap(~type) + 
@@ -423,7 +422,6 @@ ms_exp2 <- data_exp2 %>%
 
 pdf(file="./exp2_performance.pdf", width=6, height=3.5)
 p <- 
-quartz()
 ggplot(data = ms_exp2, aes(x=type, y=mean, fill=type, alpha=agegroup)) + 
   geom_bar(stat="identity", position = position_dodge()) +
   geom_linerange(aes(ymin = ci_lower,
@@ -700,6 +698,7 @@ p <- ggplot(data = ms_exp3, aes(x=type, y=mean, fill=type, alpha=agegroup)) +
                      guide = guide_legend(title = "Age group (years)")) + 
   labs(x = "Trial Type", y = "Mean Correct") +
   scale_fill_solarized() + guides(fill = FALSE)
+print(p)
 aux <- dev.off()
 ```
 
@@ -915,7 +914,7 @@ ms_gq <- data_gq %>%
   multi_boot_standard("GQ_correct", na.rm=T)
 
 pdf(file="./exp3_GQperf.pdf", width=6, height=3.5)
-p <- quartz()
+p <- 
 ggplot(data = ms_gq, 
        aes(x=prompt, y=mean, fill=prompt, alpha = `agegroup`)) +
   geom_bar(stat="identity", position = position_dodge()) +
@@ -926,12 +925,8 @@ ggplot(data = ms_gq,
                  position=position_dodge(width = 0.9)) +
   ylab("Proportion correct") + 
   xlab("Quantifier Prompt") +
-  theme_bw(base_size=18) + 
-  theme(axis.title.x = element_text(size=16),
-        axis.title.y  = element_text(size=16),
-        legend.title=element_text(size=14), 
-        legend.text=element_text(size=14), 
-        panel.grid.minor = element_blank(),
+  theme_bw(base_size=10) + 
+  theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_blank()) +
   scale_alpha_manual(values=c(.5,.625,.725,1), 
                      guide = guide_legend(title = "Age group (years)")) + guides(fill = FALSE) +
@@ -1379,11 +1374,7 @@ p <- ggplot(data = ms,
   ylab("Mean Correct") + 
     xlab("Trial type") +
   theme_bw(base_size=10) + 
-  theme(axis.title.x = element_text(size=14),
-        axis.title.y  = element_text(size=14),
-        legend.title=element_text(size=12), 
-        legend.text=element_text(size=12), 
-        panel.grid.minor = element_blank(),
+  theme(panel.grid.minor = element_blank(),
         panel.grid.major = element_blank()) +
   scale_alpha_manual(values=c(.625, 1), 
                      guide = guide_legend(title = "Age group (years)")) + guides(fill = FALSE) +
