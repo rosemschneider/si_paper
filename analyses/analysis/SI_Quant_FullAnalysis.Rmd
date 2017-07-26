@@ -750,9 +750,9 @@ t.test(subset(ms_exp2, agegroup == "4.5--5.0")$None, subset(ms_exp3, agegroup ==
 ###T-tests across trial types within agegroups with exp 3 data
 Testing performance on "some" and "none" against "all" across age groups.
 ```{r}
-d <- data_si 
 
-d <- aggregate(correct ~ type + agegroup +sub_ID, data=d, mean)
+
+d <- aggregate(correct ~ type + agegroup +sub_ID, data=data_si, mean)
 
 #tests between quantifiers
 #all and some
@@ -808,6 +808,10 @@ cor.test(dip_exp3$Some, dip_exp3$None)
 cs %>% group_by(agegroup) %>% 
 	summarise(r = cor.test(None, Some)$estimate,
 			  p = cor.test(None, Some)$p.value)
+
+#cor with age
+cor.test(dip_exp3$Some, dip_exp3$age)
+cor.test(dip_exp3$None, dip_exp3$age)
 ```
 ##Correlation (partial, controlling for age)
 Because we found that DCCS (inhibitory control measure) was significantly correlated with age, we control for age in correlations between all three measures (SI, GQ, and DCCS). 
@@ -1193,10 +1197,12 @@ df.dccs <- aggregate(DCCS_correct ~ switch_type + agegroup +  sub_ID, data=data_
 
 t.test(subset(df.dccs, agegroup=="3-3.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5, 
        var.equal = TRUE)
-t.test(subset(df.dccs, agegroup=="3.5-4 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(df.dccs, agegroup=="3.5-4 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5,
+       var.equal = TRUE)
 t.test(subset(df.dccs, agegroup=="4-4.5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5, 
        var.equal = TRUE)
-t.test(subset(df.dccs, agegroup=="4.5-5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5)
+t.test(subset(df.dccs, agegroup=="4.5-5 years" & switch_type=="Post-switch")$DCCS_correct, mu=0.5, 
+       var.equal = TRUE)
 ```
   
 ##Diptests
