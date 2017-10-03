@@ -1143,9 +1143,10 @@ cor.test(d_all$SI_Some, d_all$`Post-switch`)
 cor.test(d_all$SI_None, d_all$`Post-switch`)
 ```
 
+DCCS-Age
 ```{r}
 #Significant correlation between age and DCCS
-cor.test(~d_all$test_age + d_all$`Post-switch`)
+cor.test(d_all$test_age, d_all$`Post-switch`)
 #full correlation between some and none
 cor.test(~d_all$SI_Some + d_all$SI_None)
 ```
@@ -1399,9 +1400,8 @@ group_by(prompt, selection_type)%>%
 
 #how many total incorrect trials?
 ms_tot.wrong <- exp4 %>%
-  filter(correct_factor == FALSE)%>%
+  filter(correct == 0)%>%
   summarise(n = n())
-  
 ```  
   
 Incorrect selection graph
@@ -1486,7 +1486,7 @@ dip.test(cs$Some)
 dip.test(cs$All)
 ```
 
-#General linearized model
+#Logistic mixed effects
 ```{r}
 exp4 %<>%
   mutate(age.c = scale(age, center=TRUE, scale=FALSE))
