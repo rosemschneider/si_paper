@@ -927,7 +927,7 @@ ggplot(data = ms_gq,
                   size = .3,
                   show.legend = FALSE,
                  position=position_dodge(width = 0.9)) +
-  ylab("Proportion correct") + 
+  ylab("Mean correct") + 
   xlab("Quantifier Prompt") +
   theme_bw(base_size=10) + 
   theme(panel.grid.minor = element_blank(),
