@@ -547,7 +547,7 @@ p <- ggplot(data = exp2_wrong,
   scale_alpha_manual(values=c(.5,.625,.725,1)) + guides(fill = FALSE) +
   scale_fill_solarized() + scale_alpha_manual(values=c(0.5,.625, .725, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
-  labs(x = "Trial Type", y = "Mean Correct")
+  labs(x = "Trial Type", y = "Count of children choosing")
 print(p)
 aux <- dev.off()
 ```
