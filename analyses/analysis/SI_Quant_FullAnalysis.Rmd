@@ -113,6 +113,8 @@ exp1_demo <- data_exp1 %>%
 ##Mean performance across conditions, by agegroup
 Compute means and 95% CIs, graph
 ```{r}
+library(RColorBrewer)
+my_palette = c(brewer.pal(4, "YlGnBu")[c(2,3,4,5)])
 ms_exp1 <- data_exp1 %>%
   mutate(correct = as.numeric(correct))%>%
   group_by(condition, type, trial_type, agegroup)%>%
@@ -132,7 +134,7 @@ p <- ggplot(data = ms_exp1,aes(x=type, y=mean, fill=type, alpha=agegroup)) +
   scale_alpha_manual(values=c(0.8, 1), 
                      guide = guide_legend(title = "Age group (years)")) + 
   labs(x = "Trial Type", y = "Mean Correct") +
-  scale_fill_solarized() +
+  scale_fill_brewer(palette = "BuPu", direction = -1) +
 facet_grid(~condition, scale = "free_x") + guides(fill = FALSE)
 print(p)
 aux <- dev.off()
